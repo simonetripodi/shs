@@ -55,7 +55,7 @@ final class SocketRunnable
 
     private static final Logger logger = getLogger( SocketRunnable.class );
 
-    private static final String DEFAULT_SERVER_NAME = "Simone's rockin' server";
+    private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
