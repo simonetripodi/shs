@@ -51,7 +51,7 @@ import org.slf4j.Logger;
  *
  * This class must NOT be shared across threads, consider it be used inside main(String...) method.
  */
-final class SimpleHttpServer
+public final class SimpleHttpServer
     implements HttpServer, Runnable
 {
 
