@@ -27,9 +27,12 @@ import static java.lang.String.format;
 import static java.net.URLDecoder.decode;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.US;
+import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.COOKIE;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
 import static org.nnsoft.shs.http.Request.Method.GET;
+import static org.nnsoft.shs.http.Request.Method.POST;
+import static org.nnsoft.shs.http.Request.Method.PUT;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
@@ -73,13 +76,16 @@ public final class RequestParser
         }
     };
 
+    private final InputStream requestBodyInputStream;
+
     private final BufferedReader bufferedReader;
 
     private final DefaultRequest request = new DefaultRequest();
 
-    public RequestParser( InputStream input )
+    public RequestParser( InputStream requestBodyInputStream )
     {
-        bufferedReader = new BufferedReader( new InputStreamReader( input, UTF_8 ) );
+        this.requestBodyInputStream = requestBodyInputStream;
+        bufferedReader = new BufferedReader( new InputStreamReader( requestBodyInputStream, UTF_8 ) );
     }
 
     public Request parse()
@@ -87,6 +93,7 @@ public final class RequestParser
     {
         parseReuqestURI();
         parseHeaders();
+        parseBody();
         return request;
     }
 
@@ -113,7 +120,7 @@ public final class RequestParser
                                              method, Arrays.toString( values() ) );
         }
 
-        String path = decode( tokenizer.nextToken(), UTF_8.displayName() );
+        String path = tokenizer.nextToken();
 
         if ( GET == request.getMethod() )
         {
@@ -125,21 +132,20 @@ public final class RequestParser
 
                 path = path.substring( 0, queryStringSeparatorIndex );
 
-                StringTokenizer queryTokenizer = new StringTokenizer( queryString, "&" );
-                while ( queryTokenizer.hasMoreTokens() )
+                new ParameterParser()
                 {
-                    String parameter = queryTokenizer.nextToken();
 
-                    StringTokenizer parameterTokenizer = new StringTokenizer( parameter, "=" );
-                    String parameterName = parameterTokenizer.nextToken();
-                    String parameterValue = parameterTokenizer.nextToken();
+                    @Override
+                    protected void onParameterFound( String parameterName, String parameterValue )
+                    {
+                        request.addQueryStringParameter( parameterName, parameterValue );
+                    }
 
-                    request.addQueryStringParameter( parameterName, parameterValue );
-                }
+                }.parse( queryString );
             }
         }
 
-        request.setPath( path );
+        request.setPath( decode( path, UTF_8.displayName() ) );
 
         String protocol = tokenizer.nextToken();
         int versionSeparator = protocol.indexOf( '/' );
@@ -183,6 +189,43 @@ public final class RequestParser
             {
                 throw new RequestParseException( "Header %s is in the wrong format, expected ':' separator", header );
             }
+        }
+    }
+
+    /**
+     * Parses the request body
+     *
+     * @throws RequestParseException if any syntax error occurs
+     * @throws IOException if any transport error occurs
+     */
+    private void parseBody()
+        throws RequestParseException, IOException
+    {
+        String contentType = request.getHeaders().getFirstValue( CONTENT_TYPE );
+        if ( POST == request.getMethod() && !"application/x-www-form-urlencoded".equals( contentType )
+             || PUT == request.getMethod() )
+        {
+            request.setRequestBodyInputStream( requestBodyInputStream );
+        }
+        else
+        {
+            StringBuilder buffer = new StringBuilder();
+            String line = null;
+            while ( (line = bufferedReader.readLine()) != null )
+            {
+                buffer.append( line );
+            }
+
+            new ParameterParser()
+            {
+
+                @Override
+                protected void onParameterFound( String parameterName, String parameterValue )
+                {
+                    request.addParameter( parameterName, parameterValue );
+                }
+
+            }.parse( buffer.toString() );
         }
     }
 
@@ -349,6 +392,8 @@ public final class RequestParser
         private String protocolName;
 
         private String protocolVersion;
+
+        private InputStream requestBodyInputStream;
 
         private final SimpleMultiValued headers = new SimpleMultiValued();
 
@@ -520,6 +565,26 @@ public final class RequestParser
         }
 
         /**
+         * Sets the request body input stream.
+         *
+         * @param requestBodyInputStream
+         */
+        public void setRequestBodyInputStream( InputStream requestBodyInputStream )
+        {
+            checkArgument( requestBodyInputStream != null, "Null requestBodyInputStream not allowed" );
+
+            this.requestBodyInputStream = requestBodyInputStream;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public InputStream getRequestBodyInputStream()
+        {
+            return requestBodyInputStream;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -528,6 +593,29 @@ public final class RequestParser
             return format( "Response [method=%s, path=%s, protocolName=%s, protocolVersion=%s, headers=%s, cookies=%s]",
                            method, path, protocolName, protocolVersion, headers, cookies );
         }
+
+    }
+
+    private static abstract class ParameterParser
+    {
+
+        public final void parse( String input )
+            throws IOException
+        {
+            StringTokenizer queryTokenizer = new StringTokenizer( input, "&" );
+            while ( queryTokenizer.hasMoreTokens() )
+            {
+                String parameter = queryTokenizer.nextToken();
+
+                StringTokenizer parameterTokenizer = new StringTokenizer( parameter, "=" );
+                String parameterName = decode( parameterTokenizer.nextToken(), UTF_8.displayName() );
+                String parameterValue = decode( parameterTokenizer.nextToken(), UTF_8.displayName() );
+
+                onParameterFound( parameterName, parameterValue );
+            }
+        }
+
+        protected abstract void onParameterFound( String parameterName, String parameterValue );
 
     }
 

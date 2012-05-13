@@ -96,6 +96,25 @@ public final class RequestParserTestCase
         assertTrue( request.getQueryStringParameters().getValues( "foo" ).contains( "z w" ) );
     }
 
+    @Test
+    public void parametersSentViaPostMethods()
+        throws Exception
+    {
+        String simpleRequest = "POST /demo.html HTTP/1.1\n"
+                                + "User-Agent: dummy agent\n"
+                                + "Host: localhost:8080\n"
+                                + "Accept: */*\n"
+                                + "Content-Length: 27\n"
+                                + "Content-Type: application/x-www-form-urlencoded\n\n"
+                                + "param1=value1&param2=value2";
+        Request request = parse( simpleRequest );
+
+        assertNotNull( request.getParameters().getFirstValue( "param1" ) );
+        assertEquals( "value1", request.getParameters().getFirstValue( "param1" ) );
+        assertNotNull( request.getParameters().getFirstValue( "param2" ) );
+        assertEquals( "value2", request.getParameters().getFirstValue( "param2" ) );
+    }
+
     private Request parse( String mockRequestString )
         throws Exception
     {

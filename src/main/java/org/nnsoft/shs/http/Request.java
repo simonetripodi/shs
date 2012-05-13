@@ -23,6 +23,7 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -128,5 +129,12 @@ public interface Request
      * @return the parameters
      */
     Parameters getParameters();
+
+    /**
+     * Returns the request body input stream.
+     *
+     * @return the request body input stream.
+     */
+    InputStream getRequestBodyInputStream();
 
 }
