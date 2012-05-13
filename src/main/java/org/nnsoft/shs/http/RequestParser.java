@@ -354,6 +354,8 @@ public final class RequestParser
 
         private final SimpleMultiValued queryStringParameters = new SimpleMultiValued();
 
+        private final SimpleMultiValued parameters = new SimpleMultiValued();
+
         private final List<Cookie> cookies = new LinkedList<Cookie>();
 
         /**
@@ -474,6 +476,28 @@ public final class RequestParser
         public QueryStringParameters getQueryStringParameters()
         {
             return queryStringParameters;
+        }
+
+        /**
+         * Allows adding a new parameter.
+         *
+         * @param name a non null parameter name
+         * @param value a non null parameter value
+         */
+        public void addParameter( String name, String value )
+        {
+            checkArgument( name != null, "Null QueryStringParameter name not allowed" );
+            checkArgument( value != null, "Null QueryStringParameter values not allowed" );
+
+            parameters.addValue( name, value );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public Parameters getParameters()
+        {
+            return parameters;
         }
 
         /**

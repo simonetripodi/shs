@@ -121,4 +121,12 @@ public interface Request
      */
     QueryStringParameters getQueryStringParameters();
 
+    /**
+     * Returns the parameters, populated only if HTTP method is {@link Method#POST}
+     * and {@code Content-Type} is set to {@code application/x-www-form-urlencoded}.
+     *
+     * @return the parameters
+     */
+    Parameters getParameters();
+
 }
