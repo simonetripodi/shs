@@ -29,11 +29,19 @@ import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 
 /**
- *
+ * A request handler is a lighter version of HttpServlet to implement HTTP negotiation.
  */
 public interface RequestHandler
 {
 
+    /**
+     * Allows concrete implementations to populate {@link Response} parameters
+     * given the {@link Request}.
+     *
+     * @param request the received HTTP request
+     * @param response the HTTP response will be pushed out.
+     * @throws IOException if any I/0 error occur
+     */
     void handle( Request request, Response response )
         throws IOException;
 
