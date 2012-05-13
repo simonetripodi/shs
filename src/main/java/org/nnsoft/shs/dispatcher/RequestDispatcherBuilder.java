@@ -23,10 +23,17 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
+/**
+ * Chained builder to associate a {@link RequestHandler} to a previously specified path.
+ */
 public interface RequestDispatcherBuilder
 {
 
+    /**
+     * Allows associating a {@link RequestHandler} to a previously specified path.
+     *
+     * @param requestHandler the {@link RequestHandler} has to be associated to a previously specified path.
+     */
     void with( RequestHandler requestHandler );
 
 }
