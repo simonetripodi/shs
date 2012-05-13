@@ -263,6 +263,12 @@ public final class FileRequestHandler
         }
     }
 
+    /**
+     * Retrieves the input file Content-Type, depending on the file name extension.
+     *
+     * @param file the file for which the content type has to be retrieved.
+     * @return the input file content type, null if not found.
+     */
     private String getContentType( File file )
     {
         int extensionSeparator = file.getName().lastIndexOf( '.' );
