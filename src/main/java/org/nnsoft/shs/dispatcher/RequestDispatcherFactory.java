@@ -29,34 +29,59 @@ import static java.util.Arrays.asList;
 import static java.util.ServiceLoader.load;
 
 import java.util.Iterator;
+import java.util.ServiceLoader;
 
 import org.slf4j.Logger;
 
 /**
- *
+ * Factory for {@link RequestDispatcher} instances.
  */
 public final class RequestDispatcherFactory
 {
 
     private static final Logger logger = getLogger( RequestDispatcherFactory.class );
 
+    /**
+     * Creates a new {@link RequestDispatcher} instance by loading {@link RequestDispatcherConfiguration}
+     * via the {@link ServiceLoader}.
+     *
+     * @return a new {@link RequestDispatcher} instance.
+     */
     public static RequestDispatcher newRequestDispatcher()
     {
         return newRequestDispatcher( load( RequestDispatcherConfiguration.class ).iterator() );
     }
 
+    /**
+     * Creates a new {@link RequestDispatcher} instance, configured by input configurations.
+     *
+     * @param configurations the configurations containing the paths/{@link RequestHandler}s bindings
+     * @return a new {@link RequestDispatcher} instance.
+     */
     public static RequestDispatcher newRequestDispatcher( RequestDispatcherConfiguration...configurations )
     {
         checkArgument( configurations != null, "Impossible to create a new RequestDispatcher from configurations!" );
         return newRequestDispatcher( asList( configurations ) );
     }
 
+    /**
+     * Creates a new {@link RequestDispatcher} instance, configured by input configurations.
+     *
+     * @param configurations the configurations containing the paths/{@link RequestHandler}s bindings
+     * @return a new {@link RequestDispatcher} instance.
+     */
     public static RequestDispatcher newRequestDispatcher( Iterable<RequestDispatcherConfiguration> configurations )
     {
         checkArgument( configurations != null, "Impossible to create a new RequestDispatcher from configurations!" );
         return newRequestDispatcher( configurations.iterator() );
     }
 
+    /**
+     * Creates a new {@link RequestDispatcher} instance, configured by input configurations.
+     *
+     * @param configurations the configurations containing the paths/{@link RequestHandler}s bindings
+     * @return a new {@link RequestDispatcher} instance.
+     */
     public static RequestDispatcher newRequestDispatcher( Iterator<RequestDispatcherConfiguration> configurations )
     {
         checkArgument( configurations != null, "Impossible to create a new RequestDispatcher from configurations!" );
