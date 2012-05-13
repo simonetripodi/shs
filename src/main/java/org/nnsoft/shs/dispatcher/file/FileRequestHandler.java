@@ -259,6 +259,7 @@ public final class FileRequestHandler
         else
         {
             response.setStatus( NOT_FOUND );
+            return;
         }
     }
 
