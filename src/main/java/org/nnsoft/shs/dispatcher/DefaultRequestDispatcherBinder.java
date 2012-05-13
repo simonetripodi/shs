@@ -34,6 +34,11 @@ import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
+/**
+ * A concrete {@link RequestDispatcher} implementation which exposes
+ * {@link RequestDispatcherBinder} methods to configure paths/{@link RequestHandler}s
+ * bindings.
+ */
 final class DefaultRequestDispatcherBinder
     implements RequestDispatcherBinder, RequestDispatcher
 {
@@ -42,6 +47,9 @@ final class DefaultRequestDispatcherBinder
 
     private final List<MatchingRequestHandler> handlers = new LinkedList<MatchingRequestHandler>();
 
+    /**
+     * {@inheritDoc}
+     */
     public RequestDispatcherBuilder serve( final String path )
     {
         checkArgument( path != null, "Null path cannot be served." );
