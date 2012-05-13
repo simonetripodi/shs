@@ -23,9 +23,19 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * Collects configuration information (primarily bindings) which will be used to create a {@link RequestDispatcher}.
+ */
 public interface RequestDispatcherBinder
 {
 
+    /**
+     * Starts binding a request path, can be expressed using the {@code web.xml} grammar,
+     * to a {@link RequestHandler}.
+     *
+     * @param path the path for handling calls.
+     * @return the builder to associate a {@link RequestDispatcher}
+     */
     RequestDispatcherBuilder serve( String path );
 
 }

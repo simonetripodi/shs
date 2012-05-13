@@ -23,9 +23,18 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * A configuration provides paths/{@link RequestHandler}s bindings,
+ * which will be used to create a {@link RequestDispatcher}.
+ */
 public interface RequestDispatcherConfiguration
 {
 
+    /**
+     * Contributes paths/{@link RequestHandler}s bindings.
+     *
+     * @param binder paths/{@link RequestHandler}s binder.
+     */
     void configure( RequestDispatcherBinder binder );
 
 }
