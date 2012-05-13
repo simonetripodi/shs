@@ -28,9 +28,21 @@ import java.io.IOException;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 
+/**
+ * A {@link RequestDispatcher} is responsible to address an HTTP request
+ * to the proper {@link RequestHandler}, depending on the {@link Request} path.
+ */
 public interface RequestDispatcher
 {
 
+    /**
+     * Addresses the HTTP request to the proper {@link RequestHandler},
+     * depending on the {@link Request} path.
+     *
+     * @param request the received HTTP request
+     * @param response the producing HTTP response
+     * @throws IOException if any I/O error occurs while producing the reponse
+     */
     void dispatch( Request request, Response response )
         throws IOException;
 
