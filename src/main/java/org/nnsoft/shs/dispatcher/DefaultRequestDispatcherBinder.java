@@ -92,7 +92,7 @@ final class DefaultRequestDispatcherBinder
             }
         }
 
-        logger.warn( "No handler found for path {}, please check your configuration(s)!" );
+        logger.warn( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
     }
 
     /**
