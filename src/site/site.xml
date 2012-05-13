@@ -34,7 +34,7 @@
   </skin>
 
   <body>
-    
+    <menu ref="reports"/>
   </body>
 
 </project>
