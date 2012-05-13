@@ -23,6 +23,9 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * Parameters sent by the client via URL query string, i.e. {@code index.jsp?a=b&c=d}
+ */
 public interface QueryStringParameters
     extends MultiValued
 {
