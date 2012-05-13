@@ -321,7 +321,7 @@ public final class RequestParser
      * @return
      * @throws Exception
      */
-    private final static String removeQuote( String s )
+    private static String removeQuote( String s )
     {
         if ( s.startsWith( "\"" ) )
         {
