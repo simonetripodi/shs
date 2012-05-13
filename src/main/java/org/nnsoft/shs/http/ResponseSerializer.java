@@ -23,12 +23,16 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.System.currentTimeMillis;
 import static java.lang.String.format;
+import static java.util.Locale.US;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -39,6 +43,8 @@ import java.util.Map.Entry;
  */
 public final class ResponseSerializer
 {
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
     private final OutputStream target;
 
@@ -69,6 +75,7 @@ public final class ResponseSerializer
 
         printProtocol();
         printHeaders();
+        printCookies();
         print( "%n" );
         printBody();
     }
@@ -119,7 +126,13 @@ public final class ResponseSerializer
     {
         for ( Cookie cookie : response.getCookies() )
         {
-            // TODO
+            Date expirationDate = new Date( cookie.getMaxAge() * 1000 + currentTimeMillis() );
+            String expires = dateFormat.format( expirationDate );
+
+            // secure field ignored since HTTPs is not supported in this version
+
+            print( "Set-Cookie: %s:%s; Expires=%s; Path=%s; Domain=%s; HttpOnly%n",
+                   cookie.getName(), cookie.getValue(), expires, cookie.getPath(), cookie.getDomain() );
         }
     }
 
