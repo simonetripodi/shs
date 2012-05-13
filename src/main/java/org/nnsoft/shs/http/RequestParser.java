@@ -457,6 +457,25 @@ public final class RequestParser
         }
 
         /**
+         * Add a non null cookie.
+         *
+         * @param cookie a non null cookie.
+         */
+        public void addCookie( Cookie cookie )
+        {
+            checkArgument( cookie != null, "Null cookie name not allowed" );
+            cookies.add( cookie );
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        public List<Cookie> getCookies()
+        {
+            return unmodifiableList( cookies );
+        }
+
+        /**
          * Allows adding a new query string parameter.
          *
          * @param name a non null query string parameter name
@@ -498,25 +517,6 @@ public final class RequestParser
         public Parameters getParameters()
         {
             return parameters;
-        }
-
-        /**
-         * Add a non null cookie.
-         *
-         * @param cookie a non null cookie.
-         */
-        public void addCookie( Cookie cookie )
-        {
-            checkArgument( cookie != null, "Null cookie name not allowed" );
-            cookies.add( cookie );
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public List<Cookie> getCookies()
-        {
-            return unmodifiableList( cookies );
         }
 
         /**
