@@ -24,6 +24,7 @@ package org.nnsoft.shs.dispatcher;
  */
 
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Preconditions.checkState;
 import static org.slf4j.LoggerFactory.getLogger;
 import static java.util.Arrays.asList;
 import static java.util.ServiceLoader.load;
@@ -86,6 +87,7 @@ public final class RequestDispatcherFactory
     {
         checkArgument( configurations != null, "Impossible to create a new RequestDispatcher from configurations!" );
 
+        boolean configured = false;
         DefaultRequestDispatcherBinder binder = new DefaultRequestDispatcherBinder();
 
         while ( configurations.hasNext() )
@@ -97,12 +99,19 @@ public final class RequestDispatcherFactory
                 logger.info( "Loading dispatch handling from {}...", configuration.getClass().getName() );
 
                 configuration.configure( binder );
+
+                if ( !configured )
+                {
+                    configured = true;
+                }
             }
             else
             {
                 logger.warn( "Detected null configuration, skipped from RequestDispatcher setup" );
             }
         }
+
+        checkState( configured, "No useful configuration provided!" );
 
         return binder;
     }
