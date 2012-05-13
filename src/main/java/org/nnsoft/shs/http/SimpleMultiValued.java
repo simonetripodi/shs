@@ -37,7 +37,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 final class SimpleMultiValued
-    implements Headers, QueryStringParameters
+    implements Headers, Parameters, QueryStringParameters
 {
 
     private final Map<String, List<String>> adaptedMap = new HashMap<String, List<String>>();
