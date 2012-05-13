@@ -50,4 +50,10 @@ public final class RequestDispatcherFactoryTestCase
         newRequestDispatcher( (Iterator<RequestDispatcherConfiguration>) null );
     }
 
+    @Test( expected = IllegalStateException.class )
+    public void findRequestDispatcherConfigurationViaServiceLoader()
+    {
+        newRequestDispatcher();
+    }
+
 }
