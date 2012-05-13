@@ -23,152 +23,216 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.lang.Runtime.getRuntime;
-import static java.lang.System.currentTimeMillis;
-import static java.lang.System.exit;
-import static java.lang.System.getProperty;
-import static org.nnsoft.shs.dispatcher.RequestDispatcherFactory.newRequestDispatcher;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
+import static java.nio.channels.SelectionKey.OP_ACCEPT;
+import static java.nio.channels.ServerSocketChannel.open;
+import static java.nio.channels.spi.SelectorProvider.provider;
+import static java.util.concurrent.Executors.newFixedThreadPool;
+import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
+import static org.nnsoft.shs.HttpServer.Status.RUNNING;
+import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.util.Date;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
 
-import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
-import org.nnsoft.shs.dispatcher.file.FileRequestHandler;
+import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.converters.FileConverter;
-
 /**
- * Simple HTTP Server based on Concurrent and NIO APIs.
+ * A simple {@link HttpServer} implementation.
+ *
+ * This class must NOT be shared across threads, consider it be used inside main(String...) method.
  */
-public final class SimpleHttpServer
+final class SimpleHttpServer
+    implements HttpServer, Runnable
 {
 
     private final Logger logger = getLogger( getClass() );
 
-    @Parameter( names = { "-h", "--help" }, description = "Display help information." )
-    private boolean printHelp;
+    private ExecutorService requestsExecutor;
 
-    @Parameter( names = { "-p", "--port" }, description = "The HTTP Server port." )
-    private int port = 8080;
+    private RequestDispatcher dispatcher;
 
-    @Parameter( names = { "-t", "--threads" }, description = "The number of listening thread (# of available processors by default)." )
-    private int threads = getRuntime().availableProcessors();
+    private Selector selector;
 
-    @Parameter(
-        names = { "-s", "--sitedir" },
-        description = "The directory containing the site has to be provided.",
-        converter = FileConverter.class
-    )
-    private File siteDir = new File( getProperty( "basedir" ), "site" );
+    private Status currentStatus = STOPPED;
 
     /**
-     * Hidden constructor, this class must not be instantiated.
+     * {@inheritDoc}
      */
-    private SimpleHttpServer()
+    public void init( int port, int threads, RequestDispatcher dispatcher )
+        throws InitException
     {
-        // do nothing
+        checkArgument( port > 0, "Impossible to listening on port %s, it must be a positive number", port );
+        checkArgument( threads > 0, "Impossible to serve requests with negative or none threads" );
+        checkArgument( dispatcher != null, "Impossible to serve requests with a null dispatcher" );
+
+        if ( currentStatus != STOPPED )
+        {
+            throw new InitException( "Current server cannot be configured while in %s status.", currentStatus );
+        }
+
+        logger.info( "Initializing server using {} threads...", threads );
+
+        requestsExecutor = newFixedThreadPool( threads );
+
+        logger.info( "Done! Initializing the request dispatcher..." );
+
+        this.dispatcher = dispatcher;
+
+        logger.info( "Done! listening on port {} ...", port );
+
+        ServerSocketChannel server;
+        try
+        {
+            server = open();
+            server.socket().bind( new InetSocketAddress( port ) );
+            server.configureBlocking( false );
+
+            selector = provider().openSelector();
+            server.register( selector, OP_ACCEPT );
+        }
+        catch ( IOException e )
+        {
+            throw new InitException( "Impossible to start server on port %s (with %s threads): %s",
+                                     port, threads, e.getMessage() );
+        }
+
+        logger.info( "Done! Server has been successfully initialized, it can be now started" );
+
+        currentStatus = INITIALIZED;
     }
 
-    private void execute( String...args )
+    /**
+     * {@inheritDoc}
+     */
+    public void start()
+        throws RunException
     {
-        // handle command lines
-        final JCommander jCommander = new JCommander( this );
-        jCommander.setProgramName( getProperty( "app.name" ) );
-        jCommander.parse( args );
-
-        if ( printHelp )
+        if ( currentStatus != INITIALIZED )
         {
-            jCommander.usage();
-            exit( -1 );
+            throw new RunException( "Current server cannot be configured while in %s status, stop then init again before.",
+                                    currentStatus );
         }
 
-        logger.info( "" );
-        logger.info( "------------------------------------------------------------------------" );
-        logger.info( "{} v{} (built on {})", new Object[] {
-            getProperty( "project.artifactId" ),
-            getProperty( "project.version" ),
-            getProperty( "build.timestamp" )
-        } );
-        logger.info( "------------------------------------------------------------------------" );
-        logger.info( "" );
+        logger.info( "Server is starting up..." );
 
-        final HttpServer httpServer = new DefaultHttpServer();
+        requestsExecutor.submit( this );
 
-        try
+        logger.info( "Server successfully started up! Listening for new connections..." );
+
+        currentStatus = RUNNING;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run()
+    {
+        while ( currentStatus == RUNNING )
         {
-            httpServer.init( port, threads, newRequestDispatcher( new AbstractRequestDispatcherConfiguration()
+            // Wait for an event one of the registered channels
+            try
             {
-
-                @Override
-                protected void configure()
-                {
-                    serve( "/*" ).with( new FileRequestHandler( siteDir ) );
-                }
-
-            }  ) );
-        }
-        catch ( Throwable cause )
-        {
-            logger.error( "Server cannot be initialized", cause );
-            exit( 1 );
-        }
-
-        final long start = currentTimeMillis();
-
-        try
-        {
-            httpServer.start();
-        }
-        catch ( RunException se )
-        {
-            logger.error( "Server cannot be started", se );
-            exit( 1 );
-        }
-
-        getRuntime().addShutdownHook( new Thread()
-        {
-
-            public void run()
+                selector.select();
+            }
+            catch ( IOException ioe )
             {
-                logger.info( "" );
-                logger.info( "------------------------------------------------------------------------" );
+                logger.error( "Something wrong happened while listening for connections: {}", ioe.getMessage() );
 
                 try
                 {
-                    httpServer.stop();
+                    stop();
                 }
-                catch ( ShutdownException e )
+                catch ( ShutdownException se )
                 {
-                    logger.error( "Execution terminated with errors", e );
+                    logger.error( "Server not correctly shutdow, see nested exceptions", se );
                 }
 
-                logger.info( "Total uptime: {}s", ( ( currentTimeMillis() - start ) / 1000 ) );
-                logger.info( "Finished at: {}", new Date() );
-
-                final Runtime runtime = getRuntime();
-                final int megaUnit = 1024 * 1024;
-                logger.info( "Final Memory: {}M/{}M",
-                             ( runtime.totalMemory() - runtime.freeMemory() ) / megaUnit,
-                             runtime.totalMemory() / megaUnit );
-
-                logger.info( "------------------------------------------------------------------------" );
-                logger.info( "" );
+                throw new RuntimeException( new RunException( "A fatal error occurred while waiting for clients: %s",
+                                                              ioe.getMessage() ) );
             }
 
-        } );
+            // Iterate over the set of keys for which events are available
+            Iterator<SelectionKey> selectedKeys = selector.selectedKeys().iterator();
+            while ( selectedKeys.hasNext() )
+            {
+                SelectionKey key = selectedKeys.next();
+                selectedKeys.remove();
+
+                if ( !key.isValid() )
+                {
+                    continue;
+                }
+
+                // Check what event is available and deal with it
+                if ( key.isAcceptable() )
+                {
+                    ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+                    try
+                    {
+                        SocketChannel socketChannel = serverSocketChannel.accept();
+                        Socket socket = socketChannel.socket();
+                        requestsExecutor.submit( new SocketRunnable( dispatcher, socket ) );
+                    }
+                    catch ( IOException e )
+                    {
+                        logger.warn( "Impossible to accept client request: {}", e.getMessage() );
+                    }
+                }
+            }
+        }
     }
 
     /**
-     * @param args
+     * {@inheritDoc}
      */
-    public static void main( String[] args )
-        throws Exception
+    public void stop()
+        throws ShutdownException
     {
-        new SimpleHttpServer().execute( args );
+        if ( currentStatus != RUNNING )
+        {
+            throw new ShutdownException( "Current server cannot be stopped while in %s status.",
+                                         currentStatus );
+        }
+
+        logger.info( "Server is shutting down..." );
+
+        try
+        {
+            if ( selector != null && selector.isOpen() )
+            {
+                selector.close();
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new ShutdownException( "An error occurred while shutting down the server: %s", e.getMessage() );
+        }
+        finally
+        {
+            requestsExecutor.shutdown();
+
+            logger.info( "Server is now stopped. Bye!" );
+
+            currentStatus = STOPPED;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Status getStatus()
+    {
+        return currentStatus;
     }
 
 }
