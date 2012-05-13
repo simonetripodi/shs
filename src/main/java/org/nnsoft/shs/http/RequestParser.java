@@ -317,7 +317,7 @@ public final class RequestParser
      * This method has bee extracted from
      * <a href="https://github.com/sonatype/async-http-client/blob/master/src/main/java/com/ning/http/util/AsyncHttpProviderUtils.java#L575">AsyncHttpProvider</a>
      *
-     * @param timestring
+     * @param s
      * @return
      * @throws Exception
      */
