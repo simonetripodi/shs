@@ -486,8 +486,8 @@ public final class RequestParser
          */
         public void addParameter( String name, String value )
         {
-            checkArgument( name != null, "Null QueryStringParameter name not allowed" );
-            checkArgument( value != null, "Null QueryStringParameter values not allowed" );
+            checkArgument( name != null, "Null Parameter name not allowed" );
+            checkArgument( value != null, "Null Parameter values not allowed" );
 
             parameters.addValue( name, value );
         }
