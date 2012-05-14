@@ -58,6 +58,7 @@ final class DefaultResponse
     public void setStatus( Status status )
     {
         checkArgument( status != null, "Null status not allowed in HTTP Response." );
+        this.status = status;
     }
 
     public Status getStatus()
