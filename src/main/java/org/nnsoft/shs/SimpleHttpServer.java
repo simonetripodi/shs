@@ -127,8 +127,6 @@ public final class SimpleHttpServer
      */
     public void run()
     {
-        logger.info( "OOOOOOOOOPORCODDIIIOOOOOOOOOO" );
-
         while ( currentStatus == RUNNING )
         {
             try
