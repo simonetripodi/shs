@@ -1,4 +1,4 @@
-package org.nnsoft.shs.http;
+package org.nnsoft.shs.io;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)

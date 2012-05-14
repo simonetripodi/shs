@@ -25,6 +25,8 @@ package org.nnsoft.shs.http;
 
 import java.util.Collection;
 
+import org.nnsoft.shs.io.ResponseBodyWriter;
+
 public interface Response
 {
 

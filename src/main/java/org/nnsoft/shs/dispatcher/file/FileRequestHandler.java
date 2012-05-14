@@ -35,6 +35,7 @@ import java.util.Map;
 import org.nnsoft.shs.dispatcher.BaseRequestHandler;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
+import org.nnsoft.shs.io.FileResponseBodyWriter;
 
 /**
  * A simple request handler that serves static files.

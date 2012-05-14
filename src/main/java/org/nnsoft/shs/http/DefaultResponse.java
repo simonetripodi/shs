@@ -32,6 +32,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.nnsoft.shs.io.ResponseBodyWriter;
+
 /**
  * Basic {@link Response} implementation.
  */

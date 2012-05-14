@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher.file;
+package org.nnsoft.shs.io;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -31,12 +31,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
-import org.nnsoft.shs.http.ResponseBodyWriter;
 
 /**
  * Generates a body response from a {@link File}.
  */
-final class FileResponseBodyWriter
+public final class FileResponseBodyWriter
     implements ResponseBodyWriter
 {
 
