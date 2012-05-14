@@ -172,16 +172,6 @@ public final class SimpleHttpServerLauncher
         catch ( RunException se )
         {
             logger.error( "Server cannot be started", se );
-
-            try
-            {
-                httpServer.stop();
-            }
-            catch ( ShutdownException e )
-            {
-                // swallow, nothing to do at that point
-            }
-
             exit( 1 );
         }
     }
