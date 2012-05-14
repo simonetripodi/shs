@@ -29,7 +29,7 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-public final class RequestDispatcherFactoryTestCase
+public final class RequestDispatcherTestCase
 {
 
     @Test( expected = IllegalArgumentException.class )
