@@ -36,6 +36,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -52,6 +53,8 @@ public final class ResponseSerializer
     private static final Logger logger = getLogger( ResponseSerializer.class );
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
+
+    private static final String END_PADDING = "\r\n";
 
     private final OutputStream target;
 
@@ -86,7 +89,7 @@ public final class ResponseSerializer
         printProtocol();
         printHeaders();
         printCookies();
-        print( "%n" );
+        writer.write( END_PADDING );
         printBody();
     }
 
@@ -98,7 +101,7 @@ public final class ResponseSerializer
     private void printProtocol()
         throws IOException
     {
-        print( "%s/%s %s %s%n",
+        print( "%s/%s %s %s",
                response.getProtocolName(),
                response.getProtocolVersion(),
                response.getStatus().getStatusCode(),
@@ -115,14 +118,16 @@ public final class ResponseSerializer
     {
         for ( Entry<String, List<String>> header : response.getHeaders().getAllEntries() )
         {
-            print( "%s: ", header.getKey() );
+            Formatter formatter = new Formatter().format( "%s: ", header.getKey() );
 
             int counter = 0;
             for ( String headerValue : header.getValue() )
             {
-                print( "%s%s", (counter++ > 0 ? ", " : ""), headerValue );
+                formatter.format( "%s%s", (counter++ > 0 ? ", " : ""), headerValue );
             }
-            print( "%n" );
+
+            print( formatter.toString() );
+            writer.write( END_PADDING );
         }
     }
 
@@ -175,6 +180,7 @@ public final class ResponseSerializer
         }
 
         writer.write( message );
+        writer.write( END_PADDING );
     }
 
 }
