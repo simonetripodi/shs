@@ -61,6 +61,8 @@ public final class SimpleHttpServer
 
     private RequestDispatcher dispatcher;
 
+    private ServerSocketChannel server;
+
     private Selector selector;
 
     private Status currentStatus = STOPPED;
@@ -90,7 +92,6 @@ public final class SimpleHttpServer
 
         logger.info( "Done! listening on port {} ...", port );
 
-        ServerSocketChannel server;
         try
         {
             server = open();
@@ -206,6 +207,8 @@ public final class SimpleHttpServer
 
         logger.info( "Server is shutting down..." );
 
+        logger.info( "Closing the request listener..." );
+
         try
         {
             if ( selector != null && selector.isOpen() )
@@ -215,15 +218,31 @@ public final class SimpleHttpServer
         }
         catch ( IOException e )
         {
-            throw new ShutdownException( "An error occurred while shutting down the server: %s", e.getMessage() );
+            throw new ShutdownException( "An error occurred while closing the request listener: %s", e.getMessage() );
         }
         finally
         {
-            requestsExecutor.shutdown();
+            logger.info( "Done! Closing all server resources..." );
 
-            logger.info( "Server is now stopped. Bye!" );
+            try
+            {
+                if ( server != null && server.isOpen() )
+                {
+                    server.close();
+                }
+            }
+            catch ( IOException e )
+            {
+                throw new ShutdownException( "An error occurred while shutting down the server: %s", e.getMessage() );
+            }
+            finally
+            {
+                requestsExecutor.shutdown();
 
-            currentStatus = STOPPED;
+                logger.info( "Done! Server is now stopped. Bye!" );
+
+                currentStatus = STOPPED;
+            }
         }
     }
 
