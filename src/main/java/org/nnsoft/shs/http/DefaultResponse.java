@@ -25,7 +25,6 @@ package org.nnsoft.shs.http;
 
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableCollection;
-import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
@@ -44,7 +43,7 @@ final class DefaultResponse
 
     private static final String DEFAULT_PROTOCOL_VERSION = "1.1";
 
-    private Status status = NOT_FOUND;
+    private Status status;
 
     private String protocolName = DEFAULT_PROTOCOL_NAME;
 

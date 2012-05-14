@@ -24,6 +24,7 @@ package org.nnsoft.shs.dispatcher;
  */
 
 import static org.nnsoft.shs.http.Response.Status.OK;
+import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -95,6 +96,8 @@ final class DefaultRequestDispatcherBinder
                 return;
             }
         }
+
+        response.setStatus( NOT_FOUND );
 
         logger.warn( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
     }
