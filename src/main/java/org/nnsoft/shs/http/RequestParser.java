@@ -48,6 +48,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.nnsoft.shs.io.StreamAlreadyConsumedException;
+
 /**
  * Simple parser of HTTP Request.
  *
@@ -578,7 +580,12 @@ public final class RequestParser
          * {@inheritDoc}
          */
         public InputStream getRequestBodyInputStream()
+            throws IOException
         {
+            if ( requestBodyInputStream == null )
+            {
+                throw new StreamAlreadyConsumedException();
+            }
             return requestBodyInputStream;
         }
 

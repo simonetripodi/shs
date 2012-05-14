@@ -23,6 +23,7 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -134,7 +135,9 @@ public interface Request
      * Returns the request body input stream.
      *
      * @return the request body input stream.
+     * @throws IOException if any error occurs while opening the request body stream.
      */
-    InputStream getRequestBodyInputStream();
+    InputStream getRequestBodyInputStream()
+        throws IOException;
 
 }
