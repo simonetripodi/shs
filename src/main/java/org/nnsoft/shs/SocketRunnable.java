@@ -74,13 +74,14 @@ final class SocketRunnable
     public void run()
     {
         final long start = currentTimeMillis();
-        logger.info( "New incoming request from {}", "dummy" );
+
+        final Socket socket = socketChannel.socket();
+
+        logger.info( "New incoming request from {}", socket.getRemoteSocketAddress() );
 
         Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
-
-        final Socket socket = socketChannel.socket();
 
         try
         {

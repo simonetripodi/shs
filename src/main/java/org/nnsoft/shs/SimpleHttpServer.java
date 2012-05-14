@@ -117,8 +117,6 @@ public final class SimpleHttpServer
 
         requestsExecutor.submit( this );
 
-        logger.info( "Server successfully started! Waiting for new requests..." );
-
         currentStatus = RUNNING;
     }
 
@@ -127,6 +125,8 @@ public final class SimpleHttpServer
      */
     public void run()
     {
+        logger.info( "Server successfully started! Waiting for new requests..." );
+
         while ( currentStatus == RUNNING )
         {
             try
@@ -135,18 +135,12 @@ public final class SimpleHttpServer
 
                 if ( socketChannel != null )
                 {
-                    if ( logger.isDebugEnabled() )
-                    {
-                        logger.debug( "New incoming connection from {}",
-                                      socketChannel.socket().getRemoteSocketAddress() );
-                    }
-
                     requestsExecutor.submit( new SocketRunnable( dispatcher, socketChannel ) );
                 }
             }
-            catch ( IOException ioe )
+            catch ( Throwable t )
             {
-                logger.error( "Something wrong happened while listening for connections: {}", ioe );
+                logger.error( "Something wrong happened while listening for connections: {}", t );
             }
         }
     }
