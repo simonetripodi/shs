@@ -34,7 +34,7 @@ import java.io.File;
 import java.util.Date;
 
 import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
-import org.nnsoft.shs.dispatcher.file.FileRequestHandler;
+import org.nnsoft.shs.dispatcher.FileRequestHandler;
 import org.slf4j.Logger;
 
 import com.beust.jcommander.JCommander;

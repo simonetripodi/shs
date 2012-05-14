@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher.file;
+package org.nnsoft.shs.dispatcher;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nnsoft.shs.dispatcher.BaseRequestHandler;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.io.FileResponseBodyWriter;
