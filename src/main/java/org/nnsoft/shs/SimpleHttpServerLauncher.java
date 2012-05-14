@@ -58,6 +58,9 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-t", "--threads" }, description = "The number of listening thread (# of available processors by default)." )
     private int threads = getRuntime().availableProcessors();
 
+    @Parameter( names = { "-X", "--verbose" }, description = "Produce execution debug output." )
+    private boolean verbose;
+
     @Parameter(
         names = { "-s", "--sitedir" },
         description = "The directory containing the site has to be provided.",
@@ -84,6 +87,17 @@ public final class SimpleHttpServerLauncher
         {
             jCommander.usage();
             exit( -1 );
+        }
+
+        // setup the logging stuff
+
+        if ( verbose )
+        {
+            System.setProperty( "logging.level", "DEBUG" );
+        }
+        else
+        {
+            System.setProperty( "logging.level", "INFO" );
         }
 
         logger.info( "" );
