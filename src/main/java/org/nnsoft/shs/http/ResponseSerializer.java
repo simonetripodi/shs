@@ -23,17 +23,15 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.slf4j.LoggerFactory.getLogger;
-import static java.lang.System.currentTimeMillis;
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
@@ -54,11 +52,9 @@ public final class ResponseSerializer
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
-    private static final String END_PADDING = "\r\n";
+    private static final byte[] END_PADDING = "\r\n".getBytes( UTF_8 );
 
     private final OutputStream target;
-
-    private final Writer writer;
 
     private Response response;
 
@@ -71,7 +67,6 @@ public final class ResponseSerializer
     {
         checkArgument( target != null, "Null OutputStream target not allowd." );
         this.target = target;
-        writer = new OutputStreamWriter( target, UTF_8 );
     }
 
     /**
@@ -89,7 +84,7 @@ public final class ResponseSerializer
         printProtocol();
         printHeaders();
         printCookies();
-        writer.write( END_PADDING );
+        target.write( END_PADDING );
         printBody();
     }
 
@@ -127,7 +122,6 @@ public final class ResponseSerializer
             }
 
             print( formatter.toString() );
-            writer.write( END_PADDING );
         }
     }
 
@@ -179,8 +173,8 @@ public final class ResponseSerializer
             logger.debug( "> {}", message );
         }
 
-        writer.write( message );
-        writer.write( END_PADDING );
+        target.write( message.getBytes( UTF_8 ) );
+        target.write( END_PADDING );
     }
 
 }
