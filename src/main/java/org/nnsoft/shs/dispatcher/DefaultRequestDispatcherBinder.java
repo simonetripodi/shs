@@ -23,6 +23,7 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.Response.Status.OK;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -84,6 +85,9 @@ final class DefaultRequestDispatcherBinder
             {
                 logger.info( "Request {} will be dispatched by {}",
                              request.getPath(), handler.getRequestHandler().getClass().getName() );
+
+                // found right handler to address the request
+                response.setStatus( OK );
 
                 // exception can be thrown by the method - loop would be blocked anyway
                 handler.getRequestHandler().handle( request, response );
