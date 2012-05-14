@@ -127,7 +127,7 @@ public final class SimpleHttpServer
 
         requestsExecutor.submit( this );
 
-        logger.info( "Server successfully started up! Listening for new connections..." );
+        logger.info( "Server successfully started up! Waiting for new requests..." );
 
         currentStatus = RUNNING;
     }
