@@ -33,6 +33,7 @@ import static org.nnsoft.shs.http.Request.Method.POST;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
 import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+
 /**
  * Simple parser of HTTP Request.
  *
@@ -50,6 +53,8 @@ import java.util.StringTokenizer;
  */
 public final class RequestParser
 {
+
+    private static final Logger logger = getLogger( RequestParser.class );
 
     /**
      * Extracted from
@@ -95,6 +100,8 @@ public final class RequestParser
         throws RequestParseException, IOException
     {
         String requestURI = bufferedReader.readLine();
+
+        debugParsedRequestLine( requestURI );
 
         StringTokenizer tokenizer = new StringTokenizer( requestURI, " " );
         if ( 3 != tokenizer.countTokens() )
@@ -156,6 +163,8 @@ public final class RequestParser
         String header = null;
         while ( !( header = bufferedReader.readLine() ).isEmpty() )
         {
+            debugParsedRequestLine( header );
+
             int colonIndex = header.indexOf( ':' );
             if ( colonIndex != -1 )
             {
@@ -183,6 +192,14 @@ public final class RequestParser
             {
                 throw new RequestParseException( "Header %s is in the wrong format, expected ':' separator", header );
             }
+        }
+    }
+
+    private static void debugParsedRequestLine( String line )
+    {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "< {}", line );
         }
     }
 
