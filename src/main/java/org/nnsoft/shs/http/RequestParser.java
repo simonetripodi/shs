@@ -32,7 +32,6 @@ import static org.nnsoft.shs.http.Headers.COOKIE;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
 import static org.nnsoft.shs.http.Request.Method.GET;
 import static org.nnsoft.shs.http.Request.Method.POST;
-import static org.nnsoft.shs.http.Request.Method.PUT;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
@@ -202,12 +201,7 @@ public final class RequestParser
         throws RequestParseException, IOException
     {
         String contentType = request.getHeaders().getFirstValue( CONTENT_TYPE );
-        if ( POST == request.getMethod() && !"application/x-www-form-urlencoded".equals( contentType )
-             || PUT == request.getMethod() )
-        {
-            request.setRequestBodyInputStream( requestBodyInputStream );
-        }
-        else
+        if ( POST == request.getMethod() && "application/x-www-form-urlencoded".equals( contentType ) )
         {
             StringBuilder buffer = new StringBuilder();
             String line = null;
@@ -226,6 +220,10 @@ public final class RequestParser
                 }
 
             }.parse( buffer.toString() );
+        }
+        else
+        {
+            request.setRequestBodyInputStream( requestBodyInputStream );
         }
     }
 
