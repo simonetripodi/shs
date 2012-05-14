@@ -32,6 +32,11 @@ import java.io.OutputStream;
 public interface ResponseBodyWriter
 {
 
+    /**
+     * Returns the body content length if known, -1 otherwise.
+     *
+     * @return the body content length if known, -1 otherwise.
+     */
     long getContentLength();
 
     /**
