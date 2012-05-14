@@ -157,19 +157,6 @@ public final class SimpleHttpServer
             }
             catch ( Throwable t )
             {
-                logger.error( "A fatal error occurred while running, trying stopping...", t );
-
-                try
-                {
-                    stop();
-                }
-                catch ( ShutdownException e )
-                {
-                    // nothing to do at that point!
-                    logger.error( "Even stopping caused errors! It is recommenaded to not hire who developed that!",
-                                  t );
-                }
-
                 throw new RunException( "Something wrong happened while listening for connections", t );
             }
         }
