@@ -23,6 +23,7 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.String.format;
 import static java.util.Locale.US;
@@ -31,10 +32,14 @@ import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
 
 /**
  * Serializes an HTTP {@link Response} to the target output stream
@@ -44,9 +49,13 @@ import java.util.Map.Entry;
 public final class ResponseSerializer
 {
 
+    private static final Logger logger = getLogger( ResponseSerializer.class );
+
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
     private final OutputStream target;
+
+    private final Writer writer;
 
     private Response response;
 
@@ -59,6 +68,7 @@ public final class ResponseSerializer
     {
         checkArgument( target != null, "Null OutputStream target not allowd." );
         this.target = target;
+        writer = new OutputStreamWriter( target, UTF_8 );
     }
 
     /**
@@ -72,6 +82,8 @@ public final class ResponseSerializer
     {
         checkArgument( response != null, "Null Response cannot be serialized." );
         this.response = response;
+
+        logger.info( "Serving response..." );
 
         printProtocol();
         printHeaders();
@@ -158,7 +170,13 @@ public final class ResponseSerializer
         throws IOException
     {
         String message = format( messageTemplate, args );
-        target.write( message.getBytes( UTF_8 ) );
+
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "> {}", message );
+        }
+
+        writer.write( message );
     }
 
 }
