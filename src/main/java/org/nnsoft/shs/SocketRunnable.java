@@ -72,7 +72,7 @@ final class SocketRunnable
     public void run()
     {
         final long start = currentTimeMillis();
-        logger.info( "Serving a new request" );
+        logger.info( "New incoming request from {}", socket.getInetAddress() );
 
         Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
@@ -82,7 +82,10 @@ final class SocketRunnable
         {
             Request request = new RequestParser( socket.getInputStream() ).parse();
 
-            logger.info( "parsed: {}", request );
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "parsed: {}", request );
+            }
 
             requestDispatcher.dispatch( request, response );
 
@@ -105,6 +108,11 @@ final class SocketRunnable
             logger.error( "Request cannot be satisfied due to internal I/O error", e );
 
             response.setStatus( INTERNAL_SERVER_ERROR );
+        }
+
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Serving: {}", response );
         }
 
         try

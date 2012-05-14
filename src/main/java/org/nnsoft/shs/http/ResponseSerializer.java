@@ -83,8 +83,6 @@ public final class ResponseSerializer
         checkArgument( response != null, "Null Response cannot be serialized." );
         this.response = response;
 
-        logger.info( "Serving response..." );
-
         printProtocol();
         printHeaders();
         printCookies();

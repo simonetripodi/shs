@@ -64,7 +64,10 @@ final class DefaultRequestDispatcherBinder
             {
                 checkArgument( requestHandler != null, "Null requestHandler not allowed." );
 
-                logger.info( "Configuring dispatch: {} -> {}", path, requestHandler.getClass().getName() );
+                if ( logger.isDebugEnabled() )
+                {
+                    logger.debug( "Configuring dispatch: {} -> {}", path, requestHandler.getClass().getName() );
+                }
 
                 handlers.add( new MatchingRequestHandler( path, requestHandler ) );
             }
@@ -78,14 +81,20 @@ final class DefaultRequestDispatcherBinder
     public void dispatch( Request request, Response response )
         throws IOException
     {
-        logger.info( "Choosing the right handler to dispatch {} request...", request.getPath() );
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Choosing the right handler to dispatch {} request...", request.getPath() );
+        }
 
         for ( MatchingRequestHandler handler : handlers )
         {
             if ( handler.shouldServe( request.getPath() ) )
             {
-                logger.info( "Request {} will be dispatched by {}",
-                             request.getPath(), handler.getRequestHandler().getClass().getName() );
+                if ( logger.isDebugEnabled() )
+                {
+                    logger.debug( "Request {} will be dispatched by {}",
+                                  request.getPath(), handler.getRequestHandler().getClass().getName() );
+                }
 
                 // found right handler to address the request
                 response.setStatus( OK );
@@ -99,7 +108,10 @@ final class DefaultRequestDispatcherBinder
 
         response.setStatus( NOT_FOUND );
 
-        logger.warn( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
+        }
     }
 
     /**

@@ -96,7 +96,10 @@ public final class RequestDispatcherFactory
 
             if ( configuration != null )
             {
-                logger.info( "Loading dispatch handling from {}...", configuration.getClass().getName() );
+                if ( logger.isDebugEnabled() )
+                {
+                    logger.debug( "Loading dispatch handling from {}...", configuration.getClass().getName() );
+                }
 
                 configuration.configure( binder );
 
