@@ -33,7 +33,10 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public final class DefaultResponse
+/**
+ * Basic {@link Response} implementation.
+ */
+final class DefaultResponse
     implements Response
 {
 

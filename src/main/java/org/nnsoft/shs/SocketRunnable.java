@@ -23,6 +23,7 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.ResponseFactory.newResponse;
 import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.DATE;
@@ -37,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
-import org.nnsoft.shs.http.DefaultResponse;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.RequestParseException;
 import org.nnsoft.shs.http.RequestParser;
@@ -74,7 +74,7 @@ final class SocketRunnable
         final long start = currentTimeMillis();
         logger.info( "Serving a new request" );
 
-        Response response = new DefaultResponse();
+        Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 
