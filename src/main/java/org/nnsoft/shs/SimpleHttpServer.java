@@ -137,7 +137,8 @@ public final class SimpleHttpServer
                 {
                     if ( logger.isDebugEnabled() )
                     {
-                        logger.debug( "New incoming connection {}", socketChannel );
+                        logger.debug( "New incoming connection from {}",
+                                      socketChannel.socket().getRemoteSocketAddress() );
                     }
 
                     requestsExecutor.submit( new SocketRunnable( dispatcher, socketChannel ) );
