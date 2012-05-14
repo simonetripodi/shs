@@ -133,16 +133,6 @@ public final class SimpleHttpServerLauncher
 
         final long start = currentTimeMillis();
 
-        try
-        {
-            httpServer.start();
-        }
-        catch ( RunException se )
-        {
-            logger.error( "Server cannot be started", se );
-            exit( 1 );
-        }
-
         getRuntime().addShutdownHook( new Thread()
         {
 
@@ -174,6 +164,26 @@ public final class SimpleHttpServerLauncher
             }
 
         } );
+
+        try
+        {
+            httpServer.start();
+        }
+        catch ( RunException se )
+        {
+            logger.error( "Server cannot be started", se );
+
+            try
+            {
+                httpServer.stop();
+            }
+            catch ( ShutdownException e )
+            {
+                // swallow, nothing to do at that point
+            }
+
+            exit( 1 );
+        }
     }
 
     /**

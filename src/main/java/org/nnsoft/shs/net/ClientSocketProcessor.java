@@ -1,4 +1,4 @@
-package org.nnsoft.shs;
+package org.nnsoft.shs.net;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -30,11 +30,11 @@ import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.nnsoft.shs.http.ResponseFactory.newResponse;
+import static org.nnsoft.shs.net.NetUtils.closeQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,18 +44,16 @@ import org.nnsoft.shs.http.RequestParseException;
 import org.nnsoft.shs.http.RequestParser;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.http.ResponseSerializer;
-import org.nnsoft.shs.net.NetUtils;
-import org.nnsoft.shs.nio.NIOUtils;
 import org.slf4j.Logger;
 
 /**
  * Asynchronous socket handler to serve current server request.
  */
-final class SocketRunnable
+public final class ClientSocketProcessor
     implements Runnable
 {
 
-    private static final Logger logger = getLogger( SocketRunnable.class );
+    private static final Logger logger = getLogger( ClientSocketProcessor.class );
 
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
@@ -63,19 +61,17 @@ final class SocketRunnable
 
     private final RequestDispatcher requestDispatcher;
 
-    private SocketChannel socketChannel;
+    private Socket socket;
 
-    public SocketRunnable( RequestDispatcher requestDispatcher, SocketChannel socketChannel )
+    public ClientSocketProcessor( RequestDispatcher requestDispatcher, Socket socket )
     {
         this.requestDispatcher = requestDispatcher;
-        this.socketChannel = socketChannel;
+        this.socket = socket;
     }
 
     public void run()
     {
         final long start = currentTimeMillis();
-
-        final Socket socket = socketChannel.socket();
 
         logger.info( "New incoming request from {}", socket.getRemoteSocketAddress() );
 
@@ -130,8 +126,7 @@ final class SocketRunnable
         }
         finally
         {
-            NetUtils.closeQuietly( socket );
-            NIOUtils.closeQuietly( socketChannel );
+            closeQuietly( socket );
 
             logger.info( "Request served in {}ms", ( currentTimeMillis() - start ) );
         }

@@ -23,6 +23,7 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.channels.SelectionKey.OP_ACCEPT;
 import static java.nio.channels.ServerSocketChannel.open;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
@@ -33,11 +34,15 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
+import org.nnsoft.shs.net.ClientSocketProcessor;
 import org.slf4j.Logger;
 
 /**
@@ -46,16 +51,18 @@ import org.slf4j.Logger;
  * This class must NOT be shared across threads, consider it be used inside main(String...) method.
  */
 public final class SimpleHttpServer
-    implements HttpServer, Runnable
+    implements HttpServer
 {
 
     private final Logger logger = getLogger( getClass() );
 
     private ExecutorService requestsExecutor;
 
-    private RequestDispatcher dispatcher;
-
     private ServerSocketChannel server;
+
+    private Selector selector;
+
+    private RequestDispatcher dispatcher;
 
     private Status currentStatus = STOPPED;
 
@@ -78,10 +85,6 @@ public final class SimpleHttpServer
 
         requestsExecutor = newFixedThreadPool( threads );
 
-        logger.info( "Done! Initializing the request dispatcher..." );
-
-        this.dispatcher = dispatcher;
-
         logger.info( "Done! listening on port {} ...", port );
 
         try
@@ -89,12 +92,17 @@ public final class SimpleHttpServer
             server = open();
             server.socket().bind( new InetSocketAddress( port ) );
             server.configureBlocking( false );
+
+            selector = Selector.open();
+            server.register( selector, OP_ACCEPT );
         }
         catch ( IOException e )
         {
             throw new InitException( "Impossible to start server on port %s (with %s threads): %s",
                                      port, threads, e.getMessage() );
         }
+
+        this.dispatcher = dispatcher;
 
         logger.info( "Done! Server has been successfully initialized, it can be now started" );
 
@@ -113,34 +121,56 @@ public final class SimpleHttpServer
                                     currentStatus );
         }
 
-        logger.info( "Server is starting up..." );
-
-        requestsExecutor.submit( this );
+        logger.info( "Server successfully started! Waiting for new requests..." );
 
         currentStatus = RUNNING;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void run()
-    {
-        logger.info( "Server successfully started! Waiting for new requests..." );
 
         while ( currentStatus == RUNNING )
         {
             try
             {
-                SocketChannel socketChannel = server.accept();
+                selector.select();
 
-                if ( socketChannel != null )
+                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+                while ( keys.hasNext() )
                 {
-                    requestsExecutor.submit( new SocketRunnable( dispatcher, socketChannel ) );
+                    SelectionKey key = keys.next();
+                    keys.remove();
+
+                    if ( key.isValid() && key.isAcceptable() )
+                    {
+                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+                        SocketChannel client = serverChannel.accept();
+
+                        if ( client == null )
+                        {
+                            continue;
+                        }
+
+                        requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
+                    }
+                    else
+                    {
+                        key.cancel();
+                    }
                 }
             }
             catch ( Throwable t )
             {
-                logger.error( "Something wrong happened while listening for connections: {}", t );
+                logger.error( "A fatal error occurred while running, trying stopping...", t );
+
+                try
+                {
+                    stop();
+                }
+                catch ( ShutdownException e )
+                {
+                    // nothing to do at that point!
+                    logger.error( "Even stopping caused errors! It is recommenaded to not hire who developed that!",
+                                  t );
+                }
+
+                throw new RunException( "Something wrong happened while listening for connections", t );
             }
         }
     }
@@ -161,9 +191,9 @@ public final class SimpleHttpServer
 
         try
         {
-            if ( server != null && server.isOpen() )
+            if ( selector != null && selector.isOpen() )
             {
-                server.close();
+                selector.close();
             }
         }
         catch ( IOException e )
@@ -172,11 +202,30 @@ public final class SimpleHttpServer
         }
         finally
         {
-            requestsExecutor.shutdown();
+            try
+            {
+                if ( server != null && server.isOpen() )
+                {
+                    server.close();
+                }
+            }
+            catch ( IOException e )
+            {
+                throw new ShutdownException( "An error occurred while disposing server resources: %s", e.getMessage() );
+            }
+            finally
+            {
+                requestsExecutor.shutdown();
 
-            logger.info( "Done! Server is now stopped. Bye!" );
+                requestsExecutor = null;
+                server = null;
+                selector = null;
+                dispatcher = null;
 
-            currentStatus = STOPPED;
+                logger.info( "Done! Server is now stopped. Bye!" );
+
+                currentStatus = STOPPED;
+            }
         }
     }
 
