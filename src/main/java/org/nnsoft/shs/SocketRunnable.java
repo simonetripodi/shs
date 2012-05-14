@@ -23,17 +23,18 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.http.ResponseFactory.newResponse;
 import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.DATE;
 import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
+import static org.nnsoft.shs.http.ResponseFactory.newResponse;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,6 +45,7 @@ import org.nnsoft.shs.http.RequestParser;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.http.ResponseSerializer;
 import org.nnsoft.shs.net.NetUtils;
+import org.nnsoft.shs.nio.NIOUtils;
 import org.slf4j.Logger;
 
 /**
@@ -61,22 +63,24 @@ final class SocketRunnable
 
     private final RequestDispatcher requestDispatcher;
 
-    private final Socket socket;
+    private SocketChannel socketChannel;
 
-    public SocketRunnable( RequestDispatcher requestDispatcher, Socket socket )
+    public SocketRunnable( RequestDispatcher requestDispatcher, SocketChannel socketChannel )
     {
         this.requestDispatcher = requestDispatcher;
-        this.socket = socket;
+        this.socketChannel = socketChannel;
     }
 
     public void run()
     {
         final long start = currentTimeMillis();
-        logger.info( "New incoming request from {}", socket.getInetAddress() );
+        logger.info( "New incoming request from {}", "dummy" );
 
         Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
+
+        final Socket socket = socketChannel.socket();
 
         try
         {
@@ -126,6 +130,7 @@ final class SocketRunnable
         finally
         {
             NetUtils.closeQuietly( socket );
+            NIOUtils.closeQuietly( socketChannel );
 
             logger.info( "Request served in {}ms", ( currentTimeMillis() - start ) );
         }

@@ -23,24 +23,18 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.lang.Preconditions.checkArgument;
-import static java.nio.channels.SelectionKey.OP_ACCEPT;
 import static java.nio.channels.ServerSocketChannel.open;
-import static java.nio.channels.spi.SelectorProvider.provider;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
@@ -62,8 +56,6 @@ public final class SimpleHttpServer
     private RequestDispatcher dispatcher;
 
     private ServerSocketChannel server;
-
-    private Selector selector;
 
     private Status currentStatus = STOPPED;
 
@@ -97,9 +89,6 @@ public final class SimpleHttpServer
             server = open();
             server.socket().bind( new InetSocketAddress( port ) );
             server.configureBlocking( false );
-
-            selector = provider().openSelector();
-            server.register( selector, OP_ACCEPT );
         }
         catch ( IOException e )
         {
@@ -138,57 +127,27 @@ public final class SimpleHttpServer
      */
     public void run()
     {
+        logger.info( "OOOOOOOOOPORCODDIIIOOOOOOOOOO" );
+
         while ( currentStatus == RUNNING )
         {
-            // Wait for an event one of the registered channels
             try
             {
-                selector.select();
+                SocketChannel socketChannel = server.accept();
+
+                if ( socketChannel != null )
+                {
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "New incoming connection {}", socketChannel );
+                    }
+
+                    requestsExecutor.submit( new SocketRunnable( dispatcher, socketChannel ) );
+                }
             }
             catch ( IOException ioe )
             {
-                logger.error( "Something wrong happened while listening for connections: {}", ioe.getMessage() );
-
-                try
-                {
-                    stop();
-                }
-                catch ( ShutdownException se )
-                {
-                    logger.error( "Server not correctly shutdow, see nested exceptions", se );
-                }
-
-                throw new RuntimeException( new RunException( "A fatal error occurred while waiting for clients: %s",
-                                                              ioe.getMessage() ) );
-            }
-
-            // Iterate over the set of keys for which events are available
-            Iterator<SelectionKey> selectedKeys = selector.selectedKeys().iterator();
-            while ( selectedKeys.hasNext() )
-            {
-                SelectionKey key = selectedKeys.next();
-                selectedKeys.remove();
-
-                if ( !key.isValid() )
-                {
-                    continue;
-                }
-
-                // Check what event is available and deal with it
-                if ( key.isAcceptable() )
-                {
-                    ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-                    try
-                    {
-                        SocketChannel socketChannel = serverSocketChannel.accept();
-                        Socket socket = socketChannel.socket();
-                        requestsExecutor.submit( new SocketRunnable( dispatcher, socket ) );
-                    }
-                    catch ( IOException e )
-                    {
-                        logger.warn( "Impossible to accept client request: {}", e.getMessage() );
-                    }
-                }
+                logger.error( "Something wrong happened while listening for connections: {}", ioe );
             }
         }
     }
@@ -207,42 +166,24 @@ public final class SimpleHttpServer
 
         logger.info( "Server is shutting down..." );
 
-        logger.info( "Closing the request listener..." );
-
         try
         {
-            if ( selector != null && selector.isOpen() )
+            if ( server != null && server.isOpen() )
             {
-                selector.close();
+                server.close();
             }
         }
         catch ( IOException e )
         {
-            throw new ShutdownException( "An error occurred while closing the request listener: %s", e.getMessage() );
+            throw new ShutdownException( "An error occurred while disposing server resources: %s", e.getMessage() );
         }
         finally
         {
-            logger.info( "Done! Closing all server resources..." );
+            requestsExecutor.shutdown();
 
-            try
-            {
-                if ( server != null && server.isOpen() )
-                {
-                    server.close();
-                }
-            }
-            catch ( IOException e )
-            {
-                throw new ShutdownException( "An error occurred while shutting down the server: %s", e.getMessage() );
-            }
-            finally
-            {
-                requestsExecutor.shutdown();
+            logger.info( "Done! Server is now stopped. Bye!" );
 
-                logger.info( "Done! Server is now stopped. Bye!" );
-
-                currentStatus = STOPPED;
-            }
+            currentStatus = STOPPED;
         }
     }
 
