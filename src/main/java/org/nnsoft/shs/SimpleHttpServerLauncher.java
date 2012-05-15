@@ -31,10 +31,12 @@ import static org.nnsoft.shs.dispatcher.RequestDispatcherFactory.newRequestDispa
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.Date;
 
 import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
 import org.nnsoft.shs.dispatcher.FileRequestHandler;
+import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
 
 import com.beust.jcommander.JCommander;
@@ -45,6 +47,7 @@ import com.beust.jcommander.converters.FileConverter;
  * Simple HTTP Server based on Concurrent and NIO APIs.
  */
 public final class SimpleHttpServerLauncher
+    implements HttpServerConfig
 {
 
     private final Logger logger = getLogger( getClass() );
@@ -74,6 +77,40 @@ public final class SimpleHttpServerLauncher
     private SimpleHttpServerLauncher()
     {
         // do nothing
+    }
+
+    @Override
+    public InetAddress getBindingIp()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getPort()
+    {
+        return port;
+    }
+
+    @Override
+    public int getThreads()
+    {
+        return threads;
+    }
+
+    @Override
+    public RequestDispatcher getRequestDispatcher()
+    {
+        return newRequestDispatcher( new AbstractRequestDispatcherConfiguration()
+        {
+
+            @Override
+            protected void configure()
+            {
+                serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+            }
+
+        } );
     }
 
     private void execute( String...args )
@@ -114,16 +151,7 @@ public final class SimpleHttpServerLauncher
 
         try
         {
-            httpServer.init( port, threads, newRequestDispatcher( new AbstractRequestDispatcherConfiguration()
-            {
-
-                @Override
-                protected void configure()
-                {
-                    serve( "/*" ).with( new FileRequestHandler( siteDir ) );
-                }
-
-            }  ) );
+            httpServer.init( this );
         }
         catch ( Throwable cause )
         {

@@ -1,6 +1,5 @@
 package org.nnsoft.shs;
 
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -57,12 +56,10 @@ public interface HttpServer
     /**
      * Initializes the current server.
      *
-     * @param port the port where the server is listening on
-     * @param threads the number of running threads
-     * @param dispatcher the requests dispatcher
+     * @param serverConfig the server configuration
      * @throws InitException if any error occurs while starting up.
      */
-    void init( int port, int threads, RequestDispatcher dispatcher )
+    void init( HttpServerConfig serverConfig )
         throws InitException;
 
     /**

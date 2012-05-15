@@ -74,28 +74,28 @@ public final class SimpleHttpServer
     /**
      * {@inheritDoc}
      */
-    public void init( int port, int threads, RequestDispatcher dispatcher )
+    public void init( HttpServerConfig serverConfig )
         throws InitException
     {
-        checkArgument( port > 0, "Impossible to listening on port %s, it must be a positive number", port );
-        checkArgument( threads > 0, "Impossible to serve requests with negative or none threads" );
-        checkArgument( dispatcher != null, "Impossible to serve requests with a null dispatcher" );
+        checkArgument( serverConfig.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", serverConfig.getPort() );
+        checkArgument( serverConfig.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
+        checkArgument( serverConfig.getRequestDispatcher() != null, "Impossible to serve requests with a null dispatcher" );
 
         if ( STOPPED != currentStatus.get() )
         {
             throw new InitException( "Current server cannot be configured while in %s status.", currentStatus );
         }
 
-        logger.info( "Initializing server using {} threads...", threads );
+        logger.info( "Initializing server using {} threads...", serverConfig.getThreads() );
 
-        requestsExecutor = newFixedThreadPool( threads );
+        requestsExecutor = newFixedThreadPool( serverConfig.getThreads() );
 
-        logger.info( "Done! listening on port {} ...", port );
+        logger.info( "Done! listening on port {} ...", serverConfig.getPort() );
 
         try
         {
             server = open();
-            server.socket().bind( new InetSocketAddress( port ) );
+            server.socket().bind( new InetSocketAddress( serverConfig.getPort() ) );
             server.configureBlocking( false );
 
             selector = Selector.open();
@@ -104,10 +104,10 @@ public final class SimpleHttpServer
         catch ( IOException e )
         {
             throw new InitException( "Impossible to start server on port %s (with %s threads): %s",
-                                     port, threads, e.getMessage() );
+                                     serverConfig.getPort(), serverConfig.getThreads(), e.getMessage() );
         }
 
-        this.dispatcher = dispatcher;
+        this.dispatcher = serverConfig.getRequestDispatcher();
 
         logger.info( "Done! Server has been successfully initialized, it can be now started" );
 
