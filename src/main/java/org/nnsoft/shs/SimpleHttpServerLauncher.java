@@ -204,7 +204,14 @@ public final class SimpleHttpServerLauncher
                     logger.error( "Execution terminated with errors", e );
                 }
 
-                logger.info( "Total uptime: {}s", ( ( currentTimeMillis() - start ) / 1000 ) );
+                long uptimeInSeconds = ( currentTimeMillis() - start ) / 1000;
+                final long hours = uptimeInSeconds / 3600;
+                uptimeInSeconds = uptimeInSeconds - (hours * 3600);
+                final long minutes = uptimeInSeconds / 60;
+                uptimeInSeconds = uptimeInSeconds - (minutes * 60);
+
+                logger.info( "Total uptime: {} hour(s) {} minute(s) {} second(s)",
+                             new Object[] { hours, minutes, uptimeInSeconds } );
                 logger.info( "Finished at: {}", new Date() );
 
                 final Runtime runtime = getRuntime();
