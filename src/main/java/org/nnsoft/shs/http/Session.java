@@ -75,14 +75,6 @@ public interface Session
      *
      * @return the last time the client sent a request associated with this session.
      */
-    Date getLastAccessedTime() ;
-
-    /**
-     * Returns the maximum time interval, in seconds, that the server will keep this
-     * session open between client accesses.
-     *
-     * @return
-     */
-    int getMaxInactiveInterval();
+    Date getLastAccessedTime();
 
 }
