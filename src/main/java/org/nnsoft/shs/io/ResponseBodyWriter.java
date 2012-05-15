@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Response body are generated via {@link ResponseBodyWriter} implementations.
+ * Response body are generated via ResponseBodyWriter implementations.
  */
 public interface ResponseBodyWriter
 {
