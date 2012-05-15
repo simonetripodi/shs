@@ -23,6 +23,7 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.String.format;
 import static org.nnsoft.shs.lang.Preconditions.checkNotNull;
 import static java.util.UUID.randomUUID;
 
@@ -126,6 +127,13 @@ final class DefaultSession
     public boolean isNew()
     {
         return isNew;
+    }
+
+    @Override
+    public String toString()
+    {
+        return format( "Session[id=%s, attributes=%s, creationTime=%s, lastAccessedTime=%s, isNew=%s]",
+                       id, attributes, creationTime, lastAccessedTime, isNew );
     }
 
 }
