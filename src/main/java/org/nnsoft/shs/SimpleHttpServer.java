@@ -40,6 +40,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
@@ -63,7 +64,12 @@ public final class SimpleHttpServer
 
     private RequestDispatcher dispatcher;
 
-    private Status currentStatus = STOPPED;
+    private AtomicReference<Status> currentStatus = new AtomicReference<Status>();
+
+    public SimpleHttpServer()
+    {
+        currentStatus.set( STOPPED );
+    }
 
     /**
      * {@inheritDoc}
@@ -75,7 +81,7 @@ public final class SimpleHttpServer
         checkArgument( threads > 0, "Impossible to serve requests with negative or none threads" );
         checkArgument( dispatcher != null, "Impossible to serve requests with a null dispatcher" );
 
-        if ( currentStatus != STOPPED )
+        if ( STOPPED != currentStatus.get() )
         {
             throw new InitException( "Current server cannot be configured while in %s status.", currentStatus );
         }
@@ -105,7 +111,7 @@ public final class SimpleHttpServer
 
         logger.info( "Done! Server has been successfully initialized, it can be now started" );
 
-        currentStatus = INITIALIZED;
+        currentStatus.set( INITIALIZED );
     }
 
     /**
@@ -114,7 +120,7 @@ public final class SimpleHttpServer
     public void start()
         throws RunException
     {
-        if ( currentStatus != INITIALIZED )
+        if ( INITIALIZED != currentStatus.get() )
         {
             throw new RunException( "Current server cannot be configured while in %s status, stop then init again before.",
                                     currentStatus );
@@ -122,11 +128,11 @@ public final class SimpleHttpServer
 
         logger.info( "Server successfully started! Waiting for new requests..." );
 
-        currentStatus = RUNNING;
+        currentStatus.set( RUNNING );
 
         try
         {
-            while ( currentStatus == RUNNING && selector.select() > 0 )
+            while ( RUNNING == currentStatus.get() && selector.select() > 0 )
             {
                 Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
                 while ( keys.hasNext() )
@@ -165,7 +171,7 @@ public final class SimpleHttpServer
     public void stop()
         throws ShutdownException
     {
-        if ( currentStatus != RUNNING )
+        if ( RUNNING != currentStatus.get() )
         {
             throw new ShutdownException( "Current server cannot be stopped while in %s status.",
                                          currentStatus );
@@ -208,7 +214,7 @@ public final class SimpleHttpServer
 
                 logger.info( "Done! Server is now stopped. Bye!" );
 
-                currentStatus = STOPPED;
+                currentStatus.set( STOPPED );
             }
         }
     }
@@ -218,7 +224,7 @@ public final class SimpleHttpServer
      */
     public Status getStatus()
     {
-        return currentStatus;
+        return currentStatus.get();
     }
 
 }
