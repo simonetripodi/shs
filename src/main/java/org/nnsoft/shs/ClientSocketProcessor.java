@@ -1,4 +1,4 @@
-package org.nnsoft.shs.net;
+package org.nnsoft.shs;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 /**
  * Asynchronous socket handler to serve current server request.
  */
-public final class ClientSocketProcessor
+final class ClientSocketProcessor
     implements Runnable
 {
 

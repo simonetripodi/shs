@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
-import org.nnsoft.shs.net.ClientSocketProcessor;
 import org.slf4j.Logger;
 
 /**
