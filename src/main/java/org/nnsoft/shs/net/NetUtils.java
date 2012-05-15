@@ -49,7 +49,7 @@ public final class NetUtils
      */
     public static void closeQuietly( Socket socket )
     {
-        if ( socket != null )
+        if ( socket != null && !socket.isClosed() )
         {
             try
             {
