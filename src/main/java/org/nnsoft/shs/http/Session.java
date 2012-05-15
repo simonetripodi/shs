@@ -1,8 +1,5 @@
 package org.nnsoft.shs.http;
 
-import java.util.Date;
-import java.util.UUID;
-
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *
@@ -25,6 +22,9 @@ import java.util.UUID;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents an HTTP user session, inspired by the
