@@ -163,6 +163,46 @@ public final class SimpleHttpServer
         {
             throw new RunException( "Something wrong happened while listening for connections", t );
         }
+
+
+        logger.info( "Server is shutting down..." );
+
+        try
+        {
+            if ( selector != null && selector.isOpen() )
+            {
+                selector.close();
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new RunException( "An error occurred while disposing server resources: %s", e.getMessage() );
+        }
+        finally
+        {
+            try
+            {
+                if ( server != null && server.isOpen() )
+                {
+                    server.close();
+                }
+            }
+            catch ( IOException e )
+            {
+                throw new RunException( "An error occurred while disposing server resources: %s", e.getMessage() );
+            }
+            finally
+            {
+                requestsExecutor.shutdown();
+
+                requestsExecutor = null;
+                server = null;
+                selector = null;
+                dispatcher = null;
+
+                logger.info( "Done! Server is now stopped. Bye!" );
+            }
+        }
     }
 
     /**
@@ -177,46 +217,7 @@ public final class SimpleHttpServer
                                          currentStatus );
         }
 
-        logger.info( "Server is shutting down..." );
-
-        try
-        {
-            if ( selector != null && selector.isOpen() )
-            {
-                selector.close();
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new ShutdownException( "An error occurred while disposing server resources: %s", e.getMessage() );
-        }
-        finally
-        {
-            try
-            {
-                if ( server != null && server.isOpen() )
-                {
-                    server.close();
-                }
-            }
-            catch ( IOException e )
-            {
-                throw new ShutdownException( "An error occurred while disposing server resources: %s", e.getMessage() );
-            }
-            finally
-            {
-                requestsExecutor.shutdown();
-
-                requestsExecutor = null;
-                server = null;
-                selector = null;
-                dispatcher = null;
-
-                logger.info( "Done! Server is now stopped. Bye!" );
-
-                currentStatus.set( STOPPED );
-            }
-        }
+        currentStatus.set( STOPPED );
     }
 
     /**
