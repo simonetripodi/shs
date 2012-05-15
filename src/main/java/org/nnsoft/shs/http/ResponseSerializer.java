@@ -135,13 +135,20 @@ public final class ResponseSerializer
     {
         for ( Cookie cookie : response.getCookies() )
         {
-            Date expirationDate = new Date( cookie.getMaxAge() * 1000 + currentTimeMillis() );
-            String expires = dateFormat.format( expirationDate );
+            Formatter formatter = new Formatter()
+                                     .format( "Set-Cookie: %s:%s; Path=%s; Domain=%s;",
+                                              cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getDomain() );
+            if ( cookie.getMaxAge() != -1 )
+            {
+                Date expirationDate = new Date( cookie.getMaxAge() * 1000 + currentTimeMillis() );
+                String expires = dateFormat.format( expirationDate );
+
+                formatter.format( " Expires=%s;", expires );
+            }
 
             // secure field ignored since HTTPs is not supported in this version
 
-            print( "Set-Cookie: %s:%s; Expires=%s; Path=%s; Domain=%s; HttpOnly%n",
-                   cookie.getName(), cookie.getValue(), expires, cookie.getPath(), cookie.getDomain() );
+            print( formatter.format( " HttpOnly" ).toString() );
         }
     }
 
