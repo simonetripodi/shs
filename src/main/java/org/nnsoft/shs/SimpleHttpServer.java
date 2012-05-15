@@ -67,7 +67,7 @@ public final class SimpleHttpServer
 
     private SessionManager sessionManager;
 
-    private AtomicReference<Status> currentStatus = new AtomicReference<Status>();
+    private final AtomicReference<Status> currentStatus = new AtomicReference<Status>();
 
     public SimpleHttpServer()
     {
