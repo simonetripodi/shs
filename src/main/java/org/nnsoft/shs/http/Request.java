@@ -24,8 +24,9 @@ package org.nnsoft.shs.http;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+
+import org.nnsoft.shs.io.RequestBodyReader;
 
 /**
  * HTTP Request representation.
@@ -132,12 +133,13 @@ public interface Request
     Parameters getParameters();
 
     /**
-     * Returns the request body input stream.
+     * Reads and converts the request body input stream.
      *
+     * @param the user defined
      * @return the request body input stream.
      * @throws IOException if any error occurs while opening the request body stream.
      */
-    InputStream getRequestBodyInputStream()
-        throws IOException;
+    <T> T readRequestBodyInputStream( RequestBodyReader<T> requestBodyReader )
+                    throws IOException;
 
 }

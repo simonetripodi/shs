@@ -28,10 +28,11 @@ import static java.util.Collections.unmodifiableList;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nnsoft.shs.io.RequestBodyReader;
 import org.nnsoft.shs.io.StreamAlreadyConsumedException;
 
 /**
@@ -49,7 +50,7 @@ final class DefaultRequest
 
     private String protocolVersion;
 
-    private InputStream requestBodyInputStream;
+    private ByteBuffer contentBody;
 
     private final SimpleMultiValued headers = new SimpleMultiValued();
 
@@ -221,28 +222,28 @@ final class DefaultRequest
     }
 
     /**
-     * Sets the request body input stream.
+     * Set the buffered request content body.
      *
-     * @param requestBodyInputStream
+     * @param contentBody the buffered request content body.
      */
-    public void setRequestBodyInputStream( InputStream requestBodyInputStream )
+    public void setContentBody( ByteBuffer contentBody )
     {
-        checkArgument( requestBodyInputStream != null, "Null requestBodyInputStream not allowed" );
-
-        this.requestBodyInputStream = requestBodyInputStream;
+        checkArgument( contentBody != null, "Null contentBody not allowed" );
+        this.contentBody = contentBody;
     }
 
     /**
      * {@inheritDoc}
      */
-    public InputStream getRequestBodyInputStream()
+    public <T> T readRequestBodyInputStream( RequestBodyReader<T> requestBodyReader )
         throws IOException
     {
-        if ( requestBodyInputStream == null )
+        checkArgument( requestBodyReader != null, "Null requestBodyReader not allowed" );
+        if ( contentBody == null )
         {
             throw new StreamAlreadyConsumedException();
         }
-        return requestBodyInputStream;
+        return requestBodyReader.read( contentBody );
     }
 
     /**
