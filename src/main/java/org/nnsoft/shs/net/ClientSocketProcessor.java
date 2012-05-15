@@ -30,7 +30,6 @@ import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.nnsoft.shs.http.ResponseFactory.newResponse;
-import static org.nnsoft.shs.net.NetUtils.closeQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
@@ -126,7 +125,17 @@ public final class ClientSocketProcessor
         }
         finally
         {
-            closeQuietly( socket );
+            if ( socket != null && !socket.isClosed() )
+            {
+                try
+                {
+                    socket.close();
+                }
+                catch ( IOException e )
+                {
+                    // swallow it
+                }
+            }
 
             logger.info( "Request served in {}ms", ( currentTimeMillis() - start ) );
         }
