@@ -128,29 +128,30 @@ public final class SimpleHttpServer
         {
             try
             {
-                selector.select();
-
-                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-                while ( keys.hasNext() )
+                if ( selector.select() > 0 )
                 {
-                    SelectionKey key = keys.next();
-                    keys.remove();
-
-                    if ( key.isValid() && key.isAcceptable() )
+                    Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+                    while ( keys.hasNext() )
                     {
-                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
-                        SocketChannel client = serverChannel.accept();
+                        SelectionKey key = keys.next();
+                        keys.remove();
 
-                        if ( client == null )
+                        if ( key.isValid() && key.isAcceptable() )
                         {
-                            continue;
-                        }
+                            ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+                            SocketChannel client = serverChannel.accept();
 
-                        requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
-                    }
-                    else
-                    {
-                        key.cancel();
+                            if ( client == null )
+                            {
+                                continue;
+                            }
+
+                            requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
+                        }
+                        else
+                        {
+                            key.cancel();
+                        }
                     }
                 }
             }
