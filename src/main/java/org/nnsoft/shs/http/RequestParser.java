@@ -166,8 +166,8 @@ public final class RequestParser
     private void parseHeaders()
         throws RequestParseException, IOException
     {
-        String header = null;
-        while ( !( header = bufferedReader.readLine() ).isEmpty() )
+        String header = bufferedReader.readLine();
+        while ( !header.isEmpty() || header == null )
         {
             debugParsedRequestLine( header );
 
@@ -198,6 +198,8 @@ public final class RequestParser
             {
                 throw new RequestParseException( "Header %s is in the wrong format, expected ':' separator", header );
             }
+
+            header = bufferedReader.readLine();
         }
     }
 
