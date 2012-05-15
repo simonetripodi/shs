@@ -167,7 +167,7 @@ public final class RequestParser
         throws RequestParseException, IOException
     {
         String header = bufferedReader.readLine();
-        while ( !header.isEmpty() || header == null )
+        while ( header != null && !header.isEmpty() )
         {
             debugParsedRequestLine( header );
 
