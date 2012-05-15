@@ -25,8 +25,6 @@ package org.nnsoft.shs.io;
 
 import static java.nio.charset.Charset.forName;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -43,27 +41,6 @@ public final class IOUtils
     private IOUtils()
     {
         // do nothing
-    }
-
-    /**
-     * Close quietly the given {@link Closeable} instance, if not null,
-     * swallowing the thrown exception.
-     *
-     * @param closeable the {@link Closeable} instance has to be closed.
-     */
-    public static void closeQuietly( Closeable closeable )
-    {
-        if ( closeable != null )
-        {
-            try
-            {
-                closeable.close();
-            }
-            catch ( IOException e )
-            {
-                // swallow it
-            }
-        }
     }
 
 }
