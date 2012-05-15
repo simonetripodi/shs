@@ -32,7 +32,6 @@ import static org.nnsoft.shs.dispatcher.RequestDispatcherFactory.newRequestDispa
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.util.Date;
 
 import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
@@ -65,6 +64,9 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-m", "--session-max-age" }, description = "The maximum number of seconds of life of HTTP Sessions." )
     private int sessionMaxAge = 60 * 60; // 1h
 
+    @Parameter( names = { "-H", "--host" }, description = "The host name or the textual representation of its IP address." )
+    private String host = "localhost";
+
     @Parameter( names = { "-X", "--verbose" }, description = "Produce execution debug output." )
     private boolean verbose;
 
@@ -87,10 +89,9 @@ public final class SimpleHttpServerLauncher
      * {@inheritDoc}
      */
     @Override
-    public InetAddress getBindingIp()
+    public String getHost()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return host;
     }
 
     /**

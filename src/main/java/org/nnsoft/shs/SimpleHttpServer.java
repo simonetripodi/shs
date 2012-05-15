@@ -80,6 +80,7 @@ public final class SimpleHttpServer
     public void init( HttpServerConfig serverConfig )
         throws InitException
     {
+        checkArgument( serverConfig.getHost() != null, "Impossible bind server to a null host" );
         checkArgument( serverConfig.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", serverConfig.getPort() );
         checkArgument( serverConfig.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
         checkArgument( serverConfig.getRequestDispatcher() != null, "Impossible to serve requests with a null dispatcher" );
@@ -98,12 +99,12 @@ public final class SimpleHttpServer
 
         sessionManager = new SessionManager( serverConfig.getSessionMaxAge() * 1000 );
 
-        logger.info( "Done! listening on port {} ...", serverConfig.getPort() );
+        logger.info( "Done! Binding host {} listening on port {} ...", serverConfig.getHost(), serverConfig.getPort() );
 
         try
         {
             server = open();
-            server.socket().bind( new InetSocketAddress( serverConfig.getPort() ) );
+            server.socket().bind( new InetSocketAddress( serverConfig.getHost(), serverConfig.getPort() ) );
             server.configureBlocking( false );
 
             selector = Selector.open();

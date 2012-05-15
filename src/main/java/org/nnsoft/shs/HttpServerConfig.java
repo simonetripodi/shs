@@ -23,8 +23,6 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.net.InetAddress;
-
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
 
 /**
@@ -37,11 +35,11 @@ public interface HttpServerConfig
 {
 
     /**
-     * The IP where binding the server.
+     * The host name or the textual representation of its IP address.
      *
-     * @return the IP where binding the server.
+     * @return the host name or the textual representation of its IP address.
      */
-    InetAddress getBindingIp();
+    String getHost();
 
     /**
      * The port number where binding the server.
