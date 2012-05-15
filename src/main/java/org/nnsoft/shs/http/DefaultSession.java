@@ -46,6 +46,8 @@ final class DefaultSession
 
     private Date lastAccessedTime = creationTime;
 
+    private boolean isNew = true;
+
     /**
      * {@inheritDoc}
      */
@@ -104,7 +106,8 @@ final class DefaultSession
      */
     public void updateLastAccessedTime()
     {
-        this.lastAccessedTime = new Date();
+        lastAccessedTime = new Date();
+        isNew = false;
     }
 
     /**
@@ -114,6 +117,15 @@ final class DefaultSession
     public Date getLastAccessedTime()
     {
         return lastAccessedTime;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isNew()
+    {
+        return isNew;
     }
 
 }

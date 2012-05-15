@@ -77,4 +77,12 @@ public interface Session
      */
     Date getLastAccessedTime();
 
+    /**
+     * Marks the session is a new session or already existing one.
+     *
+     * @return true if the client does not yet know about the session or if the
+     *         client chooses not to join the session.
+     */
+    boolean isNew();
+
 }
