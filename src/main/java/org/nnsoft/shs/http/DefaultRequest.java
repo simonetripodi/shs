@@ -52,6 +52,8 @@ final class DefaultRequest
 
     private ByteBuffer contentBody;
 
+    private Session session;
+
     private final SimpleMultiValued headers = new SimpleMultiValued();
 
     private final SimpleMultiValued queryStringParameters = new SimpleMultiValued();
@@ -244,6 +246,26 @@ final class DefaultRequest
             throw new StreamAlreadyConsumedException();
         }
         return requestBodyReader.read( contentBody );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Session getSession()
+    {
+        return session;
+    }
+
+    /**
+     * Sets the current user session.
+     *
+     * @param session the current user session.
+     */
+    public void setSession( Session session )
+    {
+        checkArgument( session != null, "Null session not allowed" );
+        this.session = session;
     }
 
     /**

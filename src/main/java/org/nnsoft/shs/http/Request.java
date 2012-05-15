@@ -133,6 +133,13 @@ public interface Request
     Parameters getParameters();
 
     /**
+     * Returns the current HTTP Session.
+     *
+     * @return the current HTTP Session.
+     */
+    Session getSession();
+
+    /**
      * Reads and converts the request body input stream.
      *
      * @param the user defined
