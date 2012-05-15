@@ -124,41 +124,38 @@ public final class SimpleHttpServer
 
         currentStatus = RUNNING;
 
-        while ( currentStatus == RUNNING )
+        try
         {
-            try
+            while ( currentStatus == RUNNING && selector.select() > 0 )
             {
-                if ( selector.select() > 0 )
+                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+                while ( keys.hasNext() )
                 {
-                    Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-                    while ( keys.hasNext() )
+                    SelectionKey key = keys.next();
+                    keys.remove();
+
+                    if ( key.isValid() && key.isAcceptable() )
                     {
-                        SelectionKey key = keys.next();
-                        keys.remove();
+                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+                        SocketChannel client = serverChannel.accept();
 
-                        if ( key.isValid() && key.isAcceptable() )
+                        if ( client == null )
                         {
-                            ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
-                            SocketChannel client = serverChannel.accept();
-
-                            if ( client == null )
-                            {
-                                continue;
-                            }
-
-                            requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
+                            continue;
                         }
-                        else
-                        {
-                            key.cancel();
-                        }
+
+                        requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
+                    }
+                    else
+                    {
+                        key.cancel();
                     }
                 }
             }
-            catch ( Throwable t )
-            {
-                throw new RunException( "Something wrong happened while listening for connections", t );
-            }
+        }
+        catch ( Throwable t )
+        {
+            throw new RunException( "Something wrong happened while listening for connections", t );
         }
     }
 
