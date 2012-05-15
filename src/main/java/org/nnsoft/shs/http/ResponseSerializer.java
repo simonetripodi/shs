@@ -26,8 +26,8 @@ package org.nnsoft.shs.http;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Locale.US;
+import static org.nnsoft.shs.io.IOUtils.UTF_8;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
-import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;

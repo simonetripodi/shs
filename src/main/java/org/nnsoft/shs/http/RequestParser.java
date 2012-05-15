@@ -23,10 +23,10 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.ByteBuffer.allocate;
-import static java.nio.channels.Channels.newChannel;
 import static java.lang.Integer.parseInt;
 import static java.net.URLDecoder.decode;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.channels.Channels.newChannel;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
@@ -36,7 +36,7 @@ import static org.nnsoft.shs.http.Request.Method.GET;
 import static org.nnsoft.shs.http.Request.Method.POST;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
-import static org.nnsoft.shs.nio.NIOUtils.UTF_8;
+import static org.nnsoft.shs.io.IOUtils.UTF_8;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.BufferedReader;

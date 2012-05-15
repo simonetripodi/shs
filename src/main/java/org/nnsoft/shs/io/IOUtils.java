@@ -23,14 +23,19 @@ package org.nnsoft.shs.io;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.charset.Charset.forName;
+
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * Utility class for I/O management.
  */
 public final class IOUtils
 {
+
+    public static final Charset UTF_8 = forName( "UTF-8" );
 
     /**
      * Hidden constructor, this class must not be instantiated.
