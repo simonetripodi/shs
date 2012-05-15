@@ -34,6 +34,7 @@ import static org.nnsoft.shs.http.Headers.COOKIE;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
 import static org.nnsoft.shs.http.Request.Method.GET;
 import static org.nnsoft.shs.http.Request.Method.POST;
+import static org.nnsoft.shs.http.Request.Method.PUT;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
 import static org.nnsoft.shs.io.IOUtils.UTF_8;
@@ -238,7 +239,7 @@ public final class RequestParser
 
             }.parse( buffer.toString() );
         }
-        else
+        else if ( POST == request.getMethod() || PUT == request.getMethod() )
         {
             int contentLenth = 1024;
             String contentLengthHeader = request.getHeaders().getFirstValue( CONTENT_LENGTH );
