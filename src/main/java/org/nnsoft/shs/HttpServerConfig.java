@@ -58,6 +58,13 @@ public interface HttpServerConfig
     int getThreads();
 
     /**
+     * The maximum number of seconds of life of HTTP Sessions.
+     *
+     * @return the maximum number of seconds of life of HTTP Sessions.
+     */
+    int getSessionMaxAge();
+
+    /**
      * The request dispatcher to handle HTTP requests.
      *
      * @return the request dispatcher to handle HTTP requests.

@@ -43,6 +43,7 @@ import org.nnsoft.shs.http.RequestParseException;
 import org.nnsoft.shs.http.RequestParser;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.http.ResponseSerializer;
+import org.nnsoft.shs.http.SessionManager;
 import org.slf4j.Logger;
 
 /**
@@ -58,12 +59,15 @@ final class ClientSocketProcessor
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
+    private final SessionManager sessionManager;
+
     private final RequestDispatcher requestDispatcher;
 
     private Socket socket;
 
-    public ClientSocketProcessor( RequestDispatcher requestDispatcher, Socket socket )
+    public ClientSocketProcessor( SessionManager sessionManager, RequestDispatcher requestDispatcher, Socket socket )
     {
+        this.sessionManager = sessionManager;
         this.requestDispatcher = requestDispatcher;
         this.socket = socket;
     }
@@ -87,6 +91,7 @@ final class ClientSocketProcessor
                 logger.debug( "parsed: {}", request );
             }
 
+            sessionManager.manageSession( request, response );
             requestDispatcher.dispatch( request, response );
 
             response.setProtocolName( request.getProtocolName() );

@@ -43,6 +43,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
+import org.nnsoft.shs.http.SessionManager;
 import org.slf4j.Logger;
 
 /**
@@ -64,6 +65,8 @@ public final class SimpleHttpServer
 
     private RequestDispatcher dispatcher;
 
+    private SessionManager sessionManager;
+
     private AtomicReference<Status> currentStatus = new AtomicReference<Status>();
 
     public SimpleHttpServer()
@@ -80,6 +83,7 @@ public final class SimpleHttpServer
         checkArgument( serverConfig.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", serverConfig.getPort() );
         checkArgument( serverConfig.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
         checkArgument( serverConfig.getRequestDispatcher() != null, "Impossible to serve requests with a null dispatcher" );
+        checkArgument( serverConfig.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
 
         if ( STOPPED != currentStatus.get() )
         {
@@ -89,6 +93,10 @@ public final class SimpleHttpServer
         logger.info( "Initializing server using {} threads...", serverConfig.getThreads() );
 
         requestsExecutor = newFixedThreadPool( serverConfig.getThreads() );
+
+        logger.info( "Done! Initializing the SessionManager ..." );
+
+        sessionManager = new SessionManager( serverConfig.getSessionMaxAge() * 1000 );
 
         logger.info( "Done! listening on port {} ...", serverConfig.getPort() );
 
@@ -150,7 +158,7 @@ public final class SimpleHttpServer
                             continue;
                         }
 
-                        requestsExecutor.submit( new ClientSocketProcessor( dispatcher, client.socket() ) );
+                        requestsExecutor.submit( new ClientSocketProcessor( sessionManager, dispatcher, client.socket() ) );
                     }
                     else
                     {
@@ -194,11 +202,13 @@ public final class SimpleHttpServer
             finally
             {
                 requestsExecutor.shutdown();
+                sessionManager.shutDown();
 
                 requestsExecutor = null;
                 server = null;
                 selector = null;
                 dispatcher = null;
+                sessionManager = null;
 
                 logger.info( "Done! Server is now stopped. Bye!" );
             }

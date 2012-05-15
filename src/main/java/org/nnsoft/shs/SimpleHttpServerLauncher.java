@@ -62,6 +62,9 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-t", "--threads" }, description = "The number of listening thread (# of available processors by default)." )
     private int threads = getRuntime().availableProcessors();
 
+    @Parameter( names = { "-m", "--session-max-age" }, description = "The maximum number of seconds of life of HTTP Sessions." )
+    private int sessionMaxAge = 60 * 60; // 1h
+
     @Parameter( names = { "-X", "--verbose" }, description = "Produce execution debug output." )
     private boolean verbose;
 
@@ -124,6 +127,15 @@ public final class SimpleHttpServerLauncher
             }
 
         } );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getSessionMaxAge()
+    {
+        return sessionMaxAge;
     }
 
     private void execute( String...args )
