@@ -27,6 +27,7 @@ import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
 import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
 import static org.nnsoft.shs.dispatcher.RequestDispatcherFactory.newRequestDispatcher;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -142,11 +143,11 @@ public final class SimpleHttpServerLauncher
 
         if ( verbose )
         {
-            System.setProperty( "logging.level", "DEBUG" );
+            setProperty( "logging.level", "DEBUG" );
         }
         else
         {
-            System.setProperty( "logging.level", "INFO" );
+            setProperty( "logging.level", "INFO" );
         }
 
         logger.info( "" );
