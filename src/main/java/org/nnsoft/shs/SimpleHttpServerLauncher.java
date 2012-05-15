@@ -79,6 +79,9 @@ public final class SimpleHttpServerLauncher
         // do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public InetAddress getBindingIp()
     {
@@ -86,18 +89,27 @@ public final class SimpleHttpServerLauncher
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getPort()
     {
         return port;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getThreads()
     {
         return threads;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RequestDispatcher getRequestDispatcher()
     {
