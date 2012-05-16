@@ -25,8 +25,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.99soft</groupId>
-  <artifactId>simple-http-server</artifactId>
+  <artifactId>shs-parent</artifactId>
   <version>0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <name>Simple HttpServer</name>
   <description>A simple Java Http Server</description>
@@ -63,6 +64,12 @@
     <url>https://github.com/simple-http-server/issues</url>
   </issueManagement>
 
+  <modules>
+    <module>apis</module>
+    <module>core</module>
+    <module>demo</module>
+  </modules>
+
   <properties>
     <!--
      | source encoding
@@ -90,46 +97,6 @@
   </properties>
 
   <dependencies>
-    <!--
-     | CLI
-    -->
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-      <version>1.25</version>
-      <optional>true</optional>
-    </dependency>
-
-    <!--
-     | logging
-    -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.0.1</version>
-      <scope>runtime</scope>
-    </dependency>
-
-    <!--
-     | test
-    -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>1.9.0</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
@@ -261,54 +228,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.1.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>assemble</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <repositoryLayout>flat</repositoryLayout>
-          <repositoryName>lib</repositoryName>
-          <extraJvmArguments>-Dproject.artifactId=${project.artifactId} -Dproject.version=${project.version} -Dbuild.timestamp=${maven.build.timestamp} -Xms500m -Xmx500m -XX:PermSize=128m -XX:-UseGCOverheadLimit</extraJvmArguments>
-          <programs>
-            <program>
-              <mainClass>org.nnsoft.shs.SimpleHttpServerLauncher</mainClass>
-              <name>shs</name>
-            </program>
-          </programs>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2.1</version>
-        <executions>
-          <execution>
-            <id>assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <attach>true</attach>
-          <tarLongFileMode>gnu</tarLongFileMode>
-          <appendAssemblyId>false</appendAssemblyId>
-          <descriptors>
-            <descriptor>${basedir}/src/main/assembly/bin.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <executions>
           <execution>
@@ -353,21 +272,6 @@
         <version>0.3.1</version>
       </extension>
     </extensions>
-
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/resources</directory>
-      </resource>
-
-      <resource>
-        <directory>${basedir}</directory>
-        <targetPath>META-INF</targetPath>
-        <includes>
-          <include>LICENSE</include>
-          <include>NOTICE</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
 
   <reporting>
@@ -377,6 +281,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>${javadoc.version}</version>
         <configuration>
+          <aggregate>true</aggregate>
           <bootclasspath>${sun.boot.class.path}</bootclasspath>
           <doclet>com.google.doclava.Doclava</doclet>
           <useStandardDocletOptions>false</useStandardDocletOptions>
