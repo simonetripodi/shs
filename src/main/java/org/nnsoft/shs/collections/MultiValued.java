@@ -27,15 +27,40 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+/**
+ * A MultiValued instance allows associate multiple values to a same key.
+ */
 public interface MultiValued
 {
 
+    /**
+     * Returns the first associated value to the given key, if found, null otherwise.
+     *
+     * @param name the non null parameter name for which retrieve the value
+     * @return the first associated value to the given key, if found, null otherwise.
+     */
     String getFirstValue( String name );
 
+    /**
+     * Returns all the associated values to the given key, if found, null otherwise.
+     *
+     * @param name the non null parameter name for which retrieve the values
+     * @return all the associated values to the given key, if found, null otherwise.
+     */
     List<String> getValues( String name );
 
+    /**
+     * Returns all the stored keys.
+     *
+     * @return all the stored keys.
+     */
     Set<String> getAllKeys();
 
+    /**
+     * Returns an iterable instance over all stored entries.
+     *
+     * @return an iterable instance over all stored entries.
+     */
     Iterable<Entry<String, List<String>>> getAllEntries();
 
 }
