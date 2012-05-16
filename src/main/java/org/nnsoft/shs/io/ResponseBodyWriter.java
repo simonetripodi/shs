@@ -40,6 +40,13 @@ public interface ResponseBodyWriter
     long getContentLength();
 
     /**
+     * Returns the mime type of the streamed response.
+     *
+     * @return the mime type of the streamed response.
+     */
+    String contentType();
+
+    /**
      * Generates the body response into the target output stream.
      *
      * @param output the target output where body has to be generated

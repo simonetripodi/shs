@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.zip.GZIPOutputStream;
 
 import org.slf4j.Logger;
 
@@ -56,17 +57,21 @@ public final class ResponseSerializer
 
     private final OutputStream target;
 
+    private final boolean gzipCompressionAccepted;
+
     private Response response;
 
     /**
      * Creates a new serializer instance given the non null output stream.
      *
      * @param target the non null output stream.
+     * @param gzipCompressionAccepted if client supports gzip compression
      */
-    public ResponseSerializer( OutputStream target )
+    public ResponseSerializer( OutputStream target, boolean gzipCompressionAccepted )
     {
         checkArgument( target != null, "Null OutputStream target not allowd." );
         this.target = target;
+        this.gzipCompressionAccepted = gzipCompressionAccepted;
     }
 
     /**
@@ -160,7 +165,23 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        response.getBodyWriter().write( target );
+        OutputStream responseOutputStream = target;
+        if ( gzipCompressionAccepted )
+        {
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "Streaming response using GZip compression, accepted by client" );
+            }
+
+            responseOutputStream = new GZIPOutputStream( target );
+        }
+
+        response.getBodyWriter().write( responseOutputStream );
+
+        if ( responseOutputStream instanceof GZIPOutputStream )
+        {
+            ( (GZIPOutputStream) responseOutputStream ).finish();
+        }
     }
 
     /**

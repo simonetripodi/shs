@@ -24,7 +24,9 @@ package org.nnsoft.shs;
  */
 
 import static java.lang.System.currentTimeMillis;
+import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
+import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
 import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
@@ -57,6 +59,8 @@ final class ClientSocketProcessor
 
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
+    private static final String GZIP = "gzip";
+
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
     private final SessionManager sessionManager;
@@ -82,6 +86,8 @@ final class ClientSocketProcessor
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 
+        boolean gzipCompressionAccepted = false;
+
         try
         {
             Request request = new RequestParser( socket.getInputStream() ).parse();
@@ -91,12 +97,18 @@ final class ClientSocketProcessor
                 logger.debug( "parsed: {}", request );
             }
 
+            gzipCompressionAccepted = request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
+
             sessionManager.manageSession( request, response );
             requestDispatcher.dispatch( request, response );
 
             response.setProtocolName( request.getProtocolName() );
             response.setProtocolVersion( request.getProtocolVersion() );
 
+            if ( response.getBodyWriter().contentType() != null )
+            {
+                response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
+            }
             if ( response.getBodyWriter().getContentLength() > 0 )
             {
                 response.addHeader( CONTENT_LENGTH, String.valueOf( response.getBodyWriter().getContentLength() ) );
@@ -122,7 +134,7 @@ final class ClientSocketProcessor
 
         try
         {
-            new ResponseSerializer( socket.getOutputStream() ).serialize( response );
+            new ResponseSerializer( socket.getOutputStream(), gzipCompressionAccepted ).serialize( response );
         }
         catch ( IOException e )
         {

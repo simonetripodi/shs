@@ -149,6 +149,12 @@ final class DefaultResponse
             return -1;
         }
 
+        @Override
+        public String contentType()
+        {
+            return "text/plain";
+        }
+
         /**
          * {@inheritDoc}
          */
