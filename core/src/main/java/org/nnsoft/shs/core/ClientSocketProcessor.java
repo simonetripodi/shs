@@ -25,6 +25,7 @@ package org.nnsoft.shs.core;
 
 import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
+import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
@@ -105,13 +106,19 @@ final class ClientSocketProcessor
             response.setProtocolName( request.getProtocolName() );
             response.setProtocolVersion( request.getProtocolVersion() );
 
-            if ( response.getBodyWriter().contentType() != null )
-            {
-                response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
-            }
             if ( response.getBodyWriter().getContentLength() > 0 )
             {
                 response.addHeader( CONTENT_LENGTH, String.valueOf( response.getBodyWriter().getContentLength() ) );
+
+                if ( response.getBodyWriter().contentType() != null )
+                {
+                    response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
+                }
+
+                if ( gzipCompressionAccepted )
+                {
+                    response.addHeader( CONTENT_ENCODING, GZIP );
+                }
             }
         }
         catch ( RequestParseException e )
