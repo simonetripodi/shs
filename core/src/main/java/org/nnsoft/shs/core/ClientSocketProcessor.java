@@ -37,6 +37,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -79,6 +80,11 @@ final class ClientSocketProcessor
 
     public void run()
     {
+        if ( socket.isClosed() )
+        {
+            return;
+        }
+
         final long start = currentTimeMillis();
 
         logger.info( "New incoming request from {}", socket.getRemoteSocketAddress() );
@@ -149,7 +155,17 @@ final class ClientSocketProcessor
         }
         finally
         {
-            if ( socket != null && !socket.isClosed() )
+            boolean isKeepAlive = false;
+            try
+            {
+                isKeepAlive = socket.getKeepAlive();
+            }
+            catch ( SocketException e1 )
+            {
+                // ignore it, consider it not keep alive
+            }
+
+            if ( socket != null && !socket.isClosed() && !isKeepAlive )
             {
                 try
                 {
