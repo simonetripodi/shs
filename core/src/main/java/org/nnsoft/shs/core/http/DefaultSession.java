@@ -107,7 +107,7 @@ final class DefaultSession
     /**
      * Updates the session LastAccessedTime.
      */
-    public void updateLastAccessedTime()
+    public synchronized void updateLastAccessedTime()
     {
         lastAccessedTime = new Date();
         isNew = false;
