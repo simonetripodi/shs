@@ -28,9 +28,9 @@ import static java.util.UUID.randomUUID;
 import static org.nnsoft.shs.core.lang.Preconditions.checkNotNull;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.nnsoft.shs.http.Session;
 
@@ -43,7 +43,7 @@ final class DefaultSession
 
     private final UUID id = randomUUID();
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>();
+    private final ConcurrentMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
     private final Date creationTime = new Date();
 
