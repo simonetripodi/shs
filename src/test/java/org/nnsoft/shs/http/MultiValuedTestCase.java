@@ -29,6 +29,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.nnsoft.shs.collections.SimpleMultiValued;
 
 public final class MultiValuedTestCase
 {
