@@ -65,7 +65,7 @@
   </issueManagement>
 
   <modules>
-    <module>apis</module>
+    <module>api</module>
     <module>core</module>
     <module>demo</module>
   </modules>

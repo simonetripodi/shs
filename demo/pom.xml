@@ -42,7 +42,7 @@
     -->
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>shs-apis</artifactId>
+      <artifactId>shs-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
