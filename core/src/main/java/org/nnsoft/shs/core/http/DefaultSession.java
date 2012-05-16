@@ -91,7 +91,7 @@ final class DefaultSession
     @Override
     public <A> void setAttribute( String name, A value )
     {
-        checkNotNull( name, "NUll attribute name not allowed" );
+        checkNotNull( name, "Null attribute name not allowed" );
         attributes.put( name, value );
     }
 
