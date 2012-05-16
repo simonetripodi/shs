@@ -36,35 +36,31 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.nnsoft.shs.http.Headers;
-import org.nnsoft.shs.http.Parameters;
-import org.nnsoft.shs.http.QueryStringParameters;
-
-public final class SimpleMultiValued
-    implements Headers, Parameters, QueryStringParameters
+public final class SimpleMultiValued<K, V>
+    implements MultiValued<K, V>
 {
 
-    private final Map<String, List<String>> adaptedMap = new HashMap<String, List<String>>();
+    private final Map<K, List<V>> adaptedMap = new HashMap<K, List<V>>();
 
     /**
      * {@inheritDoc}
      */
-    public String getFirstValue( String name )
+    public V getFirstValue( K key )
     {
-        List<String> headerValues = adaptedMap.get( name );
-        if ( headerValues == null || headerValues.isEmpty() )
+        List<V> storedValues = adaptedMap.get( key );
+        if ( storedValues == null || storedValues.isEmpty() )
         {
             return null;
         }
-        return headerValues.iterator().next();
+        return storedValues.iterator().next();
     }
 
     /**
      * {@inheritDoc}
      */
-    public List<String> getValues( String name )
+    public List<V> getValues( K key )
     {
-        List<String> storedValues = adaptedMap.get( name );
+        List<V> storedValues = adaptedMap.get( key );
         if ( storedValues != null )
         {
             return unmodifiableList( storedValues );
@@ -72,13 +68,13 @@ public final class SimpleMultiValued
         return null;
     }
 
-    public SimpleMultiValued addValue( String name, String value )
+    public SimpleMultiValued<K, V> addValue( K key, V value )
     {
-        List<String> storedValues = adaptedMap.get( name );
+        List<V> storedValues = adaptedMap.get( key );
         if ( storedValues == null )
         {
-            storedValues = new LinkedList<String>();
-            adaptedMap.put( name, storedValues );
+            storedValues = new LinkedList<V>();
+            adaptedMap.put( key, storedValues );
         }
 
         storedValues.add( value );
@@ -88,7 +84,7 @@ public final class SimpleMultiValued
     /**
      * {@inheritDoc}
      */
-    public Set<String> getAllKeys()
+    public Set<K> getAllKeys()
     {
         return unmodifiableSet( adaptedMap.keySet() );
     }
@@ -96,14 +92,14 @@ public final class SimpleMultiValued
     /**
      * {@inheritDoc}
      */
-    public Iterable<Entry<String, List<String>>> getAllEntries()
+    public Iterable<Entry<K, List<V>>> getAllEntries()
     {
-        return new Iterable<Map.Entry<String,List<String>>>()
+        return new Iterable<Map.Entry<K, List<V>>>()
         {
 
-            public Iterator<Entry<String, List<String>>> iterator()
+            public Iterator<Entry<K, List<V>>> iterator()
             {
-                return new UnmodifiableIterator( adaptedMap.entrySet().iterator() );
+                return new UnmodifiableIterator<K, V>( adaptedMap.entrySet().iterator() );
             }
 
         };
@@ -134,7 +130,7 @@ public final class SimpleMultiValued
             return false;
         }
 
-        SimpleMultiValued other = (SimpleMultiValued) obj;
+        SimpleMultiValued<?, ?> other = (SimpleMultiValued<?, ?>) obj;
         return eq( adaptedMap, other.adaptedMap );
     }
 
@@ -152,13 +148,13 @@ public final class SimpleMultiValued
     /**
      * An iterator implementation from which is impossible remove elements.
      */
-    private static final class UnmodifiableIterator
-        implements Iterator<Entry<String, List<String>>>
+    private static final class UnmodifiableIterator<K, V>
+        implements Iterator<Entry<K, List<V>>>
     {
 
-        private final Iterator<Entry<String, List<String>>> adapted;
+        private final Iterator<Entry<K, List<V>>> adapted;
 
-        public UnmodifiableIterator( Iterator<Entry<String, List<String>>> adapted )
+        public UnmodifiableIterator( Iterator<Entry<K, List<V>>> adapted )
         {
             this.adapted = adapted;
         }
@@ -174,9 +170,9 @@ public final class SimpleMultiValued
         /**
          * {@inheritDoc}
          */
-        public Entry<String, List<String>> next()
+        public Entry<K, List<V>> next()
         {
-            return new UnmodifiableEntry( adapted.next() );
+            return new UnmodifiableEntry<K, V>( adapted.next() );
         }
 
         /**
@@ -193,13 +189,13 @@ public final class SimpleMultiValued
      * An entry implementation from which is impossible replace the value
      * and value itself is unmodifiable.
      */
-    private static final class UnmodifiableEntry
-        implements Entry<String, List<String>>
+    private static final class UnmodifiableEntry<K, V>
+        implements Entry<K, List<V>>
     {
 
-        private final Entry<String, List<String>> adapted;
+        private final Entry<K, List<V>> adapted;
 
-        public UnmodifiableEntry( Entry<String, List<String>> adapted )
+        public UnmodifiableEntry( Entry<K, List<V>> adapted )
         {
             this.adapted = adapted;
         }
@@ -207,7 +203,7 @@ public final class SimpleMultiValued
         /**
          * {@inheritDoc}
          */
-        public String getKey()
+        public K getKey()
         {
             return adapted.getKey();
         }
@@ -215,7 +211,7 @@ public final class SimpleMultiValued
         /**
          * {@inheritDoc}
          */
-        public List<String> getValue()
+        public List<V> getValue()
         {
             return unmodifiableList( adapted.getValue() );
         }
@@ -223,7 +219,7 @@ public final class SimpleMultiValued
         /**
          * {@inheritDoc}
          */
-        public List<String> setValue( List<String> value )
+        public List<V> setValue( List<V> value )
         {
             throw new UnsupportedOperationException();
         }

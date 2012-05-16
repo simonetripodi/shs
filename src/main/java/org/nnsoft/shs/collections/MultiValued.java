@@ -30,37 +30,37 @@ import java.util.Set;
 /**
  * A MultiValued instance allows associate multiple values to a same key.
  */
-public interface MultiValued
+public interface MultiValued<K, V>
 {
 
     /**
      * Returns the first associated value to the given key, if found, null otherwise.
      *
-     * @param name the non null parameter name for which retrieve the value
+     * @param key the non null key for which retrieve the value
      * @return the first associated value to the given key, if found, null otherwise.
      */
-    String getFirstValue( String name );
+    V getFirstValue( K key );
 
     /**
-     * Returns all the associated values to the given key, if found, null otherwise.
+     * Returns an unmodifiable list with all the associated values to the given key, if found, null otherwise.
      *
-     * @param name the non null parameter name for which retrieve the values
-     * @return all the associated values to the given key, if found, null otherwise.
+     * @param key the non null key for which retrieve the values
+     * @return an unmodifiable list with all the associated values to the given key, if found, null otherwise.
      */
-    List<String> getValues( String name );
+    List<V> getValues( K key );
 
     /**
-     * Returns all the stored keys.
+     * Returns an unmodifiable set containing all the stored keys.
      *
-     * @return all the stored keys.
+     * @return an unmodifiable set all the stored keys.
      */
-    Set<String> getAllKeys();
+    Set<K> getAllKeys();
 
     /**
-     * Returns an iterable instance over all stored entries.
+     * Returns an unmodifiable iterable instance over all stored entries.
      *
-     * @return an iterable instance over all stored entries.
+     * @return an unmodifiable iterable instance over all stored entries.
      */
-    Iterable<Entry<String, List<String>>> getAllEntries();
+    Iterable<Entry<K, List<V>>> getAllEntries();
 
 }

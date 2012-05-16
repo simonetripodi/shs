@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.nnsoft.shs.collections.MultiValued;
 import org.nnsoft.shs.collections.SimpleMultiValued;
 import org.nnsoft.shs.io.ResponseBodyWriter;
 
@@ -52,7 +53,7 @@ final class DefaultResponse
 
     private String protocolVersion = DEFAULT_PROTOCOL_VERSION;
 
-    private final SimpleMultiValued headers = new SimpleMultiValued();
+    private final SimpleMultiValued<String, String> headers = new SimpleMultiValued<String, String>();
 
     private final Collection<Cookie> cookies = new LinkedList<Cookie>();
 
@@ -99,7 +100,7 @@ final class DefaultResponse
         headers.addValue( name, value );
     }
 
-    public Headers getHeaders()
+    public MultiValued<String, String> getHeaders()
     {
         return headers;
     }

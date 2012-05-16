@@ -25,6 +25,7 @@ package org.nnsoft.shs.http;
 
 import java.util.Collection;
 
+import org.nnsoft.shs.collections.MultiValued;
 import org.nnsoft.shs.io.ResponseBodyWriter;
 
 public interface Response
@@ -115,7 +116,7 @@ public interface Response
 
     void addHeader( String name, String value );
 
-    Headers getHeaders();
+    MultiValued<String, String> getHeaders();
 
     void addCookie( Cookie cookie );
 

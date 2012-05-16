@@ -32,6 +32,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nnsoft.shs.collections.MultiValued;
 import org.nnsoft.shs.collections.SimpleMultiValued;
 import org.nnsoft.shs.io.RequestBodyReader;
 import org.nnsoft.shs.io.StreamAlreadyConsumedException;
@@ -55,11 +56,11 @@ final class DefaultRequest
 
     private Session session;
 
-    private final SimpleMultiValued headers = new SimpleMultiValued();
+    private final SimpleMultiValued<String, String> headers = new SimpleMultiValued<String, String>();
 
-    private final SimpleMultiValued queryStringParameters = new SimpleMultiValued();
+    private final SimpleMultiValued<String, String> queryStringParameters = new SimpleMultiValued<String, String>();
 
-    private final SimpleMultiValued parameters = new SimpleMultiValued();
+    private final SimpleMultiValued<String, String> parameters = new SimpleMultiValued<String, String>();
 
     private final List<Cookie> cookies = new LinkedList<Cookie>();
 
@@ -156,7 +157,7 @@ final class DefaultRequest
     /**
      * {@inheritDoc}
      */
-    public Headers getHeaders()
+    public MultiValued<String, String> getHeaders()
     {
         return headers;
     }
@@ -197,7 +198,7 @@ final class DefaultRequest
     /**
      * {@inheritDoc}
      */
-    public QueryStringParameters getQueryStringParameters()
+    public MultiValued<String, String> getQueryStringParameters()
     {
         return queryStringParameters;
     }
@@ -219,7 +220,7 @@ final class DefaultRequest
     /**
      * {@inheritDoc}
      */
-    public Parameters getParameters()
+    public MultiValued<String, String> getParameters()
     {
         return parameters;
     }

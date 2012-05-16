@@ -1,4 +1,4 @@
-package org.nnsoft.shs.http;
+package org.nnsoft.shs.collections;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -34,12 +34,12 @@ import org.nnsoft.shs.collections.SimpleMultiValued;
 public final class MultiValuedTestCase
 {
 
-    private SimpleMultiValued multiValued;
+    private SimpleMultiValued<String, String> multiValued;
 
     @Before
     public void setUp()
     {
-        multiValued = new SimpleMultiValued()
+        multiValued = new SimpleMultiValued<String, String>()
                           .addValue( "Accept-Charset", "ISO-8859-1" )
                           .addValue( "Accept-Charset", "utf-8;q=0.7" )
                           .addValue( "Accept-Charset", "*;q=0.7" );

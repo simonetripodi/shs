@@ -26,6 +26,7 @@ package org.nnsoft.shs.http;
 import java.io.IOException;
 import java.util.List;
 
+import org.nnsoft.shs.collections.MultiValued;
 import org.nnsoft.shs.io.RequestBodyReader;
 
 /**
@@ -108,7 +109,7 @@ public interface Request
      *
      * @return the HTTP headers.
      */
-    Headers getHeaders();
+    MultiValued<String, String> getHeaders();
 
     /**
      * Returns the list of cookies.
@@ -122,7 +123,7 @@ public interface Request
      *
      * @return the Query String parameters
      */
-    QueryStringParameters getQueryStringParameters();
+    MultiValued<String, String> getQueryStringParameters();
 
     /**
      * Returns the parameters, populated only if HTTP method is {@link Method#POST}
@@ -130,7 +131,7 @@ public interface Request
      *
      * @return the parameters
      */
-    Parameters getParameters();
+    MultiValued<String, String> getParameters();
 
     /**
      * Returns the current HTTP Session.

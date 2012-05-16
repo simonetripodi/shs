@@ -1,8 +1,5 @@
 package org.nnsoft.shs.http;
 
-import org.nnsoft.shs.collections.MultiValued;
-
-
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *
@@ -27,7 +24,6 @@ import org.nnsoft.shs.collections.MultiValued;
  */
 
 public interface Headers
-    extends MultiValued
 {
 
     public static final String ACCEPT = "Accept";
