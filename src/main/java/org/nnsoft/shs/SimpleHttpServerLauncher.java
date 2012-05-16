@@ -33,6 +33,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Formatter;
 
 import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
 import org.nnsoft.shs.dispatcher.FileRequestHandler;
@@ -204,14 +205,34 @@ public final class SimpleHttpServerLauncher
                     logger.error( "Execution terminated with errors", e );
                 }
 
+                // format the uptime string
+
+                Formatter uptime = new Formatter().format( "Total uptime:" );
+
                 long uptimeInSeconds = ( currentTimeMillis() - start ) / 1000;
                 final long hours = uptimeInSeconds / 3600;
+
+                if ( hours > 0 )
+                {
+                    uptime.format( " %s hour%s", hours, (hours > 1 ? "s" : "") );
+                }
+
                 uptimeInSeconds = uptimeInSeconds - (hours * 3600);
                 final long minutes = uptimeInSeconds / 60;
+
+                if ( minutes > 0 )
+                {
+                    uptime.format( " %s minute%s", minutes, (minutes > 1 ? "s" : "") );
+                }
+
                 uptimeInSeconds = uptimeInSeconds - (minutes * 60);
 
-                logger.info( "Total uptime: {} hour(s) {} minute(s) {} second(s)",
-                             new Object[] { hours, minutes, uptimeInSeconds } );
+                if ( uptimeInSeconds > 0 )
+                {
+                    uptime.format( " %s second%s", uptimeInSeconds, (uptimeInSeconds > 1 ? "s" : "") );
+                }
+
+                logger.info( uptime.toString() );
                 logger.info( "Finished at: {}", new Date() );
 
                 final Runtime runtime = getRuntime();
