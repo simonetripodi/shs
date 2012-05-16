@@ -117,7 +117,7 @@ final class DefaultSession
      * {@inheritDoc}
      */
     @Override
-    public Date getLastAccessedTime()
+    public synchronized Date getLastAccessedTime()
     {
         return lastAccessedTime;
     }
@@ -126,7 +126,7 @@ final class DefaultSession
      * {@inheritDoc}
      */
     @Override
-    public boolean isNew()
+    public synchronized boolean isNew()
     {
         return isNew;
     }
