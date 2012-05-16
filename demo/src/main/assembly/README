@@ -1,0 +1,25 @@
+
+                                               ${project.name}
+                                                     ----
+                                                     2012
+
+Introduction
+
+  ${project.description}
+
+Install ${project.name}
+
+  ${project.name} is a Java tool, so you must have Java installed in order to proceed. Users need at least the
+  Java Runtime Environment (JRE), the Java Development Kit (JDK) is a plus.
+
+  [[1]] Extract the distribution archive, i.e. ${project.build.finalName}.tar.gz to the directory you
+        wish to install ${project.artifactId}.
+        These instructions assume you chose `/usr/local/${project.build.finalName}`.
+        The subdirectory `${project.build.finalName}` will be created from the archive.
+
+  [[2]] Add ${project.name} to your path, e.g.
+
+            `export PATH=/usr/local/${project.build.finalName}/bin:$PATH`
+
+  [[3]] Make sure that JAVA_HOME is set to the location of your JDK, e.g. `export JAVA_HOME=/usr/java/jdk1.6.0_29`
+        and that $JAVA_HOME/bin is in your PATH environment variable.

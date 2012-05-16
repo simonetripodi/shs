@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+ | Copyright (c) 2012 Simone Tripodi (simonetripodi[at]apache[dot]org)
+ |
+ | Permission is hereby granted, free of charge, to any person obtaining
+ | a copy of this software and associated documentation files (the
+ | "Software"), to deal in the Software without restriction, including
+ | without limitation the rights to use, copy, modify, merge, publish,
+ | distribute, sublicense, and/or sell copies of the Software, and to
+ | permit persons to whom the Software is furnished to do so, subject to
+ | the following conditions:
+ |
+ | The above copyright notice and this permission notice shall be
+ | included in all copies or substantial portions of the Software.
+ |
+ | THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ | EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ | MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ | NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ | LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ | OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ | WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Simone Tripodi">
+    <title>Simple HTTP Server - by Simone Tripodi</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.20.custom.min.js"></script>
+    <script type="text/javascript">
+        // shared utilities
+
+        /**
+         * render the warning message
+         */
+        function printInfo( message )
+        {
+            printMessage( 'INFO   ', message );
+        }
+
+        /**
+         * render the error message
+         */
+        function printError( message )
+        {
+            printMessage( 'ERROR  ', message );
+        }
+
+        /**
+         * render the success message
+         */
+        function printSuccess( message )
+        {
+            printMessage( 'SUCCESS', message );
+        }
+
+        /**
+         * render a message
+         */
+        function printMessage( level, message )
+        {
+            var now = new Date();
+            var time = now.getHours()
+                       + ':'
+                       + now.getMinutes()
+                       + ':'
+                       + now.getSeconds();
+            $( '#console' ).append( time + ' [' + level + '] ' + message + '\n' );
+        }
+
+      // init
+
+      $( document ).ready( function()
+      {
+          $( '#img1' ).draggable( { iframeFix: true } );
+          $( '#img2' ).draggable( { iframeFix: true } );
+          $( '#img3' ).draggable( { iframeFix: true } );
+          $( '#img4' ).draggable( { iframeFix: true } );
+
+          $( '#droppable-frame' ).load( function()
+          {
+              $( '#droppable-frame' ).contents().find( 'pre' ).droppable(
+              {
+                  drop: function()
+                  {
+                      var now = new Date();
+                      var curr_date = now.getDate();
+                      var curr_month = now.getMonth() + 1;
+                      var curr_year = now.getFullYear();
+
+                      $.ajax(
+                      {
+                          type: 'POST',
+                          url: '/data/' + curr_year
+                                        + '/'
+                                        + curr_month
+                                        + '/'
+                                        + curr_date
+                                        + '.txt',
+                          global: false,
+                          beforeSend: function()
+                          {
+                              printInfo( 'Request started...' );
+                          },
+                          complete: function()
+                          {
+                              printInfo( 'Request complete.' );
+                          },
+                          success: function( data )
+                          {
+                              printSuccess( data );
+                          },
+                          error: function( jqXHR, textStatus, errorThrown )
+                          {
+                              printError( textStatus );
+                          },
+                          statusCode:
+                          {
+                              404: function()
+                              {
+                                  printError( 'Service not found' );
+                              }
+                          }
+                      } );
+                  }
+              } );
+          } );
+      });
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>JS Demo App <small>Simple Drag'n'Drop JS Application with AJAX monitor</small></h1>
+      </div>
+
+      <div class="row">
+        <div class="span6">
+          <ul class="thumbnails">
+            <li class="span3"><img id="img1" src="http://placehold.it/260x180" alt=""></li>
+            <li class="span3"><img id="img2" src="http://placehold.it/260x180" alt=""></li>
+            <li class="span3"><img id="img3" src="http://placehold.it/260x180" alt=""></li>
+            <li class="span3"><img id="img4" src="http://placehold.it/260x180" alt=""></li>
+          </ul>
+
+          <pre id="console"></pre>
+        </div>
+
+        <div class="span6">
+          <iframe id="droppable-frame" src="frame.html" width="100%" height="400px"></iframe>
+        </div>
+      </div>
+
+      <hr/>
+
+      <footer>
+        <p>${project.name} ${build.number} - &copy; <a href="mailto:simonetripodi@apache.org">Simone Tripodi</a></p>
+        <p>licensed under the terms of <a href="http://www.opensource.org/licenses/mit-license.php">The MIT License</a></p>
+      </footer>
+    </div>
+  </body>
+
+</html>
