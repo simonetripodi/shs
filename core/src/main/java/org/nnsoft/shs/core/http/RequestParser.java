@@ -25,7 +25,7 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.Integer.parseInt;
 import static java.net.URLDecoder.decode;
-import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.channels.Channels.newChannel;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
@@ -251,7 +251,7 @@ public final class RequestParser
             {
                 contentLenth = parseInt( contentLengthHeader );
             }
-            ByteBuffer contentBody = allocate( contentLenth );
+            ByteBuffer contentBody = allocateDirect( contentLenth );
             newChannel( requestBodyInputStream ).read( contentBody );
             request.setContentBody( contentBody );
         }
