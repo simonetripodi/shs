@@ -93,6 +93,7 @@ final class ClientSocketProcessor
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 
+        boolean keepAlive = false;
         boolean gzipCompressionAccepted = false;
 
         try
@@ -155,17 +156,16 @@ final class ClientSocketProcessor
         }
         finally
         {
-            boolean isKeepAlive = false;
             try
             {
-                isKeepAlive = socket.getKeepAlive();
+                keepAlive = socket.getKeepAlive();
             }
             catch ( SocketException e1 )
             {
                 // ignore it, consider it not keep alive
             }
 
-            if ( socket != null && !socket.isClosed() && !isKeepAlive )
+            if ( socket != null && !socket.isClosed() && !keepAlive )
             {
                 try
                 {
