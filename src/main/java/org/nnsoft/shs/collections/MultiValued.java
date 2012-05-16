@@ -1,7 +1,8 @@
-package org.nnsoft.shs.http;
+package org.nnsoft.shs.collections;
 
-import org.nnsoft.shs.collections.MultiValued;
-
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -26,11 +27,15 @@ import org.nnsoft.shs.collections.MultiValued;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * Parameters sent by the client via application/x-www-form-urlencoded
- */
-public interface Parameters
-    extends MultiValued
+public interface MultiValued
 {
+
+    String getFirstValue( String name );
+
+    List<String> getValues( String name );
+
+    Set<String> getAllKeys();
+
+    Iterable<Entry<String, List<String>>> getAllEntries();
 
 }

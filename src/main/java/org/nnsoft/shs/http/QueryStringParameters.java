@@ -1,5 +1,7 @@
 package org.nnsoft.shs.http;
 
+import org.nnsoft.shs.collections.MultiValued;
+
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *

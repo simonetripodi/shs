@@ -1,4 +1,4 @@
-package org.nnsoft.shs.http;
+package org.nnsoft.shs.collections;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -36,7 +36,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-final class SimpleMultiValued
+import org.nnsoft.shs.http.Headers;
+import org.nnsoft.shs.http.Parameters;
+import org.nnsoft.shs.http.QueryStringParameters;
+
+public final class SimpleMultiValued
     implements Headers, Parameters, QueryStringParameters
 {
 

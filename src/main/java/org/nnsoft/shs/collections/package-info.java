@@ -1,8 +1,7 @@
-package org.nnsoft.shs.http;
-
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
+/**
+ * Additional Collections utilities.
+ */
+package org.nnsoft.shs.collections;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -26,16 +25,3 @@ import java.util.Set;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-interface MultiValued
-{
-
-    String getFirstValue( String name );
-
-    List<String> getValues( String name );
-
-    Set<String> getAllKeys();
-
-    Iterable<Entry<String, List<String>>> getAllEntries();
-
-}
