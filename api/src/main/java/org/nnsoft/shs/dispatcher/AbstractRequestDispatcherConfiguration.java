@@ -62,9 +62,11 @@ public abstract class AbstractRequestDispatcherConfiguration
     protected abstract void configure();
 
     /**
+     *Starts binding a request path, can be expressed using the {@code web.xml} grammar,
+     * to a {@link RequestHandler}.
      *
-     * @param path
-     * @return
+     * @param path the path for handling calls.
+     * @return the builder to associate a {@link RequestDispatcher}
      * @see RequestDispatcherBinder#serve(String)
      */
     protected final RequestDispatcherBuilder serve( String path )
@@ -74,9 +76,11 @@ public abstract class AbstractRequestDispatcherConfiguration
 
     /**
      *
-     * @param status
-     * @return
-     * @see RequestDispatcherBinder#when(Status)
+     * Allows defining the default response has to be shown when
+     * replying to clients with specified status.
+     *
+     * @param status the status the server is replying to clients
+     * @return the builder to associate a fixed file to the given status
      */
     protected final DefaultResponseBuilder when( Status status )
     {
