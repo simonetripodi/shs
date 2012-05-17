@@ -50,7 +50,7 @@ public final class SimpleMultiValued<K, V>
      */
     public boolean contains( K key )
     {
-        checkArgument( key != null, "nulle key not admitted" );
+        checkArgument( key != null, "null key not admitted" );
         return adaptedMap.containsKey( key );
     }
 
@@ -59,7 +59,7 @@ public final class SimpleMultiValued<K, V>
      */
     public V getFirstValue( K key )
     {
-        checkArgument( key != null, "nulle key not admitted" );
+        checkArgument( key != null, "null key not admitted" );
         List<V> storedValues = adaptedMap.get( key );
         if ( storedValues == null || storedValues.isEmpty() )
         {
@@ -73,7 +73,7 @@ public final class SimpleMultiValued<K, V>
      */
     public List<V> getValues( K key )
     {
-        checkArgument( key != null, "nulle key not admitted" );
+        checkArgument( key != null, "null key not admitted" );
         List<V> storedValues = adaptedMap.get( key );
         if ( storedValues != null )
         {
@@ -84,7 +84,7 @@ public final class SimpleMultiValued<K, V>
 
     public SimpleMultiValued<K, V> addValue( K key, V value )
     {
-        checkArgument( key != null, "nulle key not admitted" );
+        checkArgument( key != null, "null key not admitted" );
         List<V> storedValues = adaptedMap.get( key );
         if ( storedValues == null )
         {
