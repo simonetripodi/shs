@@ -51,4 +51,5 @@ Usage: shs [options]
                             Default: false
 ---------------------------------------------------------------------------------
 
-  For the demo purpose, would be enough typing `shs -t 20 -X`
+  For the demo purpose, would be enough typing `shs -t 20 -X` then
+  open the browser and go on `http://localhost:8080`
