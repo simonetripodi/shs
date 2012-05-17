@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * A MultiValued instance allows associate multiple values to a same key.
+ * A MultiValued is a read-only data structures where multiple values are associated to the same key.
  */
 public interface MultiValued<K, V>
 {
