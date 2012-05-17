@@ -74,8 +74,10 @@ $( document ).ready( function()
     {
         $( '#droppable-frame' ).contents().find( 'pre' ).droppable(
         {
-            drop: function()
+            drop: function( event, ui )
             {
+                alert( ui.draggable.attr( 'id' ) );
+
                 var now = new Date();
                 var curr_date = now.getDate();
                 var curr_month = now.getMonth() + 1;
@@ -90,6 +92,14 @@ $( document ).ready( function()
                                   + '/'
                                   + curr_date
                                   + '.txt',
+                    data: curr_year
+                                  + ':'
+                                  + curr_month
+                                  + ':'
+                                  + curr_date
+                                  + ' - '
+                                  + ui.draggable.attr( 'id' )
+                                  + ';\n',
                     global: false,
                     beforeSend: function()
                     {
