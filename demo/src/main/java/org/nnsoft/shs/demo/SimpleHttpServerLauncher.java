@@ -23,6 +23,7 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
@@ -132,6 +133,8 @@ public final class SimpleHttpServerLauncher
             {
                 serve( "/*" ).with( new FileRequestHandler( siteDir ) );
                 when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+                when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+                when( INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
             }
 
         } );
