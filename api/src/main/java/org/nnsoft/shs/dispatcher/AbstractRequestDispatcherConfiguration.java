@@ -27,12 +27,19 @@ import static org.nnsoft.shs.lang.Preconditions.checkState;
 
 import org.nnsoft.shs.http.Response.Status;
 
+/**
+ * An abstract RequestDispatcherConfiguration implementation that helps on dropping the
+ * boilerplate code of repeating the binder variable reference when binding.
+ */
 public abstract class AbstractRequestDispatcherConfiguration
     implements RequestDispatcherConfiguration
 {
 
     private RequestDispatcherBinder binder;
 
+    /**
+     * {@inheritDoc}
+     */
     public final void configure( RequestDispatcherBinder binder )
     {
         checkState( this.binder == null, "Re-entry not allowed!" );
@@ -49,6 +56,9 @@ public abstract class AbstractRequestDispatcherConfiguration
         }
     }
 
+    /**
+     * @see RequestDispatcherConfiguration#configure(RequestDispatcherBinder)
+     */
     protected abstract void configure();
 
     /**
