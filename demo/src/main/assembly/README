@@ -23,3 +23,32 @@ Install ${project.name}
 
   [[3]] Make sure that JAVA_HOME is set to the location of your JDK, e.g. `export JAVA_HOME=/usr/java/jdk1.6.0_29`
         and that $JAVA_HOME/bin is in your PATH environment variable.
+
+Run ${project.name}
+
+  Open the shell and type `shs -h` to see the available options:
+
+---------------------------------------------------------------------------------
+Usage: shs [options]
+  Options:
+    -h, --help              Display help information.
+                            Default: false
+    -H, --host              The host name or the textual representation of its
+                            IP address.
+                            Default: localhost
+    -p, --port              The HTTP Server port.
+                            Default: 8080
+    -m, --session-max-age   The maximum number of seconds of life of HTTP
+                            Sessions.
+                            Default: 3600
+    -s, --sitedir           The directory containing the site has to be
+                            provided.
+                            Default: /usr/local/${project.build.finalName}/site
+    -t, --threads           The number of listening thread (# of available
+                            processors by default).
+                            Default: 4
+    -X, --verbose           Produce execution debug output.
+                            Default: false
+---------------------------------------------------------------------------------
+
+  For the demo purpose, would be enough typing `shs -t 20 -X`
