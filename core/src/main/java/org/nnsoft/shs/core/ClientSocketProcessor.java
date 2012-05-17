@@ -24,7 +24,9 @@ package org.nnsoft.shs.core;
  */
 
 import static java.lang.System.currentTimeMillis;
+import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
+import static org.nnsoft.shs.http.Headers.CONNECTION;
 import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
@@ -32,22 +34,20 @@ import static org.nnsoft.shs.http.Headers.DATE;
 import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
-import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
-import org.nnsoft.shs.http.Request;
-import org.nnsoft.shs.core.http.RequestParser;
-import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.core.http.RequestParseException;
+import org.nnsoft.shs.core.http.RequestParser;
 import org.nnsoft.shs.core.http.ResponseSerializer;
 import org.nnsoft.shs.core.http.SessionManager;
+import org.nnsoft.shs.dispatcher.RequestDispatcher;
+import org.nnsoft.shs.http.Request;
+import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
 /**
@@ -62,6 +62,10 @@ final class ClientSocketProcessor
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
     private static final String GZIP = "gzip";
+
+    private static final String HTTP_11 = "1.1";
+
+    private static final String KEEP_ALIVE = "Keep-Alive";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
@@ -105,7 +109,13 @@ final class ClientSocketProcessor
                 logger.debug( "parsed: {}", request );
             }
 
-            gzipCompressionAccepted = request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
+            keepAlive = HTTP_11.equals( request.getProtocolVersion() )
+                            || ( request.getHeaders().contains( CONNECTION )
+                                            && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( KEEP_ALIVE ) ) );
+            socket.setKeepAlive( keepAlive );
+
+            gzipCompressionAccepted = request.getHeaders().contains( ACCEPT_ENCODING )
+                                            && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
             sessionManager.manageSession( request, response );
             requestDispatcher.dispatch( request, response );
@@ -156,15 +166,6 @@ final class ClientSocketProcessor
         }
         finally
         {
-            try
-            {
-                keepAlive = socket.getKeepAlive();
-            }
-            catch ( SocketException e1 )
-            {
-                // ignore it, consider it not keep alive
-            }
-
             if ( socket != null && !socket.isClosed() && !keepAlive )
             {
                 try
