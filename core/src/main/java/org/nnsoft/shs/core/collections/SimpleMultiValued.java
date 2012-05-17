@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.collections;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 import static org.nnsoft.shs.core.lang.Objects.eq;
@@ -43,6 +44,15 @@ public final class SimpleMultiValued<K, V>
 {
 
     private final Map<K, List<V>> adaptedMap = new HashMap<K, List<V>>();
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean contains( K key )
+    {
+        checkArgument( key != null, "nulle key not admitted" );
+        return adaptedMap.containsKey( key );
+    }
 
     /**
      * {@inheritDoc}

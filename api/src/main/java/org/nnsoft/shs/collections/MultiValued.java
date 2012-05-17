@@ -34,6 +34,14 @@ public interface MultiValued<K, V>
 {
 
     /**
+     * Verifies the input key is contained in the collection.
+     *
+     * @param key the non null key to check
+     * @return true if the key is found, false otherwise
+     */
+    boolean contains( K key );
+
+    /**
      * Returns the first associated value to the given key, if found, null otherwise.
      *
      * @param key the non null key for which retrieve the value
