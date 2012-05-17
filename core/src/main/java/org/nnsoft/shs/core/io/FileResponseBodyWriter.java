@@ -1,4 +1,4 @@
-package org.nnsoft.shs.demo;
+package org.nnsoft.shs.core.io;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
