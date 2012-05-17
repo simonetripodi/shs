@@ -2,7 +2,7 @@
   realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
   <interface id="1" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.HttpServer" project="shs-apis" 
     file="/shs-apis/src/main/java/org/nnsoft/shs/HttpServer.java" binary="false">    
-    <position height="-1" width="-1" x="1114" y="156"/>    
+    <position height="-1" width="-1" x="1046" y="156"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -10,7 +10,7 @@
   </interface>  
   <enumeration id="2" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.HttpServer.Status" project="shs-apis" 
     file="/shs-apis/src/main/java/org/nnsoft/shs/HttpServer.java" binary="false">    
-    <position height="-1" width="-1" x="1118" y="358"/>    
+    <position height="-1" width="-1" x="1050" y="358"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -18,7 +18,7 @@
   </enumeration>  
   <interface id="3" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.HttpServerConfiguration" 
     project="shs-apis" file="/shs-apis/src/main/java/org/nnsoft/shs/HttpServerConfiguration.java" binary="false">    
-    <position height="-1" width="-1" x="792" y="162"/>    
+    <position height="-1" width="-1" x="724" y="162"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -26,7 +26,7 @@
   </interface>  
   <interface id="4" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.HttpServerConfigurator" 
     project="shs-apis" file="/shs-apis/src/main/java/org/nnsoft/shs/HttpServerConfigurator.java" binary="false">    
-    <position height="-1" width="-1" x="334" y="172"/>    
+    <position height="-1" width="-1" x="266" y="172"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -34,7 +34,7 @@
   </interface>  
   <interface id="5" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.RequestHandlerBuilder" project="shs-apis" 
     file="/shs-apis/src/main/java/org/nnsoft/shs/RequestHandlerBuilder.java" binary="false">    
-    <position height="-1" width="-1" x="192" y="484"/>    
+    <position height="-1" width="-1" x="124" y="484"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -42,7 +42,7 @@
   </interface>  
   <class id="6" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.AbstractHttpServerConfiguration" 
     project="shs-apis" file="/shs-apis/src/main/java/org/nnsoft/shs/AbstractHttpServerConfiguration.java" binary="false">    
-    <position height="-1" width="-1" x="792" y="372"/>    
+    <position height="-1" width="-1" x="724" y="372"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -50,52 +50,52 @@
   </class>  
   <interface id="7" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.DefaultResponseBuilder" 
     project="shs-apis" file="/shs-apis/src/main/java/org/nnsoft/shs/DefaultResponseBuilder.java" binary="false">    
-    <position height="-1" width="-1" x="408" y="348"/>    
+    <position height="-1" width="-1" x="340" y="348"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </interface>  
-  <dependency id="8">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <nesting id="9">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="2"/>  
-  </nesting>  
-  <dependency id="10">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <dependency id="11">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="4"/>  
-  </dependency>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <realization id="13">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="3"/>  
-  </realization>  
-  <dependency id="14">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <dependency id="15">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <association id="16">    
+  <association id="8">    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="17" name="configurator"/>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
+      <attribute id="9" name="configurator"/>      
+      <multiplicity id="10" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <realization id="12">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="3"/>  
+  </realization>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <nesting id="18">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="true" signature="true" 
     visibility="true">    
     <attributes public="true" package="true" protected="true" private="true"/>    
