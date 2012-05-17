@@ -24,7 +24,6 @@ package org.nnsoft.shs.core.http;
  */
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.nnsoft.shs.http.Request.Method.GET;
 
@@ -70,9 +69,9 @@ public final class RequestParserTestCase
         String simpleRequest = "GET /index.php?foo=xy&bar=zw HTTP/1.1\n\n";
         Request request = parse( simpleRequest );
 
-        assertNotNull( request.getQueryStringParameters().getFirstValue( "foo" ) );
+        assertTrue( request.getQueryStringParameters().contains( "foo" ) );
         assertEquals( "xy", request.getQueryStringParameters().getFirstValue( "foo" ) );
-        assertNotNull( request.getQueryStringParameters().getFirstValue( "bar" ) );
+        assertTrue( request.getQueryStringParameters().contains( "bar" ) );
         assertEquals( "zw", request.getQueryStringParameters().getFirstValue( "bar" ) );
     }
 
@@ -111,9 +110,9 @@ public final class RequestParserTestCase
                                 + "param1=value1&param2=value2";
         Request request = parse( simpleRequest );
 
-        assertNotNull( request.getParameters().getFirstValue( "param1" ) );
+        assertTrue( request.getParameters().contains( "param1" ) );
         assertEquals( "value1", request.getParameters().getFirstValue( "param1" ) );
-        assertNotNull( request.getParameters().getFirstValue( "param2" ) );
+        assertTrue( request.getParameters().contains( "param2" ) );
         assertEquals( "value2", request.getParameters().getFirstValue( "param2" ) );
     }
 
