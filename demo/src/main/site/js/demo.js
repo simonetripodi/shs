@@ -90,6 +90,7 @@ $( document ).ready( function()
                                   + '/'
                                   + curr_date
                                   + '.txt',
+                    contentType: 'text/plain',
                     data: curr_year
                                   + ':'
                                   + curr_month
