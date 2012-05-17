@@ -127,14 +127,22 @@ public final class SimpleHttpServerLauncher
         }
 
         logger.info( "" );
-        logger.info( "------------------------------------------------------------------------" );
-        logger.info( "{} v{} (built on {})", new Object[] {
-            getProperty( "project.artifactId" ),
-            getProperty( "project.version" ),
-            getProperty( "build.timestamp" )
-        } );
-        logger.info( "------------------------------------------------------------------------" );
+        logger.info( "                         ''~``" );
+        logger.info( "                        ( o o )" );
+        logger.info( "+------------------.oooO--(_)--Oooo.------------------+" );
         logger.info( "" );
+        logger.info( "{} v{} (built on {})",
+                        new Object[] {
+                            getProperty( "project.artifactId" ),
+                            getProperty( "project.version" ),
+                            getProperty( "build.timestamp" )
+                        } );
+        logger.info( "" );
+        logger.info( "                     .oooO                            " );
+        logger.info( "                     (   )   Oooo.                    " );
+        logger.info( "+---------------------\\ (----(   )--------------------+" );
+        logger.info( "                       \\_)    ) /" );
+        logger.info( "                             (_/" );
 
         final HttpServer httpServer = new SimpleHttpServer();
 
@@ -155,8 +163,9 @@ public final class SimpleHttpServerLauncher
 
             public void run()
             {
-                logger.info( "" );
-                logger.info( "------------------------------------------------------------------------" );
+                logger.info( "                         ''~``" );
+                logger.info( "                        ( o o )" );
+                logger.info( "+------------------.oooO--(_)--Oooo.------------------+" );
 
                 try
                 {
@@ -203,8 +212,11 @@ public final class SimpleHttpServerLauncher
                              ( runtime.totalMemory() - runtime.freeMemory() ) / megaUnit,
                              runtime.totalMemory() / megaUnit );
 
-                logger.info( "------------------------------------------------------------------------" );
-                logger.info( "" );
+                logger.info( "                     .oooO                            " );
+                logger.info( "                     (   )   Oooo.                    " );
+                logger.info( "+---------------------\\ (----(   )--------------------+" );
+                logger.info( "                       \\_)    ) /" );
+                logger.info( "                             (_/" );
             }
 
         } );
