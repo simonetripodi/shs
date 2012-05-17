@@ -76,8 +76,6 @@ $( document ).ready( function()
         {
             drop: function( event, ui )
             {
-                alert( ui.draggable.attr( 'id' ) );
-
                 var now = new Date();
                 var curr_date = now.getDate();
                 var curr_month = now.getMonth() + 1;
