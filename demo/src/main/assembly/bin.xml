@@ -45,7 +45,7 @@
      |
     -->
     <fileSet>
-      <directory>${basedir}</directory>
+      <directory>${basedir}/../</directory>
       <includes>
         <include>LICENSE</include>
         <include>NOTICE</include>
