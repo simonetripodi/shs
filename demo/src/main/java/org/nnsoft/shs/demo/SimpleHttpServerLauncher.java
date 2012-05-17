@@ -41,7 +41,7 @@ import org.nnsoft.shs.HttpServerConfig;
 import org.nnsoft.shs.RunException;
 import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.SimpleHttpServer;
-import org.nnsoft.shs.core.dispatcher.AbstractRequestDispatcherConfiguration;
+import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
 

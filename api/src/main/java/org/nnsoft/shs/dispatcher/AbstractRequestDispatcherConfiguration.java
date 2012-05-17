@@ -1,4 +1,4 @@
-package org.nnsoft.shs.core.dispatcher;
+package org.nnsoft.shs.dispatcher;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -23,12 +23,8 @@ package org.nnsoft.shs.core.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.lang.Preconditions.checkState;
+import static org.nnsoft.shs.lang.Preconditions.checkState;
 
-import org.nnsoft.shs.dispatcher.DefaultResponseBuilder;
-import org.nnsoft.shs.dispatcher.RequestDispatcherBinder;
-import org.nnsoft.shs.dispatcher.RequestDispatcherBuilder;
-import org.nnsoft.shs.dispatcher.RequestDispatcherConfiguration;
 import org.nnsoft.shs.http.Response.Status;
 
 public abstract class AbstractRequestDispatcherConfiguration

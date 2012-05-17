@@ -25,7 +25,7 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableCollection;
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
 import java.io.OutputStream;

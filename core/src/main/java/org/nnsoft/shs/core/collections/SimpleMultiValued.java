@@ -23,11 +23,11 @@ package org.nnsoft.shs.core.collections;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
-import static org.nnsoft.shs.core.lang.Objects.eq;
-import static org.nnsoft.shs.core.lang.Objects.hash;
+import static org.nnsoft.shs.lang.Objects.eq;
+import static org.nnsoft.shs.lang.Objects.hash;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.util.HashMap;
 import java.util.Iterator;

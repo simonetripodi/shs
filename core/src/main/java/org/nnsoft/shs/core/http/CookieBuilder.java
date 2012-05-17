@@ -25,9 +25,9 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableSet;
-import static org.nnsoft.shs.core.lang.Objects.eq;
-import static org.nnsoft.shs.core.lang.Objects.hash;
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Objects.eq;
+import static org.nnsoft.shs.lang.Objects.hash;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.util.HashSet;
 import java.util.Set;

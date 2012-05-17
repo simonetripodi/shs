@@ -29,7 +29,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 /**
  * Various utility classes.
  */
-package org.nnsoft.shs.core.lang;
+package org.nnsoft.shs.lang;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)

@@ -25,7 +25,7 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
-import static org.nnsoft.shs.core.lang.Preconditions.checkNotNull;
+import static org.nnsoft.shs.lang.Preconditions.checkNotNull;
 
 import java.util.Date;
 import java.util.UUID;

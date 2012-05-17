@@ -23,9 +23,9 @@ package org.nnsoft.shs.core.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.http.Response.Status.OK;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;

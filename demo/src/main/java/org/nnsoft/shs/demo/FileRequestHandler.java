@@ -24,15 +24,15 @@ package org.nnsoft.shs.demo;
  */
 
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
-import org.nnsoft.shs.core.dispatcher.BaseRequestHandler;
 import org.nnsoft.shs.core.io.FileResponseBodyWriter;
+import org.nnsoft.shs.dispatcher.BaseRequestHandler;
 
 /**
  * A simple request handler that serves static files.

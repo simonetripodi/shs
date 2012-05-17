@@ -33,6 +33,7 @@ import static org.nnsoft.shs.core.dispatcher.RequestDispatcherFactory.newRequest
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.nnsoft.shs.dispatcher.RequestHandler;
 import org.nnsoft.shs.http.Request;

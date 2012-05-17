@@ -25,8 +25,8 @@ package org.nnsoft.shs.core.dispatcher;
 
 import static java.util.Arrays.asList;
 import static java.util.ServiceLoader.load;
-import static org.nnsoft.shs.core.lang.Preconditions.checkArgument;
-import static org.nnsoft.shs.core.lang.Preconditions.checkState;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
+import static org.nnsoft.shs.lang.Preconditions.checkState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Iterator;
