@@ -133,7 +133,6 @@ public final class SimpleHttpServerLauncher
             {
                 serve( "/*" ).with( new FileRequestHandler( siteDir ) );
                 when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
-                when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
                 when( INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
             }
 
