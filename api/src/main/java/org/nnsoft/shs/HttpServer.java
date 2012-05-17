@@ -59,7 +59,7 @@ public interface HttpServer
      * @param serverConfig the server configuration
      * @throws InitException if any error occurs while starting up.
      */
-    void init( HttpServerConfig serverConfig )
+    void init( HttpServerConfiguration serverConfiguration )
         throws InitException;
 
     /**

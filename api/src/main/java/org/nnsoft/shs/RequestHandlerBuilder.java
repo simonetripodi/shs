@@ -1,7 +1,6 @@
-/**
- * Base implementation of Dispatcher APIs.
- */
-package org.nnsoft.shs.core.dispatcher;
+package org.nnsoft.shs;
+
+import org.nnsoft.shs.http.RequestHandler;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -25,3 +24,18 @@ package org.nnsoft.shs.core.dispatcher;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
+/**
+ * Chained builder to associate a {@link RequestHandler} to a previously specified path.
+ */
+public interface RequestHandlerBuilder
+{
+
+    /**
+     * Allows associating a {@link RequestHandler} to a previously specified path.
+     *
+     * @param requestHandler the {@link RequestHandler} has to be associated to a previously specified path.
+     */
+    void with( RequestHandler requestHandler );
+
+}

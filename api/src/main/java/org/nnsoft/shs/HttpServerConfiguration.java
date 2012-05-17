@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher;
+package org.nnsoft.shs;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -24,17 +24,14 @@ package org.nnsoft.shs.dispatcher;
  */
 
 /**
- * A configuration provides paths/{@link RequestHandler}s bindings,
- * which will be used to create a {@link RequestDispatcher}.
+ * The Server configuration.
+ *
+ * It has been designed as interface so users are free to implement their proxies on
+ * Properties, XML, JSON, YAML, ...
  */
-public interface RequestDispatcherConfiguration
+public interface HttpServerConfiguration
 {
 
-    /**
-     * Contributes paths/{@link RequestHandler}s bindings.
-     *
-     * @param binder paths/{@link RequestHandler}s binder.
-     */
-    void configure( RequestDispatcherBinder binder );
+    void configure( HttpServerConfigurator configurator );
 
 }

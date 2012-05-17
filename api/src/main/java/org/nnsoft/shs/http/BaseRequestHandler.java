@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher;
+package org.nnsoft.shs.http;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -27,8 +27,6 @@ import static org.nnsoft.shs.http.Response.Status.METHOD_NOT_ALLOWED;
 
 import java.io.IOException;
 
-import org.nnsoft.shs.http.Request;
-import org.nnsoft.shs.http.Response;
 
 /**
  * Provides an abstract class to be subclassed to create

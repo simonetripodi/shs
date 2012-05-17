@@ -43,12 +43,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.nnsoft.shs.HttpServer;
-import org.nnsoft.shs.HttpServerConfig;
+import org.nnsoft.shs.HttpServerConfiguration;
 import org.nnsoft.shs.InitException;
 import org.nnsoft.shs.RunException;
 import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.http.SessionManager;
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
 
 /**
@@ -82,34 +81,37 @@ public final class SimpleHttpServer
     /**
      * {@inheritDoc}
      */
-    public void init( HttpServerConfig serverConfig )
+    public void init( HttpServerConfiguration configuratoruration )
         throws InitException
     {
-        checkArgument( serverConfig.getHost() != null, "Impossible bind server to a null host" );
-        checkArgument( serverConfig.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", serverConfig.getPort() );
-        checkArgument( serverConfig.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
-        checkArgument( serverConfig.getRequestDispatcher() != null, "Impossible to serve requests with a null dispatcher" );
-        checkArgument( serverConfig.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
+        checkArgument( configuratoruration != null, "Impossible configure the server with a null configuration" );
 
         if ( STOPPED != currentStatus.get() )
         {
             throw new InitException( "Current server cannot be configured while in %s status.", currentStatus );
         }
 
-        logger.info( "Initializing server using {} threads...", serverConfig.getThreads() );
+        DefaultHttpServerConfigurator configurator = new DefaultHttpServerConfigurator();
+        configuratoruration.configure( configurator );
+        checkArgument( configurator.getHost() != null, "Impossible bind server to a null host" );
+        checkArgument( configurator.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", configurator.getPort() );
+        checkArgument( configurator.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
+        checkArgument( configurator.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
 
-        requestsExecutor = newFixedThreadPool( serverConfig.getThreads() );
+        logger.info( "Initializing server using {} threads...", configurator.getThreads() );
+
+        requestsExecutor = newFixedThreadPool( configurator.getThreads() );
 
         logger.info( "Done! Initializing the SessionManager ..." );
 
-        sessionManager = new SessionManager( serverConfig.getSessionMaxAge() * 1000 );
+        sessionManager = new SessionManager( configurator.getSessionMaxAge() * 1000 );
 
-        logger.info( "Done! Binding host {} listening on port {} ...", serverConfig.getHost(), serverConfig.getPort() );
+        logger.info( "Done! Binding host {} listening on port {} ...", configurator.getHost(), configurator.getPort() );
 
         try
         {
             server = open();
-            server.socket().bind( new InetSocketAddress( serverConfig.getHost(), serverConfig.getPort() ) );
+            server.socket().bind( new InetSocketAddress( configurator.getHost(), configurator.getPort() ) );
             server.configureBlocking( false );
 
             selector = Selector.open();
@@ -118,10 +120,10 @@ public final class SimpleHttpServer
         catch ( IOException e )
         {
             throw new InitException( "Impossible to start server on port %s (with %s threads): %s",
-                                     serverConfig.getPort(), serverConfig.getThreads(), e.getMessage() );
+                                     configurator.getPort(), configurator.getThreads(), e.getMessage() );
         }
 
-        this.dispatcher = serverConfig.getRequestDispatcher();
+        this.dispatcher = configurator.getRequestDispatcher();
 
         logger.info( "Done! Server has been successfully initialized, it can be now started" );
 

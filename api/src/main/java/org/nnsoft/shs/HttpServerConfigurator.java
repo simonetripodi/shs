@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher;
+package org.nnsoft.shs;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -23,68 +23,62 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.lang.Preconditions.checkState;
-
+import org.nnsoft.shs.http.RequestHandler;
 import org.nnsoft.shs.http.Response.Status;
 
 /**
- * An abstract RequestDispatcherConfiguration implementation that helps on dropping the
- * boilerplate code of repeating the binder variable reference when binding.
+ * The Server configuration.
+ *
+ * It has been designed as interface so users are free to implement their proxies on
+ * Properties, XML, JSON, YAML, ...
  */
-public abstract class AbstractRequestDispatcherConfiguration
-    implements RequestDispatcherConfiguration
+public interface HttpServerConfigurator
 {
 
-    private RequestDispatcherBinder binder;
-
     /**
-     * {@inheritDoc}
+     * Configure the host name or the textual representation of its IP address the server has to be bound.
+     *
+     * @param host the host name or the textual representation of its IP address.
      */
-    public final void configure( RequestDispatcherBinder binder )
-    {
-        checkState( this.binder == null, "Re-entry not allowed!" );
-
-        this.binder = binder;
-
-        try
-        {
-            configure();
-        }
-        finally
-        {
-            this.binder = null;
-        }
-    }
+    void bindServerToHost( String host );
 
     /**
-     * @see RequestDispatcherConfiguration#configure(RequestDispatcherBinder)
+     * Configure the port number where binding the server.
+     *
+     * @param port the port number where binding the server.
      */
-    protected abstract void configure();
+    void bindServerToPort( int port );
 
     /**
-     *Starts binding a request path, can be expressed using the {@code web.xml} grammar,
+     * Configure the number of threads that will serve the HTTP requests.
+     *
+     * @param threads the number of threads that will serve the HTTP requests.
+     */
+    void serveRequestsWithThreads( int threads );
+
+    /**
+     * Configure the maximum number of seconds of life of HTTP Sessions.
+     *
+     * @param sessionMaxAge the maximum number of seconds of life of HTTP Sessions.
+     */
+    void sessionsHaveMagAge( int sessionMaxAge );
+
+    /**
+     * Starts binding a request path, can be expressed using the {@code web.xml} grammar,
      * to a {@link RequestHandler}.
      *
      * @param path the path for handling calls.
      * @return the builder to associate a {@link RequestDispatcher}
-     * @see RequestDispatcherBinder#serve(String)
      */
-    protected final RequestDispatcherBuilder serve( String path )
-    {
-        return binder.serve( path );
-    }
+    RequestHandlerBuilder serve( String path );
 
     /**
-     *
      * Allows defining the default response has to be shown when
      * replying to clients with specified status.
      *
      * @param status the status the server is replying to clients
      * @return the builder to associate a fixed file to the given status
      */
-    protected final DefaultResponseBuilder when( Status status )
-    {
-        return binder.when( status );
-    }
+    DefaultResponseBuilder when( Status status );
 
 }

@@ -1,4 +1,4 @@
-package org.nnsoft.shs.core.dispatcher;
+package org.nnsoft.shs.core;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -25,7 +25,6 @@ package org.nnsoft.shs.core.dispatcher;
 
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.http.Response.Status.OK;
-import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
@@ -37,23 +36,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.nnsoft.shs.core.io.FileResponseBodyWriter;
-import org.nnsoft.shs.dispatcher.DefaultResponseBuilder;
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
-import org.nnsoft.shs.dispatcher.RequestDispatcherBinder;
-import org.nnsoft.shs.dispatcher.RequestDispatcherBuilder;
-import org.nnsoft.shs.dispatcher.RequestHandler;
 import org.nnsoft.shs.http.Request;
+import org.nnsoft.shs.http.RequestHandler;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.http.Response.Status;
 import org.slf4j.Logger;
 
 /**
- * A concrete {@link RequestDispatcher} implementation which exposes
- * {@link RequestDispatcherBinder} methods to configure paths/{@link RequestHandler}s
- * bindings.
+ * The request dispatcher is the responsible to address requests to the right {@link RequestHandler}
  */
-final class DefaultRequestDispatcherBinder
-    implements RequestDispatcherBinder, RequestDispatcher
+final class RequestDispatcher
 {
 
     private final Logger logger = getLogger( getClass() );
@@ -62,59 +54,16 @@ final class DefaultRequestDispatcherBinder
 
     private final Map<Status, File> defaultResponses = new EnumMap<Status, File>( Status.class );
 
-    /**
-     * {@inheritDoc}
-     */
-    public RequestDispatcherBuilder serve( final String path )
+    public void addRequestHandler( String path, RequestHandler requestHandler )
     {
-        checkArgument( path != null, "Null path cannot be served." );
-        checkArgument( path.length() > 0, "Empty path not allowed." );
-
-        return new RequestDispatcherBuilder()
-        {
-
-            public void with( final RequestHandler requestHandler )
-            {
-                checkArgument( requestHandler != null, "Null requestHandler not allowed." );
-
-                if ( logger.isDebugEnabled() )
-                {
-                    logger.debug( "Configuring dispatch: {} -> {}", path, requestHandler.getClass().getName() );
-                }
-
-                handlers.add( new MatchingRequestHandler( path, requestHandler ) );
-            }
-
-        };
+        handlers.add( new MatchingRequestHandler( path, requestHandler ) );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DefaultResponseBuilder when( final Status status )
+    public void addDefaultResponse( Status status, File defaultReply )
     {
-        checkArgument( status != null, "Null status cannot be served." );
-
-        return new DefaultResponseBuilder()
-        {
-
-            @Override
-            public void serve( File defaultReply )
-            {
-                checkArgument( defaultReply != null, "Null defaultReply cannot provide reply for %s.", status );
-                checkArgument( defaultReply.exists(), "Cannot provide defaultReply reply for %s because file %s doesn't exist.", status, defaultReply );
-                checkArgument( defaultReply.isFile(), "Cannot provide defaultReply reply for %s because file %s is not a regular file.", status, defaultReply );
-
-                defaultResponses.put( status, defaultReply );
-            }
-
-        };
+        defaultResponses.put( status, defaultReply );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public void dispatch( Request request, Response response )
         throws IOException
     {
@@ -134,8 +83,8 @@ final class DefaultRequestDispatcherBinder
             {
                 if ( logger.isDebugEnabled() )
                 {
-                    logger.debug( "Request {} will be dispatched by {}",
-                                  request.getPath(), handler.getRequestHandler().getClass().getName() );
+                    logger.debug( "Request {} will be dispatched by {}", request.getPath(),
+                                  handler.getRequestHandler().getClass().getName() );
                 }
 
                 // found right handler to address the request

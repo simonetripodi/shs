@@ -1,4 +1,4 @@
-package org.nnsoft.shs;
+package org.nnsoft.shs.http;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -23,50 +23,24 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
+import java.io.IOException;
+
 
 /**
- * The Server configuration.
- *
- * It has been designed as interface so users are free to implement their proxies on
- * Properties, XML, JSON, YAML, ...
+ * A request handler is a lighter version of HttpServlet to implement HTTP negotiation.
  */
-public interface HttpServerConfig
+public interface RequestHandler
 {
 
     /**
-     * The host name or the textual representation of its IP address.
+     * Allows concrete implementations to populate {@link Response} parameters
+     * given the {@link Request}.
      *
-     * @return the host name or the textual representation of its IP address.
+     * @param request the received HTTP request
+     * @param response the HTTP response will be pushed out.
+     * @throws IOException if any I/0 error occur
      */
-    String getHost();
-
-    /**
-     * The port number where binding the server.
-     *
-     * @return the port number where binding the server.
-     */
-    int getPort();
-
-    /**
-     * The number of threads that will serve the HTTP requests.
-     *
-     * @return the number of threads that will serve the HTTP requests.
-     */
-    int getThreads();
-
-    /**
-     * The maximum number of seconds of life of HTTP Sessions.
-     *
-     * @return the maximum number of seconds of life of HTTP Sessions.
-     */
-    int getSessionMaxAge();
-
-    /**
-     * The request dispatcher to handle HTTP requests.
-     *
-     * @return the request dispatcher to handle HTTP requests.
-     */
-    RequestDispatcher getRequestDispatcher();
+    void handle( Request request, Response response )
+        throws IOException;
 
 }

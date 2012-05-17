@@ -23,27 +23,24 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
-import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
 import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
-import static org.nnsoft.shs.core.dispatcher.RequestDispatcherFactory.newRequestDispatcher;
+import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
+import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
 import java.util.Date;
 import java.util.Formatter;
 
+import org.nnsoft.shs.AbstractHttpServerConfiguration;
 import org.nnsoft.shs.HttpServer;
-import org.nnsoft.shs.HttpServerConfig;
 import org.nnsoft.shs.RunException;
 import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.SimpleHttpServer;
-import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.slf4j.Logger;
 
 import com.beust.jcommander.JCommander;
@@ -54,7 +51,7 @@ import com.beust.jcommander.converters.FileConverter;
  * Simple HTTP Server based on Concurrent and NIO APIs.
  */
 public final class SimpleHttpServerLauncher
-    implements HttpServerConfig
+    extends AbstractHttpServerConfiguration
 {
 
     private final Logger logger = getLogger( getClass() );
@@ -92,60 +89,17 @@ public final class SimpleHttpServerLauncher
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getHost()
+    protected void configure()
     {
-        return host;
-    }
+        bindServerToHost( host );
+        bindServerToPort( port );
+        serveRequestsWithThreads( threads );
+        sessionsHaveMagAge( sessionMaxAge );
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getPort()
-    {
-        return port;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getThreads()
-    {
-        return threads;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RequestDispatcher getRequestDispatcher()
-    {
-        return newRequestDispatcher( new AbstractRequestDispatcherConfiguration()
-        {
-
-            @Override
-            protected void configure()
-            {
-                serve( "/*" ).with( new FileRequestHandler( siteDir ) );
-                when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
-                when( INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
-            }
-
-        } );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getSessionMaxAge()
-    {
-        return sessionMaxAge;
+        serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+        when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+        when( INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
     }
 
     private void execute( String...args )

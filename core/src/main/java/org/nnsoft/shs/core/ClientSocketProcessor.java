@@ -45,7 +45,6 @@ import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.core.http.RequestParser;
 import org.nnsoft.shs.core.http.ResponseSerializer;
 import org.nnsoft.shs.core.http.SessionManager;
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;

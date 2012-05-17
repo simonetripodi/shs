@@ -29,10 +29,10 @@ import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import java.io.File;
 import java.io.IOException;
 
+import org.nnsoft.shs.http.BaseRequestHandler;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.nnsoft.shs.core.io.FileResponseBodyWriter;
-import org.nnsoft.shs.dispatcher.BaseRequestHandler;
 
 /**
  * A simple request handler that serves static files.

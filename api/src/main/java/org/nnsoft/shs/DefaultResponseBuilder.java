@@ -1,4 +1,4 @@
-package org.nnsoft.shs.dispatcher;
+package org.nnsoft.shs;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -23,26 +23,19 @@ package org.nnsoft.shs.dispatcher;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.IOException;
-
-import org.nnsoft.shs.http.Request;
-import org.nnsoft.shs.http.Response;
+import java.io.File;
 
 /**
- * A request handler is a lighter version of HttpServlet to implement HTTP negotiation.
+ * Builder to associate a predefined response when serving specific status codes.
  */
-public interface RequestHandler
+public interface DefaultResponseBuilder
 {
 
     /**
-     * Allows concrete implementations to populate {@link Response} parameters
-     * given the {@link Request}.
+     * Associate a predefined response when serving specific status codes.
      *
-     * @param request the received HTTP request
-     * @param response the HTTP response will be pushed out.
-     * @throws IOException if any I/0 error occur
+     * @param defaultReply the file has to be served.
      */
-    void handle( Request request, Response response )
-        throws IOException;
+    void serve( File defaultReply );
 
 }

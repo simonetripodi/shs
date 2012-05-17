@@ -1,4 +1,4 @@
-package org.nnsoft.shs.core.dispatcher;
+package org.nnsoft.shs.core;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -28,15 +28,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.nnsoft.shs.core.dispatcher.RequestDispatcherFactory.newRequestDispatcher;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.nnsoft.shs.dispatcher.AbstractRequestDispatcherConfiguration;
-import org.nnsoft.shs.dispatcher.RequestDispatcher;
-import org.nnsoft.shs.dispatcher.RequestHandler;
 import org.nnsoft.shs.http.Request;
+import org.nnsoft.shs.http.RequestHandler;
 import org.nnsoft.shs.http.Response;
 
 public final class RequestBinderTestCase
@@ -54,17 +51,9 @@ public final class RequestBinderTestCase
         mock1 = mock( RequestHandler.class );
         mock2 = mock( RequestHandler.class );
 
-        dispatcher = newRequestDispatcher( new AbstractRequestDispatcherConfiguration()
-        {
-
-            @Override
-            protected void configure()
-            {
-                serve( "/mock1" ).with( mock1 );
-                serve( "/mock2*" ).with( mock2 );
-            }
-
-        } );
+        dispatcher = new RequestDispatcher();
+        dispatcher.addRequestHandler( "/mock1", mock1 );
+        dispatcher.addRequestHandler( "/mock2*", mock2 );
     }
 
     @After
@@ -72,6 +61,7 @@ public final class RequestBinderTestCase
     {
         mock1 = null;
         mock2 = null;
+        dispatcher = null;
     }
 
     @Test
