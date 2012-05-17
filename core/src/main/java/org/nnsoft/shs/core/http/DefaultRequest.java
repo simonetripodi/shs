@@ -23,12 +23,14 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.Long.parseLong;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
+import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ final class DefaultRequest
 
     private String protocolVersion;
 
-    private ByteBuffer contentBody;
+    private InputStream contentBody;
 
     private Session session;
 
@@ -231,9 +233,9 @@ final class DefaultRequest
     /**
      * Set the buffered request content body.
      *
-     * @param contentBody the buffered request content body.
+     * @param contentBody the request content body.
      */
-    public void setContentBody( ByteBuffer contentBody )
+    public void setContentBody( InputStream contentBody )
     {
         checkArgument( contentBody != null, "Null contentBody not allowed" );
         this.contentBody = contentBody;
@@ -250,7 +252,13 @@ final class DefaultRequest
         {
             throw new StreamAlreadyConsumedException();
         }
-        return requestBodyReader.read( contentBody );
+        long contentLenth = 1024;
+        if ( headers.contains( CONTENT_LENGTH ) )
+        {
+            String contentLengthHeader = headers.getFirstValue( CONTENT_LENGTH );
+            contentLenth = parseLong( contentLengthHeader );
+        }
+        return requestBodyReader.read( contentLenth, contentBody );
     }
 
     /**

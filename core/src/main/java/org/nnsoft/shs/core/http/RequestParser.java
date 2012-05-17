@@ -23,13 +23,9 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.lang.Integer.parseInt;
 import static java.net.URLDecoder.decode;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.channels.Channels.newChannel;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
-import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.COOKIE;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
@@ -44,7 +40,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -245,15 +240,7 @@ public final class RequestParser
         }
         else if ( POST == request.getMethod() || PUT == request.getMethod() )
         {
-            int contentLenth = 1024;
-            String contentLengthHeader = request.getHeaders().getFirstValue( CONTENT_LENGTH );
-            if ( contentLengthHeader != null )
-            {
-                contentLenth = parseInt( contentLengthHeader );
-            }
-            ByteBuffer contentBody = allocateDirect( contentLenth );
-            newChannel( requestBodyInputStream ).read( contentBody );
-            request.setContentBody( contentBody );
+            request.setContentBody( requestBodyInputStream );
         }
     }
 

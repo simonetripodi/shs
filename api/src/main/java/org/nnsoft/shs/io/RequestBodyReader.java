@@ -24,7 +24,7 @@ package org.nnsoft.shs.io;
  */
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 
 import org.nnsoft.shs.http.Request;
 
@@ -40,11 +40,12 @@ public interface RequestBodyReader<T>
      * Reads the {@link Request} input content body
      * and converts it to an arbitrary user defined type.
      *
-     * @param buffer the buffered request content body
+     * @param contentLength the request body content length
+     * @param requestInputStream the request content body input stream
      * @return an arbitrary user defined object
      * @throws IOException if any error occurs while reading the content body input stream
      */
-    T read( ByteBuffer buffer )
+    T read( long contentLength, InputStream requestInputStream )
         throws IOException;
 
 }
