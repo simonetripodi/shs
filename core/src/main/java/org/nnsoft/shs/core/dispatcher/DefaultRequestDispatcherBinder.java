@@ -150,6 +150,11 @@ final class DefaultRequestDispatcherBinder
 
         if ( !found )
         {
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
+            }
+
             response.setStatus( NOT_FOUND );
         }
 
@@ -164,11 +169,6 @@ final class DefaultRequestDispatcherBinder
         else
         {
             logger.info( "No default response configured to reply to status {}", response.getStatus() );
-        }
-
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "No handler found for path {}, request will just return NOT_FOUND", request.getPath() );
         }
     }
 
