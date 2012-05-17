@@ -25,9 +25,11 @@ package org.nnsoft.shs.core.dispatcher;
 
 import static org.nnsoft.shs.core.lang.Preconditions.checkState;
 
+import org.nnsoft.shs.dispatcher.DefaultResponseBuilder;
 import org.nnsoft.shs.dispatcher.RequestDispatcherBinder;
 import org.nnsoft.shs.dispatcher.RequestDispatcherBuilder;
 import org.nnsoft.shs.dispatcher.RequestDispatcherConfiguration;
+import org.nnsoft.shs.http.Response.Status;
 
 public abstract class AbstractRequestDispatcherConfiguration
     implements RequestDispatcherConfiguration
@@ -53,9 +55,26 @@ public abstract class AbstractRequestDispatcherConfiguration
 
     protected abstract void configure();
 
+    /**
+     *
+     * @param path
+     * @return
+     * @see RequestDispatcherBinder#serve(String)
+     */
     protected final RequestDispatcherBuilder serve( String path )
     {
         return binder.serve( path );
+    }
+
+    /**
+     *
+     * @param status
+     * @return
+     * @see RequestDispatcherBinder#when(Status)
+     */
+    protected final DefaultResponseBuilder when( Status status )
+    {
+        return binder.when( status );
     }
 
 }

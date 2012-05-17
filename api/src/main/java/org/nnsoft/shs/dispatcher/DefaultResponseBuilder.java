@@ -1,7 +1,5 @@
 package org.nnsoft.shs.dispatcher;
 
-import org.nnsoft.shs.http.Response.Status;
-
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *
@@ -25,28 +23,19 @@ import org.nnsoft.shs.http.Response.Status;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import java.io.File;
+
 /**
- * Collects configuration information (primarily bindings) which will be used to create a {@link RequestDispatcher}.
+ * Builder to associate a predefined response when serving specific status codes.
  */
-public interface RequestDispatcherBinder
+public interface DefaultResponseBuilder
 {
 
     /**
-     * Starts binding a request path, can be expressed using the {@code web.xml} grammar,
-     * to a {@link RequestHandler}.
+     * Associate a predefined response when serving specific status codes.
      *
-     * @param path the path for handling calls.
-     * @return the builder to associate a {@link RequestDispatcher}
+     * @param defaultReply the file has to be served.
      */
-    RequestDispatcherBuilder serve( String path );
-
-    /**
-     * Allows defining the default response has to be shown when
-     * replying to clients with specified status.
-     *
-     * @param status the status the server is replying to clients
-     * @return the builder to associate a fixed file to the given status
-     */
-    DefaultResponseBuilder when( Status status );
+    void serve( File defaultReply );
 
 }

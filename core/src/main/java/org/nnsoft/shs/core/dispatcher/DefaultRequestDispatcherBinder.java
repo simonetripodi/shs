@@ -28,16 +28,23 @@ import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.http.Response.Status.OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.nnsoft.shs.core.io.FileResponseBodyWriter;
+import org.nnsoft.shs.dispatcher.DefaultResponseBuilder;
 import org.nnsoft.shs.dispatcher.RequestDispatcher;
 import org.nnsoft.shs.dispatcher.RequestDispatcherBinder;
 import org.nnsoft.shs.dispatcher.RequestDispatcherBuilder;
 import org.nnsoft.shs.dispatcher.RequestHandler;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
+import org.nnsoft.shs.http.Response.Status;
 import org.slf4j.Logger;
 
 /**
@@ -52,6 +59,8 @@ final class DefaultRequestDispatcherBinder
     private final Logger logger = getLogger( getClass() );
 
     private final List<MatchingRequestHandler> handlers = new LinkedList<MatchingRequestHandler>();
+
+    private final Map<Status, File> defaultResponses = new EnumMap<Status, File>( Status.class );
 
     /**
      * {@inheritDoc}
@@ -82,6 +91,30 @@ final class DefaultRequestDispatcherBinder
     /**
      * {@inheritDoc}
      */
+    @Override
+    public DefaultResponseBuilder when( final Status status )
+    {
+        checkArgument( status != null, "Null status cannot be served." );
+
+        return new DefaultResponseBuilder()
+        {
+
+            @Override
+            public void serve( File defaultReply )
+            {
+                checkArgument( defaultReply != null, "Null defaultReply cannot provide reply for %s.", status );
+                checkArgument( defaultReply.exists(), "Cannot provide defaultReply reply for %s because file %s doesn't exist.", status, defaultReply );
+                checkArgument( defaultReply.isFile(), "Cannot provide defaultReply reply for %s because file %s is not a regular file.", status, defaultReply );
+
+                defaultResponses.put( status, defaultReply );
+            }
+
+        };
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void dispatch( Request request, Response response )
         throws IOException
     {
@@ -90,8 +123,13 @@ final class DefaultRequestDispatcherBinder
             logger.debug( "Choosing the right handler to dispatch {} request...", request.getPath() );
         }
 
-        for ( MatchingRequestHandler handler : handlers )
+        boolean found = false;
+        Iterator<MatchingRequestHandler> handlersIterator = handlers.iterator();
+
+        while ( !found && handlersIterator.hasNext() )
         {
+            MatchingRequestHandler handler = handlersIterator.next();
+
             if ( handler.shouldServe( request.getPath() ) )
             {
                 if ( logger.isDebugEnabled() )
@@ -106,11 +144,27 @@ final class DefaultRequestDispatcherBinder
                 // exception can be thrown by the method - loop would be blocked anyway
                 handler.getRequestHandler().handle( request, response );
                 // return the server request
-                return;
+                found = true;
             }
         }
 
-        response.setStatus( NOT_FOUND );
+        if ( !found )
+        {
+            response.setStatus( NOT_FOUND );
+        }
+
+        // check a default response has to be provided
+
+        File defaultResponse = defaultResponses.get( response.getStatus() );
+        if ( defaultResponse != null )
+        {
+            logger.info( "Default response {} configured to reply to status {}", defaultResponse, response.getStatus() );
+            response.setBody( new FileResponseBodyWriter( defaultResponse ) );
+        }
+        else
+        {
+            logger.info( "No default response configured to reply to status {}", response.getStatus() );
+        }
 
         if ( logger.isDebugEnabled() )
         {

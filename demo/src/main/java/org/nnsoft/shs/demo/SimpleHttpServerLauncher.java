@@ -23,6 +23,7 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.exit;
@@ -130,6 +131,7 @@ public final class SimpleHttpServerLauncher
             protected void configure()
             {
                 serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+                when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
             }
 
         } );
