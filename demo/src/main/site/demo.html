@@ -117,18 +117,19 @@
                           },
                           success: function( data )
                           {
-                              printSuccess( data );
+                              printSuccess( 'Server replied <code>'
+                                            + data.status
+                                            + ': '
+                                            + data.responseText
+                                            + '</code>' );
                           },
-                          error: function( jqXHR, textStatus, errorThrown )
+                          error: function( data )
                           {
-                              printError( textStatus );
-                          },
-                          statusCode:
-                          {
-                              404: function()
-                              {
-                                  printError( 'Service not found' );
-                              }
+                              printError( 'Server replied <code>'
+                                          + data.status
+                                          + ': '
+                                          + data.responseText
+                                          + '</code>' );
                           }
                       } );
                   }
