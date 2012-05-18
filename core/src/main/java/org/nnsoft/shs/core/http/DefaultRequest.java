@@ -287,8 +287,8 @@ final class DefaultRequest
     @Override
     public String toString()
     {
-        return format( "Request [method=%s, path=%s, protocolName=%s, protocolVersion=%s, headers=%s, cookies=%s]",
-                       method, path, protocolName, protocolVersion, headers, cookies );
+        return format( "Request [method=%s, path=%s, protocolName=%s, protocolVersion=%s, headers=%s, cookies=%s, queryStringParameters=%s, parameters=%s]",
+                       method, path, protocolName, protocolVersion, headers, cookies, queryStringParameters, parameters );
     }
 
 }
