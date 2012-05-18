@@ -23,7 +23,10 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.nio.channels.Channels.newInputStream;
+import static java.nio.channels.Channels.newOutputStream;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
@@ -101,7 +104,7 @@ final class ClientSocketProcessor
 
         try
         {
-            Request request = new RequestParser( socket.getInputStream() ).parse();
+            Request request = new RequestParser( newInputStream( socket.getChannel() ) ).parse();
 
             if ( logger.isDebugEnabled() )
             {
@@ -111,6 +114,12 @@ final class ClientSocketProcessor
             keepAlive = HTTP_11.equals( request.getProtocolVersion() )
                             || ( request.getHeaders().contains( CONNECTION )
                                             && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( KEEP_ALIVE ) ) );
+            if ( keepAlive )
+            {
+                response.addHeader( CONNECTION, KEEP_ALIVE );
+                response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
+            }
+
             socket.setKeepAlive( keepAlive );
 
             gzipCompressionAccepted = request.getHeaders().contains( ACCEPT_ENCODING )
@@ -157,7 +166,7 @@ final class ClientSocketProcessor
 
         try
         {
-            new ResponseSerializer( socket.getOutputStream(), gzipCompressionAccepted ).serialize( response );
+            new ResponseSerializer( newOutputStream( socket.getChannel() ), gzipCompressionAccepted ).serialize( response );
         }
         catch ( IOException e )
         {
@@ -173,7 +182,7 @@ final class ClientSocketProcessor
                 }
                 catch ( IOException e )
                 {
-                    // swallow it
+                    logger.warn( "An error ocurred while closing the conversation", e );
                 }
             }
 
