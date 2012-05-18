@@ -29,7 +29,6 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
-import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
@@ -84,19 +83,15 @@ public final class SimpleHttpServer
     public void init( HttpServerConfiguration configuratoruration )
         throws InitException
     {
-        checkArgument( configuratoruration != null, "Impossible configure the server with a null configuration" );
-
-        if ( STOPPED != currentStatus.get() )
-        {
-            throw new InitException( "Current server cannot be configured while in %s status.", currentStatus );
-        }
+        checkInitParameter( configuratoruration != null, "Impossible configure the server with a null configuration" );
+        checkInitParameter( STOPPED == currentStatus.get(), "Current server cannot be configured while in %s status.", currentStatus );
 
         DefaultHttpServerConfigurator configurator = new DefaultHttpServerConfigurator();
         configuratoruration.configure( configurator );
-        checkArgument( configurator.getHost() != null, "Impossible bind server to a null host" );
-        checkArgument( configurator.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", configurator.getPort() );
-        checkArgument( configurator.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
-        checkArgument( configurator.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
+        checkInitParameter( configurator.getHost() != null, "Impossible bind server to a null host" );
+        checkInitParameter( configurator.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", configurator.getPort() );
+        checkInitParameter( configurator.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
+        checkInitParameter( configurator.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
 
         logger.info( "Initializing server using {} threads...", configurator.getThreads() );
 
@@ -128,6 +123,23 @@ public final class SimpleHttpServer
         logger.info( "Done! Server has been successfully initialized, it can be now started" );
 
         currentStatus.set( INITIALIZED );
+    }
+
+    /**
+     * Verifies a configuration parameter condition, throwing {@link InitException} if not verified.
+     *
+     * @param condition the condition to check
+     * @param messageTemplate the message template string
+     * @param args the message template arguments
+     * @throws InitException if the input condition is not verified
+     */
+    private static void checkInitParameter( boolean condition, String messageTemplate, Object...args )
+        throws InitException
+    {
+        if ( !condition )
+        {
+            throw new InitException( messageTemplate, args );
+        }
     }
 
     /**
