@@ -188,7 +188,18 @@ public final class ResponseSerializer
 
         if ( gzipCompressionAccepted )
         {
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "Terminating GZip compression..." );
+            }
+
             gzipOutputStream.finish();
+
+
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "GZip compression terminated" );
+            }
         }
     }
 
