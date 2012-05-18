@@ -77,28 +77,24 @@ $( document ).ready( function()
             drop: function( event, ui )
             {
                 var now = new Date();
-                var curr_date = now.getDate();
-                var curr_month = now.getMonth() + 1;
-                var curr_year = now.getFullYear();
 
                 $.ajax(
                 {
                     type: 'POST',
-                    url: '/data/' + curr_year
+                    url: '/data/' + now.getFullYear()
                                   + '/'
-                                  + curr_month
+                                  + ( now.getMonth() + 1 )
                                   + '/'
-                                  + curr_date
+                                  + now.getDate()
                                   + '.txt',
-                    contentType: 'text/plain',
-                    data: curr_year
-                                  + ':'
-                                  + curr_month
-                                  + ':'
-                                  + curr_date
-                                  + ' - '
-                                  + ui.draggable.attr( 'id' )
-                                  + ';\n',
+                    data: {
+                        time: now.getHours()
+                              + ':'
+                              + now.getMinutes()
+                              + ':'
+                              + now.getSeconds(),
+                        objId: ui.draggable.attr( 'id' )
+                    },
                     global: false,
                     beforeSend: function()
                     {
