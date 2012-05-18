@@ -195,7 +195,6 @@ public final class ResponseSerializer
 
             gzipOutputStream.finish();
 
-
             if ( logger.isDebugEnabled() )
             {
                 logger.debug( "GZip compression terminated" );
