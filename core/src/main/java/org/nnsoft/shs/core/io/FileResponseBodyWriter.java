@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.io;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static java.nio.channels.Channels.newChannel;
 
 import java.io.File;
@@ -261,17 +262,7 @@ public final class FileResponseBodyWriter
         }
         finally
         {
-            if ( target != null )
-            {
-                try
-                {
-                    target.close();
-                }
-                catch ( IOException e )
-                {
-                    // swallow it
-                }
-            }
+            closeQuietly( channel );
         }
     }
 
