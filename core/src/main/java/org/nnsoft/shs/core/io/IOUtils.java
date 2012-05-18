@@ -23,10 +23,16 @@ package org.nnsoft.shs.core.io;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.String.format;
+import static java.net.URLDecoder.decode;
 import static java.nio.charset.Charset.forName;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
@@ -35,7 +41,7 @@ import java.nio.charset.Charset;
 public final class IOUtils
 {
 
-    public static final Charset UTF_8 = forName( "UTF-8" );
+    private static final Charset UTF_8 = forName( "UTF-8" );
 
     /**
      * Hidden constructor, this class must not be instantiated.
@@ -43,6 +49,50 @@ public final class IOUtils
     private IOUtils()
     {
         // do nothing
+    }
+
+    /**
+     * Builds a message replacing placeholders in the input template
+     * and encodes the result.
+     *
+     * @param messageTemplate a format string
+     * @param args Arguments referenced by the format specifiers in the format string
+     * @return the UTF-8 encoded formatted ByteBuffer
+     * @see String#format(String, Object...)
+     */
+    public static ByteBuffer utf8Encode( String messageTemplate, Object...args )
+    {
+        return UTF_8.encode( format( messageTemplate, args ) );
+    }
+
+    /**
+     * Decodes the URL encoded input string, in UTF-8.
+     *
+     * @param input the string has to be decoded.
+     * @return the decoded version of input string.
+     */
+    public static String utf8URLDecode( String input )
+    {
+        try
+        {
+            return decode( input, UTF_8.displayName() );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            // should not happen
+            return "";
+        }
+    }
+
+    /**
+     * Allows reading the input stream using the UTF-8 charset.
+     *
+     * @param input the input stream has to be read
+     * @return a UTF-8 reader of the input stream
+     */
+    public static InputStreamReader utf8Reader( InputStream input )
+    {
+        return new InputStreamReader( input, UTF_8 );
     }
 
     /**

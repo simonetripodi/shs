@@ -23,10 +23,10 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.net.URLDecoder.decode;
 import static java.nio.channels.Channels.newInputStream;
 import static java.util.Locale.US;
-import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
+import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
+import static org.nnsoft.shs.core.io.IOUtils.utf8Reader;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.COOKIE;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
@@ -40,7 +40,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.channels.ReadableByteChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -92,7 +91,7 @@ public final class RequestParser
     {
         this.requestChannel = requestChannel;
         this.requestBodyInputStream = newInputStream( requestChannel );
-        bufferedReader = new BufferedReader( new InputStreamReader( requestBodyInputStream, UTF_8 ) );
+        bufferedReader = new BufferedReader( utf8Reader( requestBodyInputStream ) );
     }
 
     public Request parse()
@@ -154,7 +153,7 @@ public final class RequestParser
             }
         }
 
-        request.setPath( decode( path, UTF_8.displayName() ) );
+        request.setPath( utf8URLDecode( path ) );
 
         String protocol = tokenizer.nextToken();
         int versionSeparator = protocol.indexOf( '/' );
@@ -405,8 +404,8 @@ public final class RequestParser
                 String parameter = queryTokenizer.nextToken();
 
                 StringTokenizer parameterTokenizer = new StringTokenizer( parameter, "=" );
-                String parameterName = decode( parameterTokenizer.nextToken(), UTF_8.displayName() );
-                String parameterValue = decode( parameterTokenizer.nextToken(), UTF_8.displayName() );
+                String parameterName = utf8URLDecode( parameterTokenizer.nextToken() );
+                String parameterValue = utf8URLDecode( parameterTokenizer.nextToken() );
 
                 onParameterFound( parameterName, parameterValue );
             }
