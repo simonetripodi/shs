@@ -1,4 +1,4 @@
-package org.nnsoft.shs.io;
+package org.nnsoft.shs.demo;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -23,37 +23,53 @@ package org.nnsoft.shs.io;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.ByteBuffer.wrap;
+import static java.lang.String.format;
+import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 
-import org.nnsoft.shs.http.Request;
+import org.nnsoft.shs.io.ResponseBodyWriter;
 
-/**
- * {@link Request} body are read by RequestBodyReader implementations.
- *
- * This class takes inspiration from <a href="http://sonatype.github.com/async-http-client/request.html">async-http-client</a>
- *
- * @param <T> an arbitrary returned type
- */
-public interface RequestBodyReader<T>
+final class MessageResponseBodyWriter
+    implements ResponseBodyWriter
 {
 
-    /**
-     * Invoked as soon as some {@link Request} body part are received.
-     *
-     * @param contentLength the request body content length
-     * @param requestInputStream the request content body input stream
-     * @return an arbitrary user defined object
-     * @throws IOException if any error occurs while reading the content body input stream
-     */
-    void onBodyPartReceived( ByteBuffer buffer )
-        throws IOException;
+    private final ByteBuffer message;
+
+    public MessageResponseBodyWriter( String messageTemplate, Object...args )
+    {
+        message = wrap( format( messageTemplate, args ).getBytes( UTF_8 ) );
+    }
 
     /**
-     * Invoked once the HTTP request processing is finished.
-     *
-     * @return The object has to be mapped by reading the buffers
+     * {@inheritDoc}
      */
-    T onCompleted();
+    @Override
+    public void write( WritableByteChannel output )
+        throws IOException
+    {
+        output.write( message );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getContentLength()
+    {
+        return message.limit();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String contentType()
+    {
+        return "text/plain";
+    }
 
 }

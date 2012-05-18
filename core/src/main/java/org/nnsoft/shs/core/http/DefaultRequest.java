@@ -23,14 +23,14 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.lang.Long.parseLong;
 import static java.lang.String.format;
+import static java.nio.ByteBuffer.allocateDirect;
 import static java.util.Collections.unmodifiableList;
-import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,7 +57,9 @@ final class DefaultRequest
 
     private String protocolVersion;
 
-    private InputStream contentBody;
+    private ReadableByteChannel contentBody;
+
+    private boolean bodyConsumed = false;
 
     private Session session;
 
@@ -235,7 +237,7 @@ final class DefaultRequest
      *
      * @param contentBody the request content body.
      */
-    public void setContentBody( InputStream contentBody )
+    public void setContentBody( ReadableByteChannel contentBody )
     {
         checkArgument( contentBody != null, "Null contentBody not allowed" );
         this.contentBody = contentBody;
@@ -244,21 +246,33 @@ final class DefaultRequest
     /**
      * {@inheritDoc}
      */
-    public <T> T readRequestBodyInputStream( RequestBodyReader<T> requestBodyReader )
+    public <T> T readRequestBody( RequestBodyReader<T> requestBodyReader )
         throws IOException
     {
         checkArgument( requestBodyReader != null, "Null requestBodyReader not allowed" );
-        if ( contentBody == null )
+
+        if ( contentBody == null || bodyConsumed )
         {
             throw new StreamAlreadyConsumedException();
         }
-        long contentLenth = 1024;
-        if ( headers.contains( CONTENT_LENGTH ) )
+
+        ByteBuffer buffer = allocateDirect( 1024 );
+
+        while ( contentBody.read( buffer ) != -1 )
         {
-            String contentLengthHeader = headers.getFirstValue( CONTENT_LENGTH );
-            contentLenth = parseLong( contentLengthHeader );
+            buffer.flip();
+
+            while ( buffer.hasRemaining() )
+            {
+                requestBodyReader.onBodyPartReceived( buffer );
+            }
+
+            buffer.clear();
         }
-        return requestBodyReader.read( contentLenth, contentBody );
+
+        bodyConsumed = true;
+
+        return requestBodyReader.onCompleted();
     }
 
     /**

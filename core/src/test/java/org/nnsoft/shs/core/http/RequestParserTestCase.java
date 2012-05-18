@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.channels.Channels.newChannel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.nnsoft.shs.http.Request.Method.GET;
@@ -119,7 +120,7 @@ public final class RequestParserTestCase
     private Request parse( String mockRequestString )
         throws Exception
     {
-        return new RequestParser( new ByteArrayInputStream( mockRequestString.getBytes() ) ).parse();
+        return new RequestParser( newChannel( new ByteArrayInputStream( mockRequestString.getBytes() ) ) ).parse();
     }
 
 }

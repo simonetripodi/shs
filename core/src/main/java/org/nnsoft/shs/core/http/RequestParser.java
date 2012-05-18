@@ -24,6 +24,7 @@ package org.nnsoft.shs.core.http;
  */
 
 import static java.net.URLDecoder.decode;
+import static java.nio.channels.Channels.newInputStream;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
@@ -40,6 +41,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.channels.ReadableByteChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -78,15 +80,18 @@ public final class RequestParser
         }
     };
 
+    private final ReadableByteChannel requestChannel;
+
     private final InputStream requestBodyInputStream;
 
     private final BufferedReader bufferedReader;
 
     private final DefaultRequest request = new DefaultRequest();
 
-    public RequestParser( InputStream requestBodyInputStream )
+    public RequestParser( ReadableByteChannel requestChannel )
     {
-        this.requestBodyInputStream = requestBodyInputStream;
+        this.requestChannel = requestChannel;
+        this.requestBodyInputStream = newInputStream( requestChannel );
         bufferedReader = new BufferedReader( new InputStreamReader( requestBodyInputStream, UTF_8 ) );
     }
 
@@ -217,30 +222,25 @@ public final class RequestParser
     private void parseBody()
         throws RequestParseException, IOException
     {
-        String contentType = request.getHeaders().getFirstValue( CONTENT_TYPE );
-        if ( POST == request.getMethod() && "application/x-www-form-urlencoded".equals( contentType ) )
+        if ( logger.isDebugEnabled() )
         {
-            StringBuilder buffer = new StringBuilder();
-            String line = null;
-            while ( (line = bufferedReader.readLine()) != null )
-            {
-                buffer.append( line );
-            }
+            logger.debug( "Processing request body" );
+        }
 
-            new ParameterParser()
-            {
+        if ( POST == request.getMethod() || PUT == request.getMethod() )
+        {
+            request.setContentBody( requestChannel );
 
-                @Override
-                protected void onParameterFound( String parameterName, String parameterValue )
+            if ( request.getHeaders().contains( CONTENT_TYPE )
+                        && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( "application/x-www-form-urlencoded" ) )
+            {
+                if ( logger.isDebugEnabled() )
                 {
-                    request.addParameter( parameterName, parameterValue );
+                    logger.debug( "Processing application/x-www-form-urlencoded request body" );
                 }
 
-            }.parse( buffer.toString() );
-        }
-        else if ( POST == request.getMethod() || PUT == request.getMethod() )
-        {
-            request.setContentBody( requestBodyInputStream );
+                // TODO request.readRequestBody(  );
+            }
         }
     }
 

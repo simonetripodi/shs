@@ -23,16 +23,17 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.Response.Status.CREATED;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.nnsoft.shs.core.io.FileResponseBodyWriter;
 import org.nnsoft.shs.http.BaseRequestHandler;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
-import org.nnsoft.shs.core.io.FileResponseBodyWriter;
 
 /**
  * A simple request handler that serves static files.
@@ -83,6 +84,17 @@ public final class FileRequestHandler
         {
             response.setStatus( NOT_FOUND );
         }
+    }
+
+    @Override
+    protected void post( Request request, Response response )
+        throws IOException
+    {
+        response.setBody( new MessageResponseBodyWriter( "Request received on path '%s' with params: { time: %s; objId: %s }",
+                                                         request.getPath(),
+                                                         request.getParameters().getFirstValue( "time" ),
+                                                         request.getParameters().getFirstValue( "objId" ) ) );
+        response.setStatus( CREATED );
     }
 
 }

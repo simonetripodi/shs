@@ -24,13 +24,12 @@ package org.nnsoft.shs.core.io;
  */
 
 import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
-import static java.nio.channels.Channels.newChannel;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.nio.channels.WritableByteChannel;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -252,13 +251,13 @@ public final class FileResponseBodyWriter
     /**
      * {@inheritDoc}
      */
-    public void write( OutputStream target )
+    public void write( WritableByteChannel target )
         throws IOException
     {
         FileChannel channel = new FileInputStream( toBeTransfered ).getChannel();
         try
         {
-            channel.transferTo( 0, toBeTransfered.length(), newChannel( target ) );
+            channel.transferTo( 0, toBeTransfered.length(), target );
         }
         finally
         {

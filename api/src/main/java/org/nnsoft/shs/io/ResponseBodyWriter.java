@@ -24,7 +24,7 @@ package org.nnsoft.shs.io;
  */
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.channels.WritableByteChannel;
 
 /**
  * Response body are generated via ResponseBodyWriter implementations.
@@ -52,7 +52,7 @@ public interface ResponseBodyWriter
      * @param output the target output where body has to be generated
      * @throws IOException is any error occurs during the body generation
      */
-    void write( OutputStream output )
+    void write( WritableByteChannel output )
         throws IOException;
 
 }

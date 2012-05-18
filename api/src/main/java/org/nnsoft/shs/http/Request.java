@@ -147,7 +147,7 @@ public interface Request
      * @return the request body input stream.
      * @throws IOException if any error occurs while opening the request body stream.
      */
-    <T> T readRequestBodyInputStream( RequestBodyReader<T> requestBodyReader )
+    <T> T readRequestBody( RequestBodyReader<T> requestBodyReader )
                     throws IOException;
 
 }

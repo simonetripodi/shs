@@ -25,13 +25,17 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.nio.ByteBuffer.wrap;
+import static java.nio.channels.Channels.newChannel;
+import static java.nio.channels.Channels.newOutputStream;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.UTF_8;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
@@ -55,9 +59,9 @@ public final class ResponseSerializer
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
-    private static final byte[] END_PADDING = "\r\n".getBytes( UTF_8 );
+    private static final ByteBuffer END_PADDING = wrap( "\r\n".getBytes( UTF_8 ) );
 
-    private final OutputStream target;
+    private final WritableByteChannel target;
 
     private final boolean gzipCompressionAccepted;
 
@@ -69,7 +73,7 @@ public final class ResponseSerializer
      * @param target the non null output stream.
      * @param gzipCompressionAccepted if client supports gzip compression
      */
-    public ResponseSerializer( OutputStream target, boolean gzipCompressionAccepted )
+    public ResponseSerializer( WritableByteChannel target, boolean gzipCompressionAccepted )
     {
         checkArgument( target != null, "Null OutputStream target not allowd." );
         this.target = target;
@@ -167,7 +171,8 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        OutputStream responseOutputStream = target;
+        WritableByteChannel responseChannel = target;
+        GZIPOutputStream gzipOutputStream = null;
         if ( gzipCompressionAccepted )
         {
             if ( logger.isDebugEnabled() )
@@ -175,14 +180,15 @@ public final class ResponseSerializer
                 logger.debug( "Streaming response using GZip compression, accepted by client" );
             }
 
-            responseOutputStream = new GZIPOutputStream( target );
+            gzipOutputStream = new GZIPOutputStream( newOutputStream( target ) );
+            responseChannel = newChannel( gzipOutputStream );
         }
 
-        response.getBodyWriter().write( responseOutputStream );
+        response.getBodyWriter().write( responseChannel );
 
-        if ( responseOutputStream instanceof GZIPOutputStream )
+        if ( gzipCompressionAccepted )
         {
-            ( (GZIPOutputStream) responseOutputStream ).finish();
+            gzipOutputStream.finish();
         }
     }
 
@@ -203,7 +209,7 @@ public final class ResponseSerializer
             logger.debug( "> {}", message );
         }
 
-        target.write( message.getBytes( UTF_8 ) );
+        target.write( wrap( message.getBytes( UTF_8 ) ) );
         target.write( END_PADDING );
     }
 

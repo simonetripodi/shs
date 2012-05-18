@@ -28,7 +28,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.channels.WritableByteChannel;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -160,7 +160,7 @@ final class DefaultResponse
         /**
          * {@inheritDoc}
          */
-        public void write( OutputStream output )
+        public void write( WritableByteChannel output )
             throws IOException
         {
             // do nothing

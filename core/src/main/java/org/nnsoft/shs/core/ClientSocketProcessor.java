@@ -25,8 +25,6 @@ package org.nnsoft.shs.core;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static java.nio.channels.Channels.newInputStream;
-import static java.nio.channels.Channels.newOutputStream;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
@@ -104,7 +102,7 @@ final class ClientSocketProcessor
 
         try
         {
-            Request request = new RequestParser( newInputStream( socket.getChannel() ) ).parse();
+            Request request = new RequestParser( socket.getChannel() ).parse();
 
             if ( logger.isDebugEnabled() )
             {
@@ -166,7 +164,7 @@ final class ClientSocketProcessor
 
         try
         {
-            new ResponseSerializer( newOutputStream( socket.getChannel() ), gzipCompressionAccepted ).serialize( response );
+            new ResponseSerializer( socket.getChannel(), gzipCompressionAccepted ).serialize( response );
         }
         catch ( IOException e )
         {
@@ -174,7 +172,7 @@ final class ClientSocketProcessor
         }
         finally
         {
-            if ( socket != null && !socket.isClosed() && !keepAlive )
+            if ( socket != null && !socket.isClosed() /*&& !keepAlive*/ )
             {
                 try
                 {
