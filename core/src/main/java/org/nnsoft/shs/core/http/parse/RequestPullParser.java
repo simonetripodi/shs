@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.nnsoft.shs.core.io.IOUtils.utf8Decode;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 import java.nio.ByteBuffer;
@@ -31,12 +32,15 @@ import java.util.Map;
 
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.http.Request;
+import org.slf4j.Logger;
 
 /**
  * A {@link Request} pull parser that incrementally rebuilds the HTTP Request.
  */
 public final class RequestPullParser
 {
+
+    private static final Logger logger = getLogger( RequestPullParser.class );
 
     private static final char CARRIAGE_RETURN = '\r';
 
@@ -60,6 +64,7 @@ public final class RequestPullParser
     {
         parserTriggers.put( METHOD, new MethodParserTrigger() );
         parserTriggers.put( PATH, new PathParserTrigger() );
+        parserTriggers.put( PROTOCOL_VERSION, new VersionParserTrigger() );
     }
 
     public void onRequestPartRead( ByteBuffer messageBuffer )
@@ -89,7 +94,10 @@ public final class RequestPullParser
                         break;
                     }
 
-                    System.out.println( status + " >>>>>>> " + token );
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "New token consumed: {} ({})", token, status );
+                    }
 
                     parserTriggers.get( status ).onToken( status, token, request );
 
