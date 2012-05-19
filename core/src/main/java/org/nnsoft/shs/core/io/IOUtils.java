@@ -65,6 +65,11 @@ public final class IOUtils
         return UTF_8.encode( format( messageTemplate, args ) );
     }
 
+    public static String utf8Decode( ByteBuffer buffer )
+    {
+        return UTF_8.decode( buffer ).toString();
+    }
+
     /**
      * Decodes the URL encoded input string, in UTF-8.
      *
