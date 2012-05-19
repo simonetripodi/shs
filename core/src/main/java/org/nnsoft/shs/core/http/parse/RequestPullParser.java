@@ -24,7 +24,7 @@ package org.nnsoft.shs.core.http.parse;
  */
 
 import static org.nnsoft.shs.core.io.IOUtils.utf8Decode;
-import static org.nnsoft.shs.core.http.parse.ParserStatus.METHOD;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
@@ -46,8 +46,6 @@ public final class RequestPullParser
 
     private static final char HEADER_SEPARATOR = ';';
 
-    private static final char QUERY_STRING_SEPARATOR = '?';
-
     private final MutableRequest request = new MutableRequest();
 
     private final Map<ParserStatus, ParserTrigger> parserTriggers = new EnumMap<ParserStatus, ParserTrigger>( ParserStatus.class );
@@ -61,6 +59,7 @@ public final class RequestPullParser
     public RequestPullParser()
     {
         parserTriggers.put( METHOD, new MethodParserTrigger() );
+        parserTriggers.put( PATH, new PathParserTrigger() );
     }
 
     public void onRequestPartRead( ByteBuffer messageBuffer )
