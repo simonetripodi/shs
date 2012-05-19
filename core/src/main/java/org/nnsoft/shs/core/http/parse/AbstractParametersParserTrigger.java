@@ -24,6 +24,8 @@ package org.nnsoft.shs.core.http.parse;
  */
 
 import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
+import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
+
 import org.nnsoft.shs.core.http.RequestParseException;
 
 abstract class AbstractParametersParserTrigger
@@ -41,7 +43,7 @@ abstract class AbstractParametersParserTrigger
             namePtr = token;
             return PARAM_VALUE;
         }
-        onParameterFound( namePtr, token, request );
+        onParameterFound( utf8URLDecode( namePtr ), utf8URLDecode( token ), request );
         return PARAM_NAME;
     }
 
