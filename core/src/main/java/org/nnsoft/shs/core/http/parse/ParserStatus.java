@@ -29,10 +29,12 @@ package org.nnsoft.shs.core.http.parse;
 public enum ParserStatus
 {
 
-    HEADER_VALUE,
-    HEADER_NAME,
-    PROTOCOL_VERSION,
+    METHOD,
     PATH,
-    METHOD;
+    PROTOCOL_VERSION,
+    PARAM_NAME,
+    PARAM_VALUE,
+    HEADER_VALUE,
+    HEADER_NAME;
 
 }

@@ -23,21 +23,28 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_VERSION;
-import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
-
+import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 import org.nnsoft.shs.core.http.RequestParseException;
 
-final class PathParserTrigger
+abstract class AbstractParametersParserTrigger
     implements ParserTrigger
 {
+
+    private String namePtr;
 
     @Override
     public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
-        request.setPath( utf8URLDecode( token ) );
-        return PROTOCOL_VERSION;
+        if ( PARAM_NAME == status )
+        {
+            namePtr = token;
+            return PARAM_VALUE;
+        }
+        onParameterFound( namePtr, token, request );
+        return PARAM_NAME;
     }
+
+    protected abstract void onParameterFound( String name, String value, MutableRequest request );
 
 }

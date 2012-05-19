@@ -50,6 +50,12 @@ public final class RequestPullParser
 
     private static final char HEADER_SEPARATOR = ';';
 
+    private static final char QUERY_STRING_SEPARATOR = '?';
+
+    private static final char PARAMETER_SEPARATOR = '&';
+
+    private static final char KEY_VALUE_SEPARATOR = '=';
+
     private final MutableRequest request = new MutableRequest();
 
     private final Map<ParserStatus, ParserTrigger> parserTriggers = new EnumMap<ParserStatus, ParserTrigger>( ParserStatus.class );
@@ -62,9 +68,18 @@ public final class RequestPullParser
 
     public RequestPullParser()
     {
-        parserTriggers.put( METHOD, new MethodParserTrigger() );
-        parserTriggers.put( PATH, new PathParserTrigger() );
-        parserTriggers.put( PROTOCOL_VERSION, new VersionParserTrigger() );
+        registerTrigger( new MethodParserTrigger(), METHOD );
+        registerTrigger( new PathParserTrigger(), PATH );
+        registerTrigger( new VersionParserTrigger(), PROTOCOL_VERSION );
+        registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
+    }
+
+    private void registerTrigger( ParserTrigger trigger, ParserStatus...parserStatuses )
+    {
+        for ( ParserStatus parserStatus : parserStatuses )
+        {
+            parserTriggers.put( parserStatus, trigger );
+        }
     }
 
     public void onRequestPartRead( ByteBuffer messageBuffer )
@@ -84,8 +99,22 @@ public final class RequestPullParser
                     break;
 
                 case TOKEN_SEPARATOR:
+                    tokenFound();
+                    if ( PARAM_NAME == status )
+                    {
+                        status = PROTOCOL_VERSION;
+                    }
+                    break;
+
+                case KEY_VALUE_SEPARATOR:
                 case NEW_LINE:
                     tokenFound();
+                    break;
+
+                case PARAMETER_SEPARATOR:
+                case QUERY_STRING_SEPARATOR:
+                    tokenFound();
+                    status = PARAM_NAME;
                     break;
 
                 case HEADER_SEPARATOR:
