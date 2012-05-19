@@ -30,10 +30,16 @@ import java.util.Arrays;
 
 import org.nnsoft.shs.core.http.RequestParseException;
 
+/**
+ * Trigger for the HTTP request method.
+ */
 final class MethodParserTrigger
     implements ParserTrigger
 {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
