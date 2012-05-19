@@ -25,9 +25,20 @@ package org.nnsoft.shs.core.http.parse;
 
 import org.nnsoft.shs.core.http.RequestParseException;
 
-public interface ParserTrigger
+/**
+ * ParserTrigger instances are invoked depending on the {@link ParserStatus}.
+ */
+interface ParserTrigger
 {
 
+    /**
+     * Performs an parse action on the input token, adding data to the request, depending on the parser status.
+     *
+     * @param status the current parser status.
+     * @param token the consumed token.
+     * @param request the request that the parser is currently building
+     * @throws RequestParseException if any syntax error occurs
+     */
     void onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException;
 
