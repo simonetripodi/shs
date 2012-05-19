@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_VERSION;
 import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
 import static org.nnsoft.shs.http.Request.Method.GET;
 
@@ -41,7 +42,7 @@ final class PathParserTrigger
     private static final String KEY_VALUE_SEPARATOR = "=";
 
     @Override
-    public void onToken( ParserStatus status, String token, MutableRequest request )
+    public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
         String path = token;
@@ -70,6 +71,7 @@ final class PathParserTrigger
         }
 
         request.setPath( utf8URLDecode( path ) );
+        return PROTOCOL_VERSION;
     }
 
 }

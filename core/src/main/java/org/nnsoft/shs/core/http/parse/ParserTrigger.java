@@ -39,7 +39,7 @@ interface ParserTrigger
      * @param request the request that the parser is currently building
      * @throws RequestParseException if any syntax error occurs
      */
-    void onToken( ParserStatus status, String token, MutableRequest request )
+    ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException;
 
 }

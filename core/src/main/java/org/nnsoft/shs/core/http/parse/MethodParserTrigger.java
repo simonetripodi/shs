@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PATH;
 import static org.nnsoft.shs.http.Request.Method.valueOf;
 import static org.nnsoft.shs.http.Request.Method.values;
 
@@ -41,12 +42,13 @@ final class MethodParserTrigger
      * {@inheritDoc}
      */
     @Override
-    public void onToken( ParserStatus status, String token, MutableRequest request )
+    public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
         try
         {
             request.setMethod( valueOf( token ) );
+            return PATH;
         }
         catch ( IllegalArgumentException e )
         {

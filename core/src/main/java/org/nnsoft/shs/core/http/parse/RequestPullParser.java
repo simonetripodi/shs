@@ -85,28 +85,18 @@ public final class RequestPullParser
 
                 case TOKEN_SEPARATOR:
                 case NEW_LINE:
-                    String token = getToken();
-
-                    if ( token.isEmpty() )
-                    {
-                        // TODO check Content-Length header
-                        messageComplete = true;
-                        break;
-                    }
-
-                    if ( logger.isDebugEnabled() )
-                    {
-                        logger.debug( "New token consumed: {} ({})", token, status );
-                    }
-
-                    parserTriggers.get( status ).onToken( status, token, request );
-
-                    status = status.getNext();
+                    tokenFound();
                     break;
 
                 case HEADER_SEPARATOR:
-                    String headerToken = getToken();
-
+                    if ( HEADER_VALUE == status )
+                    {
+                        accumulator.append( current );
+                    }
+                    else
+                    {
+                        tokenFound();
+                    }
                     break;
 
                 default:
@@ -116,11 +106,19 @@ public final class RequestPullParser
         }
     }
 
-    private String getToken()
+    private void tokenFound()
+        throws RequestParseException
     {
         String token = accumulator.toString();
+
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "New token consumed: {} ({})", token, status );
+        }
+
         accumulator = new StringBuilder();
-        return token;
+
+        status = parserTriggers.get( status ).onToken( status, token, request );
     }
 
     public boolean isMessageReceivedCompletely()
