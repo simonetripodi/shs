@@ -25,6 +25,7 @@ package org.nnsoft.shs.core.http.parse;
 
 import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.nnsoft.shs.http.Request.Method.GET;
 
 import org.junit.Test;
@@ -44,6 +45,19 @@ public final class RequestPullParserTestCase
         assertEquals( "/index.html", request.getPath() );
         assertEquals( "HTTP", request.getProtocolName() );
         assertEquals( "1.1", request.getProtocolVersion() );
+    }
+
+    @Test
+    public void queryStringParameters()
+        throws Exception
+    {
+        String simpleRequest = "GET /index.php?foo=xy&bar=zw HTTP/1.1\n";
+        Request request = parse( simpleRequest );
+
+        assertTrue( request.getQueryStringParameters().contains( "foo" ) );
+        assertEquals( "xy", request.getQueryStringParameters().getFirstValue( "foo" ) );
+        assertTrue( request.getQueryStringParameters().contains( "bar" ) );
+        assertEquals( "zw", request.getQueryStringParameters().getFirstValue( "bar" ) );
     }
 
     private Request parse( String mockRequestString )
