@@ -105,6 +105,8 @@ public final class RequestPullParser
                     break;
 
                 case HEADER_SEPARATOR:
+                    String headerToken = getToken();
+
                     break;
 
                 default:
