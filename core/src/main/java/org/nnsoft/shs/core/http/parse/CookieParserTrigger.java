@@ -23,8 +23,8 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_COOKIE_NAME;
-import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_COOKIE_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_VALUE;
 
 import org.nnsoft.shs.core.http.CookieBuilder;
 import org.nnsoft.shs.core.http.RequestParseException;
@@ -39,14 +39,14 @@ final class CookieParserTrigger
     public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
-        if ( HEADER_COOKIE_NAME == status )
+        if ( COOKIE_NAME == status )
         {
             cookieBuilder = new CookieBuilder().setName( token );
-            return HEADER_COOKIE_VALUE;
+            return COOKIE_VALUE;
         }
 
         request.addCookie( cookieBuilder.setValue( token ).build() );
-        return HEADER_COOKIE_NAME;
+        return COOKIE_NAME;
     }
 
 }

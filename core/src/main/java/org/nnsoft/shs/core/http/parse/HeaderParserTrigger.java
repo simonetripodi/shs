@@ -24,7 +24,7 @@ package org.nnsoft.shs.core.http.parse;
  */
 
 import static java.lang.Long.parseLong;
-import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_COOKIE_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_USER_AGENT_VALUE;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_VALUE;
@@ -55,7 +55,7 @@ final class HeaderParserTrigger
             else if ( COOKIE.equals( headerNamePtr ) )
             {
                 headerNamePtr = null; // no longer needed
-                return HEADER_COOKIE_NAME; // switch to cookie trigger
+                return COOKIE_NAME; // switch to cookie trigger
             }
         }
         else
