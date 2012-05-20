@@ -71,6 +71,50 @@ public final class RequestPullParserTestCase
         assertTrue( request.getQueryStringParameters().getValues( "foo" ).contains( "zw" ) );
     }
 
+    @Test
+    public void verifyParsedHeaders()
+        throws Exception
+    {
+        String simpleRequest = "GET /index.html HTTP/1.1\n"
+                                + "Host: www.google.nl\n"
+                                + "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5\n"
+                                + "Accept-Language: en-us,en;q=0.5\n"
+                                + "Accept-Encoding: gzip,deflate\n"
+                                + "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
+                                + "Keep-Alive: 300\n"
+                                + "Connection: keep-alive\n"
+                                + "Referer: http://www.google.nl/index.html\n";
+        Request request = parse( simpleRequest );
+
+        assertEquals( "www.google.nl", request.getHeaders().getFirstValue( "Host" ) );
+
+        // Accept header
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/xml" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "application/xml" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "application/xhtml+xml" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/html;q=0.9" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/plain;q=0.8" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "image/png" ) );
+        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "*/*;q=0.5" ) );
+
+        // Accept-Language
+        assertTrue( request.getHeaders().getValues( "Accept-Language" ).contains( "en-us" ) );
+        assertTrue( request.getHeaders().getValues( "Accept-Language" ).contains( "en;q=0.5" ) );
+
+        // Accept-Encoding
+        assertTrue( request.getHeaders().getValues( "Accept-Encoding" ).contains( "gzip" ) );
+        assertTrue( request.getHeaders().getValues( "Accept-Encoding" ).contains( "deflate" ) );
+
+        // Accept-Charset
+        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "ISO-8859-1" ) );
+        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "utf-8;q=0.7" ) );
+        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "*;q=0.7" ) );
+
+        assertEquals( "300", request.getHeaders().getFirstValue( "Keep-Alive" ) );
+        assertEquals( "keep-alive", request.getHeaders().getFirstValue( "Connection" ) );
+        assertEquals( "http://www.google.nl/index.html", request.getHeaders().getFirstValue( "Referer" ) );
+    }
+
     private Request parse( String mockRequestString )
         throws Exception
     {
