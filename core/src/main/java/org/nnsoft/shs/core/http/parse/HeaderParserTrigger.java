@@ -1,5 +1,6 @@
 package org.nnsoft.shs.core.http.parse;
 
+import static java.lang.Long.parseLong;
 import static org.nnsoft.shs.http.Headers.USER_AGENT;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.COOKIE;
@@ -21,7 +22,7 @@ final class HeaderParserTrigger
         {
             headerNamePtr = token;
 
-            if ( USER_AGENT.equals( headerNamePtr ) )
+            /* if ( USER_AGENT.equals( headerNamePtr ) )
             {
                 return HEADER_USER_AGENT_VALUE;
             }
@@ -32,11 +33,24 @@ final class HeaderParserTrigger
             else if ( COOKIE.equals( headerNamePtr ) )
             {
                 return HEADER_COOKIE_VALUE;
-            }
+            } */
         }
         else
         {
             request.addHeader( headerNamePtr, token );
+
+            if ( CONTENT_LENGTH.equals( headerNamePtr ) )
+            {
+                try
+                {
+                    request.setContentLength( parseLong( token ) );
+                }
+                catch ( NumberFormatException e )
+                {
+                    throw new RequestParseException( "{} header value {} is not a numeric format",
+                                                     CONTENT_LENGTH, token );
+                }
+            }
         }
         return HEADER_VALUE;
     }
