@@ -58,6 +58,10 @@ public final class RequestPullParser
 
     private static final char PROTOCOL_VERSION_SEPARATOR = '/';
 
+    private static final char HEADER_NAME_SEPARATOR = ':';
+
+    private static final char HEADER_VALUES_SEPARATOR = ',';
+
     private final MutableRequest request = new MutableRequest();
 
     private final Map<ParserStatus, ParserTrigger> parserTriggers = new EnumMap<ParserStatus, ParserTrigger>( ParserStatus.class );
@@ -75,6 +79,7 @@ public final class RequestPullParser
         registerTrigger( new ProtocolNameParserTrigger(), PROTOCOL_NAME );
         registerTrigger( new ProtocolVersionParserTrigger(), PROTOCOL_VERSION );
         registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
+        registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE );
     }
 
     private void registerTrigger( ParserTrigger trigger, ParserStatus...parserStatuses )
@@ -102,7 +107,14 @@ public final class RequestPullParser
                     break;
 
                 case TOKEN_SEPARATOR:
-                    if ( HEADER_VALUE == status )
+                    if ( accumulator.length() == 0 ) // trim initial spaces
+                    {
+                        break;
+                    }
+
+                    if ( HEADER_VALUE == status
+                         || HEADER_USER_AGENT_VALUE == status
+                         || HEADER_COOKIE_VALUE == status )
                     {
                         append( current );
                     }
@@ -128,7 +140,28 @@ public final class RequestPullParser
                     break;
 
                 case KEY_VALUE_SEPARATOR:
-                case NEW_LINE:
+                    if ( HEADER_VALUE == status )
+                    {
+                        append( current );
+                    }
+                    else
+                    {
+                        tokenFound();
+                    }
+                    break;
+
+                case HEADER_NAME_SEPARATOR:
+                    if ( HEADER_VALUE == status )
+                    {
+                        append( current );
+                    }
+                    else
+                    {
+                        tokenFound();
+                    }
+                    break;
+
+                case HEADER_VALUES_SEPARATOR:
                     tokenFound();
                     break;
 
@@ -136,6 +169,14 @@ public final class RequestPullParser
                 case QUERY_STRING_SEPARATOR:
                     tokenFound();
                     status = PARAM_NAME;
+                    break;
+
+                case NEW_LINE:
+                    tokenFound();
+                    if ( HEADER_VALUE == status )
+                    {
+                        status = HEADER_NAME;
+                    }
                     break;
 
                 case HEADER_SEPARATOR:
