@@ -80,7 +80,7 @@ public final class RequestPullParser
         registerTrigger( new PathParserTrigger(), PATH );
         registerTrigger( new ProtocolNameParserTrigger(), PROTOCOL_NAME );
         registerTrigger( new ProtocolVersionParserTrigger(), PROTOCOL_VERSION );
-        registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
+        registerTrigger( new QueryStringParametersParserTrigger(), QS_PARAM_NAME, QS_PARAM_VALUE );
         registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE, HEADER_USER_AGENT_VALUE, COOKIE_VALUE );
         registerTrigger( new CookieParserTrigger(), COOKIE_NAME, COOKIE_VALUE );
     }
@@ -124,7 +124,7 @@ public final class RequestPullParser
                     else
                     {
                         tokenFound();
-                        if ( PARAM_NAME == status )
+                        if ( QS_PARAM_NAME == status )
                         {
                             status = PROTOCOL_NAME;
                         }
@@ -178,7 +178,7 @@ public final class RequestPullParser
                 case PARAMETER_SEPARATOR:
                 case QUERY_STRING_SEPARATOR:
                     tokenFound();
-                    status = PARAM_NAME;
+                    status = QS_PARAM_NAME;
                     break;
 
                 case NEW_LINE:

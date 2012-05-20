@@ -23,9 +23,17 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.http.parse.ParserStatus.QS_PARAM_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.QS_PARAM_VALUE;
+
 final class QueryStringParametersParserTrigger
     extends AbstractParametersParserTrigger
 {
+
+    public QueryStringParametersParserTrigger()
+    {
+        super( QS_PARAM_NAME, QS_PARAM_VALUE );
+    }
 
     @Override
     protected void onParameterFound( String name, String value, MutableRequest request )

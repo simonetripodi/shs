@@ -23,7 +23,6 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
 
 import org.nnsoft.shs.core.http.RequestParseException;
@@ -32,19 +31,29 @@ abstract class AbstractParametersParserTrigger
     implements ParserTrigger
 {
 
+    private final ParserStatus paramNameStatus;
+
+    private final ParserStatus paramValueStatus;
+
+    public AbstractParametersParserTrigger( ParserStatus paramNameStatus, ParserStatus paramValueStatus )
+    {
+        this.paramNameStatus = paramNameStatus;
+        this.paramValueStatus = paramValueStatus;
+    }
+
     private String namePtr;
 
     @Override
     public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
-        if ( PARAM_NAME == status )
+        if ( paramNameStatus == status )
         {
             namePtr = token;
-            return PARAM_VALUE;
+            return paramValueStatus;
         }
         onParameterFound( utf8URLDecode( namePtr ), utf8URLDecode( token ), request );
-        return PARAM_NAME;
+        return paramNameStatus;
     }
 
     protected abstract void onParameterFound( String name, String value, MutableRequest request );
