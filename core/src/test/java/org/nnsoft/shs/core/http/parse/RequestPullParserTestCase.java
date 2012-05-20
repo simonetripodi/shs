@@ -30,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 import static org.nnsoft.shs.http.Request.Method.GET;
 
 import org.junit.Test;
+import org.nnsoft.shs.core.http.CookieBuilder;
+import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Request;
 
 public final class RequestPullParserTestCase
@@ -126,6 +128,21 @@ public final class RequestPullParserTestCase
 
         assertEquals( "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)",
                       request.getHeaders().getFirstValue( USER_AGENT ) );
+    }
+
+    @Test
+    public void verifyCookiesHeader()
+        throws Exception
+    {
+        Cookie expected1 = new CookieBuilder().setName( "name" ).setValue( "value" ).build();
+        Cookie expected2 = new CookieBuilder().setName( "name2" ).setValue( "value2" ).build();
+
+        String simpleRequest = "GET /index.html HTTP/1.1\n"
+                                + "Cookie: name=value; name2=value2\n";
+        Request request = parse( simpleRequest );
+
+        assertTrue( request.getCookies().contains( expected1 ) );
+        assertTrue( request.getCookies().contains( expected2 ) );
     }
 
     private Request parse( String mockRequestString )

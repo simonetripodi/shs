@@ -80,6 +80,7 @@ public final class RequestPullParser
         registerTrigger( new ProtocolVersionParserTrigger(), PROTOCOL_VERSION );
         registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
         registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE, HEADER_USER_AGENT_VALUE, HEADER_COOKIE_VALUE );
+        registerTrigger( new CookieParserTrigger(), HEADER_COOKIE_NAME, HEADER_COOKIE_VALUE );
     }
 
     private void registerTrigger( ParserTrigger trigger, ParserStatus...parserStatuses )
@@ -140,7 +141,7 @@ public final class RequestPullParser
                     break;
 
                 case KEY_VALUE_SEPARATOR:
-                    if ( HEADER_VALUE == status )
+                    if ( HEADER_VALUE == status || HEADER_COOKIE_VALUE == status )
                     {
                         append( current );
                     }
