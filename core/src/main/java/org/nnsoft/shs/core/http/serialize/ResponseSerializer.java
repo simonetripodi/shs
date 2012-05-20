@@ -1,4 +1,4 @@
-package org.nnsoft.shs.core.http;
+package org.nnsoft.shs.core.http.serialize;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
