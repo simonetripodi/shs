@@ -107,6 +107,7 @@ public final class SessionManager
             sessionsCleaner.schedule( new SessionRemoverTimerTask( sessionsRegistry, session.getId() ), sessionMaxAge );
 
             response.addCookie( new CookieBuilder()
+                                    .setDomain( request.getServerHost() )
                                     .setName( SESSION_NAME )
                                     .setValue( session.getId().toString() )
                                     .setPath( "/" )
