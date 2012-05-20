@@ -56,6 +56,8 @@ public final class RequestPullParser
 
     private static final char KEY_VALUE_SEPARATOR = '=';
 
+    private static final char PROTOCOL_VERSION_SEPARATOR = '/';
+
     private final MutableRequest request = new MutableRequest();
 
     private final Map<ParserStatus, ParserTrigger> parserTriggers = new EnumMap<ParserStatus, ParserTrigger>( ParserStatus.class );
@@ -70,7 +72,8 @@ public final class RequestPullParser
     {
         registerTrigger( new MethodParserTrigger(), METHOD );
         registerTrigger( new PathParserTrigger(), PATH );
-        registerTrigger( new VersionParserTrigger(), PROTOCOL_VERSION );
+        registerTrigger( new ProtocolNameParserTrigger(), PROTOCOL_NAME );
+        registerTrigger( new ProtocolVersionParserTrigger(), PROTOCOL_VERSION );
         registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
     }
 
@@ -102,7 +105,18 @@ public final class RequestPullParser
                     tokenFound();
                     if ( PARAM_NAME == status )
                     {
-                        status = PROTOCOL_VERSION;
+                        status = PROTOCOL_NAME;
+                    }
+                    break;
+
+                case PROTOCOL_VERSION_SEPARATOR:
+                    if ( PROTOCOL_NAME == status )
+                    {
+                        tokenFound();
+                    }
+                    else
+                    {
+                        accumulator.append( current );
                     }
                     break;
 

@@ -23,12 +23,10 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_NAME;
-import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
-
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
 import org.nnsoft.shs.core.http.RequestParseException;
 
-final class PathParserTrigger
+final class ProtocolVersionParserTrigger
     implements ParserTrigger
 {
 
@@ -36,8 +34,9 @@ final class PathParserTrigger
     public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
-        request.setPath( utf8URLDecode( token ) );
-        return PROTOCOL_NAME;
+        request.setProtocolVersion( token );
+
+        return HEADER_NAME;
     }
 
 }

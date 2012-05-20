@@ -31,6 +31,7 @@ public enum ParserStatus
 
     METHOD,
     PATH,
+    PROTOCOL_NAME,
     PROTOCOL_VERSION,
     PARAM_NAME,
     PARAM_VALUE,

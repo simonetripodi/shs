@@ -23,10 +23,10 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 import org.nnsoft.shs.core.http.RequestParseException;
 
-final class VersionParserTrigger
+final class ProtocolNameParserTrigger
     implements ParserTrigger
 {
 
@@ -34,14 +34,8 @@ final class VersionParserTrigger
     public ParserStatus onToken( ParserStatus status, String token, MutableRequest request )
         throws RequestParseException
     {
-        int versionSeparator = token.indexOf( '/' );
-        String protocolName = token.substring( 0, versionSeparator++ );
-        String protocolVersion = token.substring( versionSeparator );
-
-        request.setProtocolName( protocolName );
-        request.setProtocolVersion( protocolVersion );
-
-        return HEADER_NAME;
+        request.setProtocolName( token );
+        return PROTOCOL_VERSION;
     }
 
 }
