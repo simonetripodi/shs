@@ -274,7 +274,7 @@ public final class RequestStreamingParser
     {
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "{} trigger char: {} -> next status {}", new Object[] { status, trigger, newStatus } );
+            logger.debug( "{} trigger char: `{}' -> next status {}", new Object[] { status, trigger, newStatus } );
         }
         status = newStatus;
     }
