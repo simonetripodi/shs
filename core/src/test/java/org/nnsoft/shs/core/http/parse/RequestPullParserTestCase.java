@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.http.Headers.*;
 import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -89,30 +90,42 @@ public final class RequestPullParserTestCase
         assertEquals( "www.google.nl", request.getHeaders().getFirstValue( "Host" ) );
 
         // Accept header
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/xml" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "application/xml" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "application/xhtml+xml" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/html;q=0.9" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "text/plain;q=0.8" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "image/png" ) );
-        assertTrue( request.getHeaders().getValues( "Accept" ).contains( "*/*;q=0.5" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "text/xml" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "application/xml" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "application/xhtml+xml" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "text/html;q=0.9" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "text/plain;q=0.8" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "image/png" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT ).contains( "*/*;q=0.5" ) );
 
         // Accept-Language
-        assertTrue( request.getHeaders().getValues( "Accept-Language" ).contains( "en-us" ) );
-        assertTrue( request.getHeaders().getValues( "Accept-Language" ).contains( "en;q=0.5" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_LANGUAGE ).contains( "en-us" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_LANGUAGE ).contains( "en;q=0.5" ) );
 
         // Accept-Encoding
-        assertTrue( request.getHeaders().getValues( "Accept-Encoding" ).contains( "gzip" ) );
-        assertTrue( request.getHeaders().getValues( "Accept-Encoding" ).contains( "deflate" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_ENCODING ).contains( "gzip" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_ENCODING ).contains( "deflate" ) );
 
         // Accept-Charset
-        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "ISO-8859-1" ) );
-        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "utf-8;q=0.7" ) );
-        assertTrue( request.getHeaders().getValues( "Accept-Charset" ).contains( "*;q=0.7" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_CHARSET ).contains( "ISO-8859-1" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_CHARSET ).contains( "utf-8;q=0.7" ) );
+        assertTrue( request.getHeaders().getValues( ACCEPT_CHARSET ).contains( "*;q=0.7" ) );
 
-        assertEquals( "300", request.getHeaders().getFirstValue( "Keep-Alive" ) );
-        assertEquals( "keep-alive", request.getHeaders().getFirstValue( "Connection" ) );
-        assertEquals( "http://www.google.nl/index.html", request.getHeaders().getFirstValue( "Referer" ) );
+        assertEquals( "300", request.getHeaders().getFirstValue( KEEP_ALIVE ) );
+        assertEquals( "keep-alive", request.getHeaders().getFirstValue( CONNECTION ) );
+        assertEquals( "http://www.google.nl/index.html", request.getHeaders().getFirstValue( REFERER ) );
+    }
+
+    @Test
+    public void verifyUserAgentHeader()
+        throws Exception
+    {
+        String simpleRequest = "GET /index.html HTTP/1.1\n"
+                                + "User-Agent: Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)\n";
+        Request request = parse( simpleRequest );
+
+        assertEquals( "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)",
+                      request.getHeaders().getFirstValue( USER_AGENT ) );
     }
 
     private Request parse( String mockRequestString )

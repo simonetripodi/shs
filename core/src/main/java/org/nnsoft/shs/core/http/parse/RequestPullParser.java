@@ -79,7 +79,7 @@ public final class RequestPullParser
         registerTrigger( new ProtocolNameParserTrigger(), PROTOCOL_NAME );
         registerTrigger( new ProtocolVersionParserTrigger(), PROTOCOL_VERSION );
         registerTrigger( new QueryStringParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
-        registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE );
+        registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE, HEADER_USER_AGENT_VALUE );
     }
 
     private void registerTrigger( ParserTrigger trigger, ParserStatus...parserStatuses )
@@ -162,7 +162,14 @@ public final class RequestPullParser
                     break;
 
                 case HEADER_VALUES_SEPARATOR:
-                    tokenFound();
+                    if ( HEADER_USER_AGENT_VALUE == status )
+                    {
+                        append( current );
+                    }
+                    else
+                    {
+                        tokenFound();
+                    }
                     break;
 
                 case PARAMETER_SEPARATOR:
@@ -173,14 +180,14 @@ public final class RequestPullParser
 
                 case NEW_LINE:
                     tokenFound();
-                    if ( HEADER_VALUE == status )
+                    if ( HEADER_VALUE == status || HEADER_USER_AGENT_VALUE == status )
                     {
                         status = HEADER_NAME;
                     }
                     break;
 
                 case HEADER_SEPARATOR:
-                    if ( HEADER_VALUE == status )
+                    if ( HEADER_VALUE == status || HEADER_USER_AGENT_VALUE == status )
                     {
                         append( current );
                     }
