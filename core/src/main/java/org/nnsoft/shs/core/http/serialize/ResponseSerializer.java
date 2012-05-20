@@ -171,7 +171,7 @@ public final class ResponseSerializer
         throws IOException
     {
         WritableByteChannel responseChannel = target;
-        GZIPOutputStream gzipOutputStream = null;
+        /* GZIPOutputStream gzipOutputStream = null;
         if ( gzipCompressionAccepted )
         {
             if ( logger.isDebugEnabled() )
@@ -181,11 +181,11 @@ public final class ResponseSerializer
 
             gzipOutputStream = new GZIPOutputStream( newOutputStream( target ) );
             responseChannel = newChannel( gzipOutputStream );
-        }
+        } */
 
         response.getBodyWriter().write( responseChannel );
 
-        if ( gzipCompressionAccepted )
+        /* if ( gzipCompressionAccepted )
         {
             if ( logger.isDebugEnabled() )
             {
@@ -198,7 +198,7 @@ public final class ResponseSerializer
             {
                 logger.debug( "GZip compression terminated" );
             }
-        }
+        } */
     }
 
     /**
@@ -220,6 +220,7 @@ public final class ResponseSerializer
 
         target.write( utf8Encode( message ) );
         target.write( END_PADDING );
+        END_PADDING.rewind();
     }
 
 }
