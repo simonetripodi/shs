@@ -1,6 +1,5 @@
 package org.nnsoft.shs.core.http.parse;
 
-
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *
@@ -23,7 +22,6 @@ package org.nnsoft.shs.core.http.parse;
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.nnsoft.shs.core.io.IOUtils.utf8Decode;
