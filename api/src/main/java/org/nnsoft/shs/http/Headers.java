@@ -227,6 +227,11 @@ public interface Headers
     public static final String SERVER = "Server";
 
     /**
+     * The {@code Set-Cookie} HTTP Header constant.
+     */
+    public static final String SET_COOKIE = "Set-Cookie";
+
+    /**
      * The {@code TE} HTTP Header constant.
      */
     public static final String TE = "TE";
