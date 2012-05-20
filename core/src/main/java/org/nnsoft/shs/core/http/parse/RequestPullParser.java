@@ -176,6 +176,9 @@ public final class RequestPullParser
                     break;
 
                 case PARAMETER_SEPARATOR:
+                    tokenFound();
+                    break;
+
                 case QUERY_STRING_SEPARATOR:
                     tokenFound();
                     status = QS_PARAM_NAME;
