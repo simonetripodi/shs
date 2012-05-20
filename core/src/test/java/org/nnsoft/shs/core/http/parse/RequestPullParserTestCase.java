@@ -60,6 +60,17 @@ public final class RequestPullParserTestCase
         assertEquals( "zw", request.getQueryStringParameters().getFirstValue( "bar" ) );
     }
 
+    @Test
+    public void multiValuesQueryStringParameters()
+        throws Exception
+    {
+        String simpleRequest = "GET /index.php?foo=xy&foo=zw HTTP/1.1\n";
+        Request request = parse( simpleRequest );
+
+        assertTrue( request.getQueryStringParameters().getValues( "foo" ).contains( "xy" ) );
+        assertTrue( request.getQueryStringParameters().getValues( "foo" ).contains( "zw" ) );
+    }
+
     private Request parse( String mockRequestString )
         throws Exception
     {
