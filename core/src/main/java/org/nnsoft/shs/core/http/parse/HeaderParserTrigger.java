@@ -22,11 +22,11 @@ final class HeaderParserTrigger
         {
             headerNamePtr = token;
 
-            /* if ( USER_AGENT.equals( headerNamePtr ) )
+            if ( USER_AGENT.equals( headerNamePtr ) )
             {
                 return HEADER_USER_AGENT_VALUE;
             }
-            else if ( CONTENT_LENGTH.equals( headerNamePtr ) )
+            /* else if ( CONTENT_LENGTH.equals( headerNamePtr ) )
             {
                 return HEADER_CONTENT_LENGTH_VALUE;
             }
