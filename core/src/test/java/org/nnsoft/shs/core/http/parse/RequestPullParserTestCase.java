@@ -64,7 +64,12 @@ public final class RequestPullParserTestCase
         throws Exception
     {
         RequestPullParser pullParser = new RequestPullParser();
-        pullParser.onRequestPartRead( utf8Encode( mockRequestString ) );
+
+        for ( String chunk : mockRequestString.split("(?<=\\G.{4})") )
+        {
+            pullParser.onRequestPartRead( utf8Encode( chunk ) );
+        }
+
         return pullParser.getParsedRequest();
     }
 
