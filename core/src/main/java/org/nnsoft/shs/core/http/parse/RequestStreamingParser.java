@@ -83,8 +83,12 @@ public final class RequestStreamingParser
 
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
-    public RequestStreamingParser()
+    public RequestStreamingParser( String clientHost, String serverHost, int serverPort )
     {
+        request.setClientHost( clientHost );
+        request.setServerHost( serverHost );
+        request.setServerPort( serverPort );
+
         registerTrigger( new MethodParserTrigger(), METHOD );
         registerTrigger( new PathParserTrigger(), PATH );
         registerTrigger( new ProtocolNameParserTrigger(), PROTOCOL_NAME );

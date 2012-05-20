@@ -164,7 +164,7 @@ public final class RequestStreamingParserTestCase
     private Request parse( String mockRequestString )
         throws Exception
     {
-        RequestStreamingParser pullParser = new RequestStreamingParser();
+        RequestStreamingParser pullParser = new RequestStreamingParser( "localhost", "localhost", 123 );
 
         for ( String chunk : mockRequestString.split("(?<=\\G.{4})") )
         {
