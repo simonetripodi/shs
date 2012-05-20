@@ -221,7 +221,7 @@ public final class RequestPullParser
 
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "{}: {}", status, token );
+            logger.debug( "{}: `{}'", status, token );
         }
 
         accumulator = new StringBuilder();
