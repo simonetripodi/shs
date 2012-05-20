@@ -54,7 +54,8 @@ final class HeaderParserTrigger
             }
             else if ( COOKIE.equals( headerNamePtr ) )
             {
-                return HEADER_COOKIE_NAME;
+                headerNamePtr = null; // no longer needed
+                return HEADER_COOKIE_NAME; // switch to cookie trigger
             }
         }
         else
