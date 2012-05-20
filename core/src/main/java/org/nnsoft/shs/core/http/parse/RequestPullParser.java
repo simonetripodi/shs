@@ -102,10 +102,17 @@ public final class RequestPullParser
                     break;
 
                 case TOKEN_SEPARATOR:
-                    tokenFound();
-                    if ( PARAM_NAME == status )
+                    if ( HEADER_VALUE == status )
                     {
-                        status = PROTOCOL_NAME;
+                        append( current );
+                    }
+                    else
+                    {
+                        tokenFound();
+                        if ( PARAM_NAME == status )
+                        {
+                            status = PROTOCOL_NAME;
+                        }
                     }
                     break;
 
@@ -116,7 +123,7 @@ public final class RequestPullParser
                     }
                     else
                     {
-                        accumulator.append( current );
+                        append( current );
                     }
                     break;
 
@@ -134,7 +141,7 @@ public final class RequestPullParser
                 case HEADER_SEPARATOR:
                     if ( HEADER_VALUE == status )
                     {
-                        accumulator.append( current );
+                        append( current );
                     }
                     else
                     {
@@ -143,10 +150,15 @@ public final class RequestPullParser
                     break;
 
                 default:
-                    accumulator.append( current );
+                    append( current );
                     break;
             }
         }
+    }
+
+    private void append( char current )
+    {
+        accumulator.append( current );
     }
 
     private void tokenFound()
