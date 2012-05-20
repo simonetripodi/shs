@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 
 /**
  * An LL(0) {@link Request} pull parser that incrementally rebuilds the HTTP Request.
+ *
+ * This class is not thread-safe!
  */
 public final class RequestPullParser
 {
