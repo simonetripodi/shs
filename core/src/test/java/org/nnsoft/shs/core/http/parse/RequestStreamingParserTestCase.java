@@ -34,7 +34,7 @@ import org.nnsoft.shs.core.http.CookieBuilder;
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Request;
 
-public final class RequestPullParserTestCase
+public final class RequestStreamingParserTestCase
 {
 
     @Test
@@ -164,7 +164,7 @@ public final class RequestPullParserTestCase
     private Request parse( String mockRequestString )
         throws Exception
     {
-        RequestPullParser pullParser = new RequestPullParser();
+        RequestStreamingParser pullParser = new RequestStreamingParser();
 
         for ( String chunk : mockRequestString.split("(?<=\\G.{4})") )
         {

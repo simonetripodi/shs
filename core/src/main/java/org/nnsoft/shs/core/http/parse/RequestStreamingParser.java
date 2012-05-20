@@ -44,10 +44,10 @@ import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
  *
  * This class is not thread-safe!
  */
-public final class RequestPullParser
+public final class RequestStreamingParser
 {
 
-    private static final Logger logger = getLogger( RequestPullParser.class );
+    private static final Logger logger = getLogger( RequestStreamingParser.class );
 
     private static final char CARRIAGE_RETURN = '\r';
 
@@ -83,7 +83,7 @@ public final class RequestPullParser
 
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
-    public RequestPullParser()
+    public RequestStreamingParser()
     {
         registerTrigger( new MethodParserTrigger(), METHOD );
         registerTrigger( new PathParserTrigger(), PATH );
