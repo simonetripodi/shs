@@ -389,8 +389,8 @@ final class MutableRequest
     @Override
     public String toString()
     {
-        return format( "Request [method=%s, path=%s, protocolName=%s, protocolVersion=%s, headers=%s, cookies=%s, queryStringParameters=%s, parameters=%s]",
-                       method, path, protocolName, protocolVersion, headers, cookies, queryStringParameters, parameters );
+        return format( "Request [clientHost=%s, serverHost=%s, serverPort=%s, method=%s, path=%s, protocolName=%s, protocolVersion=%s, headers=%s, cookies=%s, queryStringParameters=%s, parameters=%s]",
+                       clientHost, serverHost, serverPort, method, path, protocolName, protocolVersion, headers, cookies, queryStringParameters, parameters );
     }
 
 }
