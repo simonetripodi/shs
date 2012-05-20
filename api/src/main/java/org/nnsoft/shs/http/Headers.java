@@ -207,14 +207,9 @@ public interface Headers
     public static final String PROXY_AUTHORIZATION = "Proxy-Authorization";
 
     /**
-     * The {@code Byte Ranges} HTTP Header constant.
+     * The {@code Range} HTTP Header constant.
      */
-    public static final String BYTE_RANGES = "Byte Ranges";
-
-    /**
-     * The {@code Range Retrieval Requests} HTTP Header constant.
-     */
-    public static final String RANGE_RETRIEVAL_REQUESTS = "Range Retrieval Requests";
+    public static final String RANGE = "Range";
 
     /**
      * The {@code Referer} HTTP Header constant.
