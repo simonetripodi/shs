@@ -23,8 +23,7 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
+import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
@@ -33,18 +32,14 @@ import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
 import static org.nnsoft.shs.http.Headers.SERVER;
-import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.nio.channels.SelectionKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.nnsoft.shs.core.http.RequestParseException;
-import org.nnsoft.shs.core.http.RequestParser;
-import org.nnsoft.shs.core.http.ResponseSerializer;
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
@@ -53,11 +48,11 @@ import org.slf4j.Logger;
 /**
  * Asynchronous socket handler to serve current server request.
  */
-final class ClientSocketProcessor
+final class ProtocolProcessor
     implements Runnable
 {
 
-    private static final Logger logger = getLogger( ClientSocketProcessor.class );
+    private static final Logger logger = getLogger( ProtocolProcessor.class );
 
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
@@ -73,56 +68,40 @@ final class ClientSocketProcessor
 
     private final RequestDispatcher requestDispatcher;
 
-    private Socket socket;
+    private final Request request;
 
-    public ClientSocketProcessor( SessionManager sessionManager, RequestDispatcher requestDispatcher, Socket socket )
+    private final SelectionKey key;
+
+    public ProtocolProcessor( SessionManager sessionManager,
+                                  RequestDispatcher requestDispatcher,
+                                  Request request,
+                                  SelectionKey key )
     {
         this.sessionManager = sessionManager;
         this.requestDispatcher = requestDispatcher;
-        this.socket = socket;
+        this.request = request;
+        this.key = key;
     }
 
     public void run()
     {
-        if ( socket.isClosed() )
-        {
-            return;
-        }
-
-        final long start = currentTimeMillis();
-
-        logger.info( "New incoming request from {}", socket.getRemoteSocketAddress() );
-
         Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 
-        boolean keepAlive = false;
-        boolean gzipCompressionAccepted = false;
+        boolean keepAlive = HTTP_11.equals( request.getProtocolVersion() )
+                            || ( request.getHeaders().contains( CONNECTION )
+                                 && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( KEEP_ALIVE ) ) );
+        if ( keepAlive )
+        {
+            response.addHeader( CONNECTION, KEEP_ALIVE );
+            // response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
+        }
+        boolean gzipCompressionAccepted =  request.getHeaders().contains( ACCEPT_ENCODING )
+                                           && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
         try
         {
-            Request request = new RequestParser( socket.getChannel() ).parse();
-
-            if ( logger.isDebugEnabled() )
-            {
-                logger.debug( "parsed: {}", request );
-            }
-
-            keepAlive = HTTP_11.equals( request.getProtocolVersion() )
-                            || ( request.getHeaders().contains( CONNECTION )
-                                            && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( KEEP_ALIVE ) ) );
-            if ( keepAlive )
-            {
-                response.addHeader( CONNECTION, KEEP_ALIVE );
-                response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
-            }
-
-            socket.setKeepAlive( keepAlive );
-
-            gzipCompressionAccepted = request.getHeaders().contains( ACCEPT_ENCODING )
-                                            && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
-
             sessionManager.manageSession( request, response );
             requestDispatcher.dispatch( request, response );
 
@@ -144,47 +123,16 @@ final class ClientSocketProcessor
                 }
             }
         }
-        catch ( RequestParseException e )
-        {
-            logger.error( "Request cannot be satisfied due to parse error", e );
-
-            response.setStatus( BAD_REQUEST );
-        }
         catch ( IOException e )
         {
             logger.error( "Request cannot be satisfied due to internal I/O error", e );
 
             response.setStatus( INTERNAL_SERVER_ERROR );
         }
-
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "Serving: {}", response );
-        }
-
-        try
-        {
-            new ResponseSerializer( socket.getChannel(), gzipCompressionAccepted ).serialize( response );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
-        }
         finally
         {
-            if ( socket != null && !socket.isClosed() /*&& !keepAlive*/ )
-            {
-                try
-                {
-                    socket.close();
-                }
-                catch ( IOException e )
-                {
-                    logger.warn( "An error ocurred while closing the conversation", e );
-                }
-            }
-
-            logger.info( "Request served in {}ms", ( currentTimeMillis() - start ) );
+            key.attach( response );
+            key.interestOps( OP_WRITE );
         }
     }
 

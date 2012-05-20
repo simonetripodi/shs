@@ -1,3 +1,4 @@
+
 package org.nnsoft.shs.core;
 
 /*
@@ -23,21 +24,35 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.SelectionKey.OP_ACCEPT;
+import static java.nio.channels.SelectionKey.OP_READ;
+import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.nio.channels.ServerSocketChannel.open;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
+import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
+import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
+import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
+import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
+import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.WritableByteChannel;
+import java.util.Formatter;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -46,7 +61,12 @@ import org.nnsoft.shs.HttpServerConfiguration;
 import org.nnsoft.shs.InitException;
 import org.nnsoft.shs.RunException;
 import org.nnsoft.shs.ShutdownException;
+import org.nnsoft.shs.core.http.RequestParseException;
+import org.nnsoft.shs.core.http.ResponseSerializer;
 import org.nnsoft.shs.core.http.SessionManager;
+import org.nnsoft.shs.core.http.parse.RequestStreamingParser;
+import org.nnsoft.shs.http.Request;
+import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
 /**
@@ -59,6 +79,8 @@ public final class SimpleHttpServer
 {
 
     private final Logger logger = getLogger( getClass() );
+
+    private static final String GZIP = "gzip";
 
     private ExecutorService requestsExecutor;
 
@@ -158,40 +180,51 @@ public final class SimpleHttpServer
 
         currentStatus.set( RUNNING );
 
-        try
+        while ( RUNNING == currentStatus.get() )
         {
-            while ( RUNNING == currentStatus.get() && selector.select() > 0 )
+            try
             {
-                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-                while ( keys.hasNext() )
+                selector.select();
+            }
+            catch ( Throwable t )
+            {
+                throw new RunException( "Something wrong happened while listening for connections", t );
+            }
+
+            Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
+            while ( keys.hasNext() )
+            {
+                SelectionKey key = keys.next();
+                keys.remove();
+
+                if ( !key.isValid() )
                 {
-                    SelectionKey key = keys.next();
-                    keys.remove();
+                    continue;
+                }
 
-                    if ( key.isValid() && key.isAcceptable() )
+                try
+                {
+                    if ( key.isAcceptable() )
                     {
-                        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
-                        SocketChannel client = serverChannel.accept();
-
-                        if ( client == null )
-                        {
-                            continue;
-                        }
-
-                        requestsExecutor.submit( new ClientSocketProcessor( sessionManager, dispatcher, client.socket() ) );
+                        accept( key );
                     }
-                    else
+                    else if ( key.isReadable() )
                     {
-                        key.cancel();
+                        read( key );
                     }
+                    else if ( key.isWritable() )
+                    {
+                        write( key );
+                    }
+                }
+                catch ( IOException e )
+                {
+                    logger.error( "An error occurred wile negotiation", e );
+
+                    key.cancel();
                 }
             }
         }
-        catch ( Throwable t )
-        {
-            throw new RunException( "Something wrong happened while listening for connections", t );
-        }
-
 
         logger.info( "Server is shutting down..." );
 
@@ -232,6 +265,140 @@ public final class SimpleHttpServer
 
                 logger.info( "Done! Server is now stopped. Bye!" );
             }
+        }
+    }
+
+    private void accept( SelectionKey key )
+        throws IOException
+    {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Key {} is in OP_ACCEPT status", key );
+        }
+
+        ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
+        SocketChannel socketChannel = serverChannel.accept();
+
+        if ( socketChannel == null )
+        {
+            return;
+        }
+
+        socketChannel.configureBlocking( false );
+
+        Socket socket = socketChannel.socket();
+        socketChannel.register( selector, OP_READ, new RequestStreamingParser( socket.getInetAddress().getHostName(),
+                                                                               socket.getLocalAddress().getHostName(),
+                                                                               socket.getLocalPort() ) );
+    }
+
+    private void read( SelectionKey key )
+        throws IOException
+    {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Key {} is in OP_READ status", key );
+        }
+
+        SocketChannel serverChannel = (SocketChannel) key.channel();
+
+        RequestStreamingParser requestParser = (RequestStreamingParser) key.attachment();
+
+        ByteBuffer data = allocate( 100 );
+
+        try
+        {
+            push: while ( serverChannel.read( data ) != -1 && !requestParser.isRequestMessageComplete() )
+            {
+                data.flip();
+
+                while ( data.hasRemaining() )
+                {
+                    try
+                    {
+                        requestParser.onRequestPartRead( data );
+                    }
+                    catch ( RequestParseException e )
+                    {
+                        Response response = newResponse();
+                        response.setStatus( BAD_REQUEST );
+                        key.attach( response );
+                        key.interestOps( OP_WRITE );
+                        break push;
+                    }
+                }
+
+                data.clear();
+            }
+
+            if ( requestParser.isRequestMessageComplete() )
+            {
+                Request request = requestParser.getParsedRequest();
+
+                if ( logger.isDebugEnabled() )
+                {
+                    logger.debug( "< {} {} {}/{}", new Object[] {
+                                                       request.getMethod(),
+                                                       request.getPath(),
+                                                       request.getProtocolName(),
+                                                       request.getProtocolVersion() } );
+
+                    for ( Entry<String, List<String>> header : request.getHeaders().getAllEntries() )
+                    {
+                        Formatter headerValues = new Formatter();
+                        int i = 0;
+                        for ( String value : header.getValue() )
+                        {
+                            headerValues.format( "%s%s", ( i++ > 0 ? ", " : "" ), value );
+                        }
+
+                        logger.debug( "< {}: {}", header.getKey(), headerValues.toString() );
+                    }
+                }
+
+                new ProtocolProcessor( sessionManager, dispatcher, request, key ).run();
+                // requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
+            }
+        }
+        catch ( IOException e )
+        {
+            Response response = newResponse();
+            response.setStatus( INTERNAL_SERVER_ERROR );
+            key.attach( response );
+            key.interestOps( OP_WRITE );
+        }
+    }
+
+    private void write( SelectionKey key )
+        throws IOException
+    {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Key {} is in OP_WRITE status, key attachment: {}", key, key.attachment() );
+        }
+
+        WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
+
+        Response response = (Response) key.attachment();
+
+        boolean gzipCompressionAccepted = GZIP.equals( response.getHeaders().getFirstValue( CONTENT_ENCODING ) );
+
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "Serving: {}", response );
+        }
+
+        try
+        {
+            new ResponseSerializer( serverChannel, gzipCompressionAccepted ).serialize( response );
+        }
+        catch ( IOException e )
+        {
+            logger.error( "Impossible to stream Response to the client", e );
+        }
+        finally
+        {
+            closeQuietly( serverChannel );
         }
     }
 
