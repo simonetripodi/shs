@@ -41,7 +41,7 @@ public final class RequestStreamingParserTestCase
     public void parseMethod()
         throws Exception
     {
-        String simpleRequest = "GET /index.html HTTP/1.1\n";
+        String simpleRequest = "GET /index.html HTTP/1.1\n\n";
         Request request = parse( simpleRequest );
 
         assertEquals( GET, request.getMethod() );
@@ -54,7 +54,7 @@ public final class RequestStreamingParserTestCase
     public void queryStringParameters()
         throws Exception
     {
-        String simpleRequest = "GET /index.php?foo=xy&bar=zw HTTP/1.1\n";
+        String simpleRequest = "GET /index.php?foo=xy&bar=zw HTTP/1.1\n\n";
         Request request = parse( simpleRequest );
 
         assertTrue( request.getQueryStringParameters().contains( "foo" ) );
@@ -67,7 +67,7 @@ public final class RequestStreamingParserTestCase
     public void multiValuesQueryStringParameters()
         throws Exception
     {
-        String simpleRequest = "GET /index.php?foo=xy&foo=zw HTTP/1.1\n";
+        String simpleRequest = "GET /index.php?foo=xy&foo=zw HTTP/1.1\n\n";
         Request request = parse( simpleRequest );
 
         assertTrue( request.getQueryStringParameters().getValues( "foo" ).contains( "xy" ) );
@@ -86,7 +86,7 @@ public final class RequestStreamingParserTestCase
                                 + "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\n"
                                 + "Keep-Alive: 300\n"
                                 + "Connection: keep-alive\n"
-                                + "Referer: http://www.google.nl/index.html\n";
+                                + "Referer: http://www.google.nl/index.html\n\n";
         Request request = parse( simpleRequest );
 
         assertEquals( "www.google.nl", request.getHeaders().getFirstValue( "Host" ) );
@@ -123,7 +123,7 @@ public final class RequestStreamingParserTestCase
         throws Exception
     {
         String simpleRequest = "GET /index.html HTTP/1.1\n"
-                                + "User-Agent: Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)\n";
+                                + "User-Agent: Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)\n\n";
         Request request = parse( simpleRequest );
 
         assertEquals( "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko)",
@@ -138,7 +138,7 @@ public final class RequestStreamingParserTestCase
         Cookie expected2 = new CookieBuilder().setName( "name2" ).setValue( "value2" ).build();
 
         String simpleRequest = "GET /index.html HTTP/1.1\n"
-                                + "Cookie: name=value; name2=value2\n";
+                                + "Cookie: name=value; name2=value2\n\n";
         Request request = parse( simpleRequest );
 
         assertTrue( request.getCookies().contains( expected1 ) );
@@ -170,6 +170,8 @@ public final class RequestStreamingParserTestCase
         {
             pullParser.onRequestPartRead( utf8Encode( chunk ) );
         }
+
+        assertTrue( pullParser.isMessageReceivedCompletely() );
 
         return pullParser.getParsedRequest();
     }
