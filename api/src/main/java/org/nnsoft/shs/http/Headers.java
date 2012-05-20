@@ -84,6 +84,8 @@ public interface Headers
 
     public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
 
+    public static final String KEEP_ALIVE = "Keep-Alive";
+
     public static final String LAST_MODIFIED = "Last-Modified";
 
     public static final String LOCATION = "Location";
