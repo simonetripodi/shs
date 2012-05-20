@@ -26,7 +26,7 @@ package org.nnsoft.shs.core.http.parse;
 /**
  * Represents the different statuses of the parse steps.
  */
-public enum ParserStatus
+enum ParserStatus
 {
 
     METHOD,
