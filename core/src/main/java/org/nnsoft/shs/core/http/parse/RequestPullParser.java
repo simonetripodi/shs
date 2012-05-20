@@ -219,7 +219,7 @@ public final class RequestPullParser
 
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "New token consumed: {} ({})", token, status );
+            logger.debug( "({}) New token consumed: {}", token, status );
         }
 
         accumulator = new StringBuilder();
