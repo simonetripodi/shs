@@ -1,5 +1,6 @@
 package org.nnsoft.shs.core.http.parse;
 
+
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
  *
@@ -23,9 +24,11 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.nnsoft.shs.core.io.IOUtils.utf8Decode;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
+
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
@@ -33,6 +36,8 @@ import java.util.Map;
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.http.Request;
 import org.slf4j.Logger;
+
+import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 
 /**
  * An LL(0) {@link Request} pull parser that incrementally rebuilds the HTTP Request.
@@ -64,6 +69,8 @@ public final class RequestPullParser
 
     private static final char HEADER_VALUES_SEPARATOR = ',';
 
+    private static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
+
     private final MutableRequest request = new MutableRequest();
 
     private final Map<ParserStatus, ParserTrigger> parserTriggers = new EnumMap<ParserStatus, ParserTrigger>( ParserStatus.class );
@@ -74,6 +81,8 @@ public final class RequestPullParser
 
     private boolean messageComplete = false;
 
+    private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
+
     public RequestPullParser()
     {
         registerTrigger( new MethodParserTrigger(), METHOD );
@@ -83,6 +92,7 @@ public final class RequestPullParser
         registerTrigger( new QueryStringParametersParserTrigger(), QS_PARAM_NAME, QS_PARAM_VALUE );
         registerTrigger( new HeaderParserTrigger(), HEADER_NAME, HEADER_VALUE, HEADER_USER_AGENT_VALUE, COOKIE_VALUE );
         registerTrigger( new CookieParserTrigger(), COOKIE_NAME, COOKIE_VALUE );
+        registerTrigger( new ParametersParserTrigger(), PARAM_NAME, PARAM_VALUE );
     }
 
     private void registerTrigger( ParserTrigger trigger, ParserStatus...parserStatuses )
@@ -99,6 +109,11 @@ public final class RequestPullParser
         String message = utf8Decode( messageBuffer );
         dance: for ( char current : message.toCharArray() )
         {
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "{} consuming char: {}", status, current );
+            }
+
             if ( messageComplete )
             {
                 break dance;
@@ -126,7 +141,7 @@ public final class RequestPullParser
                         tokenFound();
                         if ( QS_PARAM_NAME == status )
                         {
-                            status = PROTOCOL_NAME;
+                            forceSwitch( current, PROTOCOL_NAME );
                         }
                     }
                     break;
@@ -181,16 +196,40 @@ public final class RequestPullParser
 
                 case QUERY_STRING_SEPARATOR:
                     tokenFound();
-                    status = QS_PARAM_NAME;
+                    forceSwitch( current, QS_PARAM_NAME );
                     break;
 
                 case NEW_LINE:
-                    tokenFound();
-                    if ( HEADER_VALUE == status
-                         || HEADER_USER_AGENT_VALUE == status
-                         || COOKIE_VALUE == status )
+                    if ( isConsumingToken() )
                     {
-                        status = HEADER_NAME;
+                        tokenFound();
+                        if ( HEADER_VALUE == status
+                             || HEADER_USER_AGENT_VALUE == status
+                             || COOKIE_VALUE == status )
+                        {
+                            forceSwitch( current, HEADER_NAME );
+                        }
+                    }
+                    else if ( request.getContentLength() > 0 )
+                    {
+                        if ( logger.isDebugEnabled() )
+                        {
+                            logger.debug( "Coonsuming request body..." );
+                        }
+
+                        if ( request.getHeaders().contains( CONTENT_TYPE )
+                             && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( FORM_URLENCODED ) )
+                        {
+                            forceSwitch( current, PARAM_NAME );
+                        }
+                        else
+                        {
+                            forceSwitch( current, BODY_CONSUMING );
+                        }
+                    }
+                    else
+                    {
+                        messageComplete = true;
                     }
                     break;
 
@@ -209,7 +248,32 @@ public final class RequestPullParser
                     append( current );
                     break;
             }
+
+            if ( PARAM_NAME == status || PARAM_VALUE == status )
+            {
+                bodyConsumingCounter++;
+
+                if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
+                {
+                    tokenFound();
+                    messageComplete = true;
+
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "Request body consumed" );
+                    }
+                }
+            }
         }
+    }
+
+    private void forceSwitch( char trigger, ParserStatus newStatus )
+    {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "{} trigger char: {} -> next status {}", new Object[] { status, trigger, newStatus } );
+        }
+        status = newStatus;
     }
 
     private boolean isConsumingToken()
@@ -226,15 +290,15 @@ public final class RequestPullParser
         throws RequestParseException
     {
         String token = accumulator.toString();
+        ParserStatus newStatus = parserTriggers.get( status ).onToken( status, token, request );
 
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "{}: `{}'", status, token );
+            logger.debug( "{} consuming token: `{}' -> next status {}", new Object[] { status, token, newStatus } );
         }
 
         accumulator = new StringBuilder();
-
-        status = parserTriggers.get( status ).onToken( status, token, request );
+        status = newStatus;
     }
 
     public boolean isMessageReceivedCompletely()

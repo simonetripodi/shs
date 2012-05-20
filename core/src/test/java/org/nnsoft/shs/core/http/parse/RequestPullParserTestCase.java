@@ -145,6 +145,22 @@ public final class RequestPullParserTestCase
         assertTrue( request.getCookies().contains( expected2 ) );
     }
 
+    @Test
+    public void parametersSentViaPostMethods()
+        throws Exception
+    {
+        String simpleRequest = "POST /demo.html HTTP/1.1\n"
+                                + "Content-Length: 27\n"
+                                + "Content-Type: application/x-www-form-urlencoded\n\n"
+                                + "param1=value1&param2=value2";
+        Request request = parse( simpleRequest );
+
+        assertTrue( request.getParameters().contains( "param1" ) );
+        assertEquals( "value1", request.getParameters().getFirstValue( "param1" ) );
+        assertTrue( request.getParameters().contains( "param2" ) );
+        assertEquals( "value2", request.getParameters().getFirstValue( "param2" ) );
+    }
+
     private Request parse( String mockRequestString )
         throws Exception
     {
