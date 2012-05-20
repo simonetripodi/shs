@@ -77,6 +77,27 @@ public interface Request
     }
 
     /**
+     * Return the client host connected to the server.
+     *
+     * @return the client host connected to the server.
+     */
+    String getClientHost();
+
+    /**
+     * Return the server host.
+     *
+     * @return the server host.
+     */
+    String getServerHost();
+
+    /**
+     * Return the server port.
+     *
+     * @return the server port.
+     */
+    int getServerPort();
+
+    /**
      * Returns the request path.
      *
      * @return the request path

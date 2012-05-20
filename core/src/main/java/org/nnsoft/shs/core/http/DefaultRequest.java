@@ -291,6 +291,27 @@ final class DefaultRequest
         return session;
     }
 
+    @Override
+    public String getClientHost()
+    {
+        // TODO not implemented, this class will disappear.
+        return null;
+    }
+
+    @Override
+    public String getServerHost()
+    {
+        // TODO not implemented, this class will disappear.
+        return null;
+    }
+
+    @Override
+    public int getServerPort()
+    {
+        // TODO not implemented, this class will disappear.
+        return 0;
+    }
+
     /**
      * Sets the current user session.
      *

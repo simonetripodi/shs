@@ -49,6 +49,12 @@ final class MutableRequest
     implements Request
 {
 
+    private String clientHost;
+
+    private String serverHost;
+
+    private int serverPort;
+
     private Method method;
 
     private String path;
@@ -72,6 +78,66 @@ final class MutableRequest
     private final SimpleMultiValued<String, String> parameters = new SimpleMultiValued<String, String>();
 
     private final List<Cookie> cookies = new LinkedList<Cookie>();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getClientHost()
+    {
+        return clientHost;
+    }
+
+    /**
+     * Sets the client host connected to this server.
+     *
+     * @param clientHost the client host connected to this server.
+     */
+    public void setClientHost( String clientHost )
+    {
+        checkArgument( clientHost != null, "Null clientHost not allowed" );
+        this.clientHost = clientHost;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getServerHost()
+    {
+        return serverHost;
+    }
+
+    /**
+     * Sets this server host.
+     *
+     * @param clientHost this server host.
+     */
+    public void setServerHost( String serverHost )
+    {
+        checkArgument( serverHost != null, "Null serverHost not allowed" );
+        this.serverHost = serverHost;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getServerPort()
+    {
+        return serverPort;
+    }
+
+    /**
+     * Sets this server port.
+     *
+     * @param clientHost this server port.
+     */
+    public void setServerPort( int serverPort )
+    {
+        checkArgument( serverPort > 0, "Negative or zero serverPort not allowed" );
+        this.serverPort = serverPort;
+    }
 
     /**
      * {@inheritDoc}
