@@ -46,8 +46,6 @@ public interface Headers
 
     public static final String CONNECTION = "Connection";
 
-    public static final String COOKIE = "Cookie";
-
     public static final String CONTENT_ENCODING = "Content-Encoding";
 
     public static final String CONTENT_LANGUAGE = "Content-Language";
@@ -61,6 +59,8 @@ public interface Headers
     public static final String CONTENT_RANGE = "Content-Range";
 
     public static final String CONTENT_TYPE = "Content-Type";
+
+    public static final String COOKIE = "Cookie";
 
     public static final String DATE = "Date";
 
