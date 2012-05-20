@@ -29,6 +29,7 @@ import static org.nnsoft.shs.http.Request.Method.values;
 
 import java.util.Arrays;
 
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 
 /**

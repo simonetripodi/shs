@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 
 /**

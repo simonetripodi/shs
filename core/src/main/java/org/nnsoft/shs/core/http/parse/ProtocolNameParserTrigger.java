@@ -24,6 +24,8 @@ package org.nnsoft.shs.core.http.parse;
  */
 
 import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
+
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 
 final class ProtocolNameParserTrigger

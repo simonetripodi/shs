@@ -25,6 +25,7 @@ package org.nnsoft.shs.core.http.parse;
 
 import static org.nnsoft.shs.core.io.IOUtils.utf8URLDecode;
 
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 
 abstract class AbstractParametersParserTrigger

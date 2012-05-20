@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.http.Request;
 import org.slf4j.Logger;

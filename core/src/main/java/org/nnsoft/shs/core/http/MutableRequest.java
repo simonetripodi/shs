@@ -1,4 +1,4 @@
-package org.nnsoft.shs.core.http.parse;
+package org.nnsoft.shs.core.http;
 
 /*
  * Copyright (c) 2012 Simone Tripodi (simonetripodi@apache.org)
@@ -45,7 +45,7 @@ import org.nnsoft.shs.io.StreamAlreadyConsumedException;
 /**
  * Basic {@link Request} implementation.
  */
-final class MutableRequest
+public final class MutableRequest
     implements Request
 {
 

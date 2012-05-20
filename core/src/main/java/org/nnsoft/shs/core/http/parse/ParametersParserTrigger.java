@@ -26,6 +26,8 @@ package org.nnsoft.shs.core.http.parse;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.PARAM_NAME;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.PARAM_VALUE;
 
+import org.nnsoft.shs.core.http.MutableRequest;
+
 final class ParametersParserTrigger
     extends AbstractParametersParserTrigger
 {

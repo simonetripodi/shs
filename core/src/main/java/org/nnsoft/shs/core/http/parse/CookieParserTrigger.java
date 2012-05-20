@@ -27,6 +27,7 @@ import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_VALUE;
 
 import org.nnsoft.shs.core.http.CookieBuilder;
+import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 
 final class CookieParserTrigger
