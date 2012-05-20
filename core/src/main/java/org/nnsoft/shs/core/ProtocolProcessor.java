@@ -117,10 +117,10 @@ final class ProtocolProcessor
                     response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
                 }
 
-                if ( gzipCompressionAccepted )
+                /* if ( gzipCompressionAccepted )
                 {
                     response.addHeader( CONTENT_ENCODING, GZIP );
-                }
+                } */
             }
         }
         catch ( IOException e )
