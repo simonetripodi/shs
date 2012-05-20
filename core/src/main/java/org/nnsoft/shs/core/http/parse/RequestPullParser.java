@@ -35,7 +35,7 @@ import org.nnsoft.shs.http.Request;
 import org.slf4j.Logger;
 
 /**
- * A {@link Request} pull parser that incrementally rebuilds the HTTP Request.
+ * An LL(0) {@link Request} pull parser that incrementally rebuilds the HTTP Request.
  */
 public final class RequestPullParser
 {
