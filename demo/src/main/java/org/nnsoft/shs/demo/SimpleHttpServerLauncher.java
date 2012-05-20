@@ -163,6 +163,7 @@ public final class SimpleHttpServerLauncher
 
             public void run()
             {
+                logger.info( "" );
                 logger.info( "                         ''~``" );
                 logger.info( "                        ( o o )" );
                 logger.info( "+------------------.oooO--(_)--Oooo.------------------+" );
