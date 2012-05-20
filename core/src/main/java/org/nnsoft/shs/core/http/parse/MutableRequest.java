@@ -57,6 +57,8 @@ final class MutableRequest
 
     private String protocolVersion;
 
+    private long contentLength = -1;
+
     private ReadableByteChannel contentBody;
 
     private boolean bodyConsumed = false;
@@ -230,6 +232,26 @@ final class MutableRequest
     public MultiValued<String, String> getParameters()
     {
         return parameters;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long getContentLength()
+    {
+        return contentLength;
+    }
+
+    /**
+     * Sets the request body content length.
+     *
+     * @param contentLength the request body content length.
+     */
+    public void setContentLength( long contentLength )
+    {
+        checkArgument( contentLength >= 0, "Negative contentLength not allowed" );
+        this.contentLength = contentLength;
     }
 
     /**

@@ -232,6 +232,13 @@ final class DefaultRequest
         return parameters;
     }
 
+    @Override
+    public long getContentLength()
+    {
+        // this class will disappear
+        return 0;
+    }
+
     /**
      * Set the buffered request content body.
      *

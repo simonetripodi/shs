@@ -141,6 +141,13 @@ public interface Request
     Session getSession();
 
     /**
+     * Returns the request body content length.
+     *
+     * @return the request body content length, {@code -1} if it is unknown.
+     */
+    long getContentLength();
+
+    /**
      * Reads and converts the request body input stream.
      *
      * @param the user defined
