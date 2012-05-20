@@ -1,12 +1,15 @@
 package org.nnsoft.shs.core.http.parse;
 
 import static java.lang.Long.parseLong;
-import static org.nnsoft.shs.http.Headers.USER_AGENT;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_COOKIE_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_USER_AGENT_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_VALUE;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.COOKIE;
-import org.nnsoft.shs.core.http.RequestParseException;
+import static org.nnsoft.shs.http.Headers.USER_AGENT;
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
+import org.nnsoft.shs.core.http.RequestParseException;
 
 final class HeaderParserTrigger
     implements ParserTrigger
@@ -26,14 +29,10 @@ final class HeaderParserTrigger
             {
                 return HEADER_USER_AGENT_VALUE;
             }
-            /* else if ( CONTENT_LENGTH.equals( headerNamePtr ) )
-            {
-                return HEADER_CONTENT_LENGTH_VALUE;
-            }
             else if ( COOKIE.equals( headerNamePtr ) )
             {
-                return HEADER_COOKIE_VALUE;
-            } */
+                return HEADER_COOKIE_NAME;
+            }
         }
         else
         {
@@ -51,7 +50,13 @@ final class HeaderParserTrigger
                                                      CONTENT_LENGTH, token );
                 }
             }
+
+            if ( HEADER_USER_AGENT_VALUE == status )
+            {
+                return HEADER_NAME;
+            }
         }
+
         return HEADER_VALUE;
     }
 
