@@ -110,7 +110,7 @@ public final class RequestPullParser
                     break;
 
                 case TOKEN_SEPARATOR:
-                    if ( accumulator.length() == 0 ) // trim initial spaces
+                    if ( !isConsumingToken() ) // trim initial spaces
                     {
                         break;
                     }
@@ -210,6 +210,11 @@ public final class RequestPullParser
                     break;
             }
         }
+    }
+
+    private boolean isConsumingToken()
+    {
+        return accumulator.length() > 0;
     }
 
     private void append( char current )
