@@ -79,7 +79,7 @@ public final class RequestStreamingParser
 
     private ParserStatus status = ParserStatus.METHOD;
 
-    private boolean messageComplete = false;
+    private boolean requestMessageComplete = false;
 
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
@@ -114,7 +114,7 @@ public final class RequestStreamingParser
                 logger.debug( "{} consuming char: `{}'", status, current );
             }
 
-            if ( messageComplete )
+            if ( requestMessageComplete )
             {
                 break dance;
             }
@@ -229,7 +229,7 @@ public final class RequestStreamingParser
                     }
                     else
                     {
-                        messageComplete = true;
+                        requestMessageComplete = true;
                     }
                     break;
 
@@ -256,7 +256,7 @@ public final class RequestStreamingParser
                 if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
                 {
                     tokenFound();
-                    messageComplete = true;
+                    requestMessageComplete = true;
 
                     if ( logger.isDebugEnabled() )
                     {
@@ -301,9 +301,9 @@ public final class RequestStreamingParser
         status = newStatus;
     }
 
-    public boolean isMessageReceivedCompletely()
+    public boolean isRequestMessageComplete()
     {
-        return messageComplete;
+        return requestMessageComplete;
     }
 
     public Request getParsedRequest()

@@ -171,7 +171,7 @@ public final class RequestStreamingParserTestCase
             pullParser.onRequestPartRead( utf8Encode( chunk ) );
         }
 
-        assertTrue( pullParser.isMessageReceivedCompletely() );
+        assertTrue( pullParser.isRequestMessageComplete() );
 
         return pullParser.getParsedRequest();
     }
