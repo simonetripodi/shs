@@ -111,7 +111,7 @@ public final class RequestStreamingParser
         {
             if ( logger.isDebugEnabled() )
             {
-                logger.debug( "{} consuming char: {}", status, current );
+                logger.debug( "{} consuming char: `{}'", status, current );
             }
 
             if ( messageComplete )
