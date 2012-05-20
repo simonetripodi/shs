@@ -25,8 +25,6 @@ package org.nnsoft.shs.core.http.serialize;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static java.nio.channels.Channels.newChannel;
-import static java.nio.channels.Channels.newOutputStream;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
@@ -40,7 +38,6 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.zip.GZIPOutputStream;
 
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Response;
@@ -148,6 +145,18 @@ public final class ResponseSerializer
             Formatter formatter = new Formatter()
                                      .format( "Set-Cookie: %s:%s; Path=%s; Domain=%s;",
                                               cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getDomain() );
+
+            if ( !cookie.getPorts().isEmpty() )
+            {
+                formatter.format( " Port=\"" );
+                int i = 0;
+                for ( Integer port : cookie.getPorts() )
+                {
+                    formatter.format( "%s%s", ( i++ > 0 ? "," : "" ), port );
+                }
+                formatter.format( "\";" );
+            }
+
             if ( cookie.getMaxAge() != -1 )
             {
                 Date expirationDate = new Date( cookie.getMaxAge() * 1000 + currentTimeMillis() );

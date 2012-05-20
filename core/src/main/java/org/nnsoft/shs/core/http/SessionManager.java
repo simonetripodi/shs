@@ -108,6 +108,7 @@ public final class SessionManager
 
             response.addCookie( new CookieBuilder()
                                     .setDomain( request.getServerHost() )
+                                    .addPort( request.getServerPort() )
                                     .setName( SESSION_NAME )
                                     .setValue( session.getId().toString() )
                                     .setPath( "/" )
