@@ -37,7 +37,7 @@ import org.nnsoft.shs.http.Cookie;
 /**
  * A builder to simplify the {@link Cookie} instantiation.
  */
-final class CookieBuilder
+public final class CookieBuilder
 {
 
     private String domain;
