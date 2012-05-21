@@ -1,0 +1,24 @@
+-classpath
+'/Users/simonetripodi/Documents/workspace/simple-http-server/target/classes:/Users/simonetripodi/Documents/workspace/simple-http-server/api/target/classes:/Users/simonetripodi/Documents/workspace/simple-http-server/core/target/classes:/Users/simonetripodi/Documents/workspace/simple-http-server/demo/target/classes:/Users/simonetripodi/.m2/repository/org/99soft/shs-core/0.1-SNAPSHOT/shs-core-0.1-SNAPSHOT.jar:/Users/simonetripodi/.m2/repository/com/beust/jcommander/1.25/jcommander-1.25.jar:/Users/simonetripodi/.m2/repository/org/99soft/shs-api/0.1-SNAPSHOT/shs-api-0.1-SNAPSHOT.jar:/Users/simonetripodi/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/simonetripodi/Documents/workspace/simple-http-server/api/src/main/java:/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java:/Users/simonetripodi/Documents/workspace/simple-http-server/demo/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2012 <a href="http://www.99soft.org/">99 Software Foundation</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/simonetripodi/Documents/workspace/simple-http-server/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Simple HttpServer 0.1-SNAPSHOT API'
+-linkoffline
+'http://download.oracle.com/javase/6/docs/api' '/Users/simonetripodi/Documents/workspace/simple-http-server/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Simple HttpServer 0.1-SNAPSHOT API'

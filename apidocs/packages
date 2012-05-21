@@ -1,0 +1,12 @@
+org.nnsoft.shs
+org.nnsoft.shs.collections
+org.nnsoft.shs.http
+org.nnsoft.shs.io
+org.nnsoft.shs.lang
+org.nnsoft.shs.core
+org.nnsoft.shs.core.collections
+org.nnsoft.shs.core.http
+org.nnsoft.shs.core.http.parse
+org.nnsoft.shs.core.http.serialize
+org.nnsoft.shs.core.io
+org.nnsoft.shs.demo
