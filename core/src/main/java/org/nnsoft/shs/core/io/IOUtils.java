@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 /**
@@ -60,12 +61,17 @@ public final class IOUtils
      * @return the UTF-8 encoded formatted ByteBuffer
      * @see String#format(String, Object...)
      */
-    public static ByteBuffer utf8Encode( String messageTemplate, Object...args )
+    public static ByteBuffer utf8ByteBuffer( String messageTemplate, Object...args )
     {
         return UTF_8.encode( format( messageTemplate, args ) );
     }
 
-    public static String utf8Decode( ByteBuffer buffer )
+    public static CharBuffer toUtf8CharBuffer( ByteBuffer buffer )
+    {
+        return UTF_8.decode( buffer );
+    }
+
+    public static String toUtf8String( ByteBuffer buffer )
     {
         return UTF_8.decode( buffer ).toString();
     }

@@ -23,11 +23,27 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.ByteBuffer.allocateDirect;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.BODY_CONSUMING;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_USER_AGENT_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.METHOD;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PARAM_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PARAM_VALUE;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PATH;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_VERSION;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.QS_PARAM_NAME;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.QS_PARAM_VALUE;
+import static org.nnsoft.shs.core.io.IOUtils.toUtf8CharBuffer;
+import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.nnsoft.shs.core.io.IOUtils.utf8Decode;
-import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -35,8 +51,6 @@ import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.http.Request;
 import org.slf4j.Logger;
-
-import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 
 /**
  * An LL(0) {@link Request} pull parser that incrementally rebuilds the HTTP Request.
@@ -82,6 +96,8 @@ public final class RequestStreamingParser
 
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
+    private ByteBuffer messageBody;
+
     public RequestStreamingParser( String clientHost, String serverHost, int serverPort )
     {
         request.setClientHost( clientHost );
@@ -109,9 +125,11 @@ public final class RequestStreamingParser
     public void onRequestPartRead( ByteBuffer messageBuffer )
         throws RequestParseException
     {
-        String message = utf8Decode( messageBuffer );
-        dance: for ( char current : message.toCharArray() )
+        CharBuffer charBuffer = toUtf8CharBuffer( messageBuffer );
+        dance: while ( charBuffer.hasRemaining() )
         {
+            char current = charBuffer.get();
+
             if ( logger.isDebugEnabled() )
             {
                 logger.debug( "{} consuming char: `{}'", status, current );
@@ -228,6 +246,7 @@ public final class RequestStreamingParser
                         else
                         {
                             forceSwitch( current, BODY_CONSUMING );
+                            messageBuffer = allocateDirect( (int) request.getContentLength() );
                         }
                     }
                     else
@@ -266,6 +285,10 @@ public final class RequestStreamingParser
                         logger.debug( "Request body consumed" );
                     }
                 }
+            }
+            else if ( BODY_CONSUMING == status )
+            {
+
             }
         }
     }

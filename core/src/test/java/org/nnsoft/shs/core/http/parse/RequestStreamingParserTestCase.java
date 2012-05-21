@@ -24,7 +24,7 @@ package org.nnsoft.shs.core.http.parse;
  */
 
 import static org.nnsoft.shs.http.Headers.*;
-import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
+import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.nnsoft.shs.http.Request.Method.GET;
@@ -168,7 +168,7 @@ public final class RequestStreamingParserTestCase
 
         for ( String chunk : mockRequestString.split("(?<=\\G.{4})") )
         {
-            pullParser.onRequestPartRead( utf8Encode( chunk ) );
+            pullParser.onRequestPartRead( utf8ByteBuffer( chunk ) );
         }
 
         assertTrue( pullParser.isRequestMessageComplete() );
