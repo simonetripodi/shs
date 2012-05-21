@@ -176,6 +176,6 @@ public interface Request
      * @throws IOException if any error occurs while opening the request body stream.
      */
     <T> T readRequestBody( RequestBodyReader<T> requestBodyReader )
-                    throws IOException;
+        throws IOException;
 
 }
