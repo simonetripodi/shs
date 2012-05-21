@@ -26,7 +26,7 @@ package org.nnsoft.shs.core.http.serialize;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Locale.US;
-import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
+import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -55,7 +55,7 @@ public final class ResponseSerializer
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
-    private static final ByteBuffer END_PADDING = utf8Encode( "\r\n" );
+    private static final ByteBuffer END_PADDING = utf8ByteBuffer( "\r\n" );
 
     private final WritableByteChannel target;
 
@@ -227,7 +227,7 @@ public final class ResponseSerializer
             logger.debug( "> {}", message );
         }
 
-        target.write( utf8Encode( message ) );
+        target.write( utf8ByteBuffer( message ) );
         target.write( END_PADDING );
         END_PADDING.rewind();
     }
