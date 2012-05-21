@@ -31,7 +31,101 @@
 
   <body>
     <section name="Simple HttpServer APIs">
-      
+      <p>The Simple HttpServer aims to provide web developers not just a server able to serve files over the HTTP
+      protocol, but rather an API set to develop complete Web applications</p>
+
+      <subsection name="The Http model">
+        <p>The HTTP model APIs takes inspiration from the Servlet model, simplifying it keeping off all the container
+        related features, just pure HTTP protocol:</p>
+
+        <img src="images/http-apis.png" alt="The Http model" />
+
+        <p>Main entities are the <a href="apidocs/org/nnsoft/shs/http/Request.html">Request</a> and
+        <a href="apidocs/org/nnsoft/shs/http/Response.html">Response</a>: they both are arguments of the
+        <a href="apidocs/org/nnsoft/shs/http/RequestHandler.html">RequestHandler</a> wich is the entity responsible
+        for the HTTP negotiation. A commodity
+        <a href="apidocs/org/nnsoft/shs/http/BaseRequestHandler.html">BaseRequestHandler</a> is provided in order to
+        simplify the HTTP method handling, such as <code>GET</code> or <code>POST</code>, where users can implement
+        the interested method handling.</p>
+
+        <p>Both <code>Request</code> and <code>Response</code> manipulate HTTP Headers as a
+        <a href="apidocs/org/nnsoft/shs/collections/MultiValued.html">MultiValued</a> collection, a read-only
+        key-value data structure where for each key can be associated more than one value. <code>Request</code>
+        query string parameters and form-urlencoded parameters are implemented as <code>MultiValued</code> as well.</p>
+      </subsection>
+
+      <subsection name="The Server interfaces">
+        <p>One of the Simple HttpServer ambitions is eliminating the boilerplate code to configure server instances,
+        keeping off from the core implementation plain old textual configuration files, such as Properties or XML,
+        and letting the server be configured with a pure Java mini EDSL (that of course can be proxed by testual
+        representations).</p>
+
+        <img src="images/configuration.png" alt="The Server interfaces" />
+
+        <p>Users implement <a href="apidocs/org/nnsoft/shs/HttpServerConfiguration.html">HttpServerConfiguration</a>,
+        the <a href="apidocs/org/nnsoft/shs/HttpServer.html">HttpServer</a> passes a
+        <a href="apidocs/org/nnsoft/shs/HttpServerConfigurator.html">HttpServerConfigurator</a> to user configuration,
+        and user configuration uses the configurator to map path patterns to
+        <a href="apidocs/org/nnsoft/shs/http/RequestHandler.html">RequestHandler</a>s.</p>
+
+        <code>public class MyServerConfiguration
+    implements HttpServerConfiguration
+{
+
+    private final File siteDir = new File( System.getProperty( "user.dir" ), "site" );
+
+    public void configure( HttpServerConfigurator configurator )
+    {
+        configurator.bindServerToHost( "localhost" );
+        configurator.bindServerToPort( 8080 );
+        configurator.serveRequestsWithThreads( 10 );
+        configurator.sessionsHaveMagAge( 60 * 60 );
+
+        configurator.serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+        configurator.when( Response.Status.NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+        configurator.when( Response.Status.INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
+    }
+
+}</code>
+
+        <p>The configuration allows users specify:</p>
+        <ul>
+          <li>Server related data, such as the binding host and port;</li>
+          <li>The handlers that have to be invoked when requesting paths - <code>web.xml</code> syntax supported!</li>
+          <li>The default response has to be provided when response provides a specific response status.</li>
+        </ul>
+
+        <p>DRY (Don't Repeat Yourself): Repeating <code>configurator</code> over and over for each configure step can
+        get a little tedious. The Simple HttpServer package provides a support class named
+        <a href="apidocs/org/nnsoft/shs/AbstractHttpServerConfiguration.html">AbstractHttpServerConfiguration</a> which
+        implicitly gives you access to <code>HttpServerConfigurator</code>'s methods.</p>
+
+        <p>For example, extending <code>AbstractHttpServerConfiguration</code> and rewrite the above binding as:</p>
+
+        <source>public class MyServerConfiguration
+    extends AbstractHttpServerConfiguration
+{
+
+    private final File siteDir = new File( System.getProperty( "user.dir" ), "site" );
+
+    protected void configure()
+    {
+        bindServerToHost( "localhost" );
+        bindServerToPort( 8080 );
+        serveRequestsWithThreads( 10 );
+        sessionsHaveMagAge( 60 * 60 );
+
+        serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+        when( Response.Status.NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+        when( Response.Status.INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
+    }
+
+}</source>
+
+        <p>We'll use this syntax throughout the rest of the guide.</p>
+
+        <p>We can break <code>HttpServer</code>'s 3 architecture down into three distinct stages: startup, runtime and stop.</p>
+      </subsection>
     </section>
   </body>
 
