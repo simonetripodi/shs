@@ -84,7 +84,7 @@
 <a class="jxr_linenumber" name="74" href="#74">74</a>  <em class="jxr_javadoccomment"> * This class must NOT be shared across threads, consider it be used inside main(String...) method.</em>
 <a class="jxr_linenumber" name="75" href="#75">75</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="76" href="#76">76</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/nnsoft/shs/core/SimpleHttpServer.html">SimpleHttpServer</a>
-<a class="jxr_linenumber" name="77" href="#77">77</a>      <strong class="jxr_keyword">implements</strong> <a href="../../../../org/nnsoft/shs/HttpServer.html">HttpServer</a>
+<a class="jxr_linenumber" name="77" href="#77">77</a>      <strong class="jxr_keyword">implements</strong> HttpServer
 <a class="jxr_linenumber" name="78" href="#78">78</a>  {
 <a class="jxr_linenumber" name="79" href="#79">79</a>  
 <a class="jxr_linenumber" name="80" href="#80">80</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Logger logger = getLogger( getClass() );
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="100" href="#100">100</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="101" href="#101">101</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="102" href="#102">102</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> init( HttpServerConfiguration configuratoruration )
-<a class="jxr_linenumber" name="103" href="#103">103</a>         <strong class="jxr_keyword">throws</strong> <a href="../../../../org/nnsoft/shs/InitException.html">InitException</a>
+<a class="jxr_linenumber" name="103" href="#103">103</a>         <strong class="jxr_keyword">throws</strong> InitException
 <a class="jxr_linenumber" name="104" href="#104">104</a>     {
 <a class="jxr_linenumber" name="105" href="#105">105</a>         checkInitParameter( configuratoruration != <strong class="jxr_keyword">null</strong>, <span class="jxr_string">"Impossible configure the server with a null configuration"</span> );
 <a class="jxr_linenumber" name="106" href="#106">106</a>         checkInitParameter( STOPPED == currentStatus.get(), <span class="jxr_string">"Current server cannot be configured while in %s status."</span>, currentStatus );
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="133" href="#133">133</a>         }
 <a class="jxr_linenumber" name="134" href="#134">134</a>         <strong class="jxr_keyword">catch</strong> ( IOException e )
 <a class="jxr_linenumber" name="135" href="#135">135</a>         {
-<a class="jxr_linenumber" name="136" href="#136">136</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/InitException.html">InitException</a>( <span class="jxr_string">"Impossible to start server on port %s (with %s threads): %s"</span>,
+<a class="jxr_linenumber" name="136" href="#136">136</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InitException( <span class="jxr_string">"Impossible to start server on port %s (with %s threads): %s"</span>,
 <a class="jxr_linenumber" name="137" href="#137">137</a>                                      configurator.getPort(), configurator.getThreads(), e.getMessage() );
 <a class="jxr_linenumber" name="138" href="#138">138</a>         }
 <a class="jxr_linenumber" name="139" href="#139">139</a> 
@@ -163,11 +163,11 @@
 <a class="jxr_linenumber" name="153" href="#153">153</a> <em class="jxr_javadoccomment">     * @throws InitException if the input condition is not verified</em>
 <a class="jxr_linenumber" name="154" href="#154">154</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="155" href="#155">155</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> checkInitParameter( <strong class="jxr_keyword">boolean</strong> condition, String messageTemplate, Object...args )
-<a class="jxr_linenumber" name="156" href="#156">156</a>         <strong class="jxr_keyword">throws</strong> <a href="../../../../org/nnsoft/shs/InitException.html">InitException</a>
+<a class="jxr_linenumber" name="156" href="#156">156</a>         <strong class="jxr_keyword">throws</strong> InitException
 <a class="jxr_linenumber" name="157" href="#157">157</a>     {
 <a class="jxr_linenumber" name="158" href="#158">158</a>         <strong class="jxr_keyword">if</strong> ( !condition )
 <a class="jxr_linenumber" name="159" href="#159">159</a>         {
-<a class="jxr_linenumber" name="160" href="#160">160</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/InitException.html">InitException</a>( messageTemplate, args );
+<a class="jxr_linenumber" name="160" href="#160">160</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> InitException( messageTemplate, args );
 <a class="jxr_linenumber" name="161" href="#161">161</a>         }
 <a class="jxr_linenumber" name="162" href="#162">162</a>     }
 <a class="jxr_linenumber" name="163" href="#163">163</a> 
@@ -175,11 +175,11 @@
 <a class="jxr_linenumber" name="165" href="#165">165</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="166" href="#166">166</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="167" href="#167">167</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> start()
-<a class="jxr_linenumber" name="168" href="#168">168</a>         <strong class="jxr_keyword">throws</strong> <a href="../../../../org/nnsoft/shs/RunException.html">RunException</a>
+<a class="jxr_linenumber" name="168" href="#168">168</a>         <strong class="jxr_keyword">throws</strong> RunException
 <a class="jxr_linenumber" name="169" href="#169">169</a>     {
 <a class="jxr_linenumber" name="170" href="#170">170</a>         <strong class="jxr_keyword">if</strong> ( INITIALIZED != currentStatus.get() )
 <a class="jxr_linenumber" name="171" href="#171">171</a>         {
-<a class="jxr_linenumber" name="172" href="#172">172</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/RunException.html">RunException</a>( <span class="jxr_string">"Current server cannot be configured while in %s status, stop then init again before."</span>,
+<a class="jxr_linenumber" name="172" href="#172">172</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RunException( <span class="jxr_string">"Current server cannot be configured while in %s status, stop then init again before."</span>,
 <a class="jxr_linenumber" name="173" href="#173">173</a>                                     currentStatus );
 <a class="jxr_linenumber" name="174" href="#174">174</a>         }
 <a class="jxr_linenumber" name="175" href="#175">175</a> 
@@ -195,7 +195,7 @@
 <a class="jxr_linenumber" name="185" href="#185">185</a>             }
 <a class="jxr_linenumber" name="186" href="#186">186</a>             <strong class="jxr_keyword">catch</strong> ( Throwable t )
 <a class="jxr_linenumber" name="187" href="#187">187</a>             {
-<a class="jxr_linenumber" name="188" href="#188">188</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/RunException.html">RunException</a>( <span class="jxr_string">"Something wrong happened while listening for connections"</span>, t );
+<a class="jxr_linenumber" name="188" href="#188">188</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RunException( <span class="jxr_string">"Something wrong happened while listening for connections"</span>, t );
 <a class="jxr_linenumber" name="189" href="#189">189</a>             }
 <a class="jxr_linenumber" name="190" href="#190">190</a> 
 <a class="jxr_linenumber" name="191" href="#191">191</a>             Iterator&lt;SelectionKey&gt; keys = selector.selectedKeys().iterator();
@@ -248,7 +248,7 @@
 <a class="jxr_linenumber" name="238" href="#238">238</a>         }
 <a class="jxr_linenumber" name="239" href="#239">239</a>         <strong class="jxr_keyword">catch</strong> ( IOException e )
 <a class="jxr_linenumber" name="240" href="#240">240</a>         {
-<a class="jxr_linenumber" name="241" href="#241">241</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/RunException.html">RunException</a>( <span class="jxr_string">"An error occurred while disposing server resources: %s"</span>, e.getMessage() );
+<a class="jxr_linenumber" name="241" href="#241">241</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RunException( <span class="jxr_string">"An error occurred while disposing server resources: %s"</span>, e.getMessage() );
 <a class="jxr_linenumber" name="242" href="#242">242</a>         }
 <a class="jxr_linenumber" name="243" href="#243">243</a>         <strong class="jxr_keyword">finally</strong>
 <a class="jxr_linenumber" name="244" href="#244">244</a>         {
@@ -261,7 +261,7 @@
 <a class="jxr_linenumber" name="251" href="#251">251</a>             }
 <a class="jxr_linenumber" name="252" href="#252">252</a>             <strong class="jxr_keyword">catch</strong> ( IOException e )
 <a class="jxr_linenumber" name="253" href="#253">253</a>             {
-<a class="jxr_linenumber" name="254" href="#254">254</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/RunException.html">RunException</a>( <span class="jxr_string">"An error occurred while disposing server resources: %s"</span>, e.getMessage() );
+<a class="jxr_linenumber" name="254" href="#254">254</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> RunException( <span class="jxr_string">"An error occurred while disposing server resources: %s"</span>, e.getMessage() );
 <a class="jxr_linenumber" name="255" href="#255">255</a>             }
 <a class="jxr_linenumber" name="256" href="#256">256</a>             <strong class="jxr_keyword">finally</strong>
 <a class="jxr_linenumber" name="257" href="#257">257</a>             {
@@ -329,7 +329,7 @@
 <a class="jxr_linenumber" name="319" href="#319">319</a>                 }
 <a class="jxr_linenumber" name="320" href="#320">320</a>                 <strong class="jxr_keyword">catch</strong> ( RequestParseException e )
 <a class="jxr_linenumber" name="321" href="#321">321</a>                 {
-<a class="jxr_linenumber" name="322" href="#322">322</a>                     <a href="../../../../org/nnsoft/shs/http/Response.html">Response</a> response = newResponse();
+<a class="jxr_linenumber" name="322" href="#322">322</a>                     Response response = newResponse();
 <a class="jxr_linenumber" name="323" href="#323">323</a>                     response.setStatus( BAD_REQUEST );
 <a class="jxr_linenumber" name="324" href="#324">324</a>                     keys.remove();
 <a class="jxr_linenumber" name="325" href="#325">325</a>                     key.attach( response );
@@ -342,7 +342,7 @@
 <a class="jxr_linenumber" name="332" href="#332">332</a> 
 <a class="jxr_linenumber" name="333" href="#333">333</a>             <strong class="jxr_keyword">if</strong> ( requestParser.isRequestMessageComplete() )
 <a class="jxr_linenumber" name="334" href="#334">334</a>             {
-<a class="jxr_linenumber" name="335" href="#335">335</a>                 <a href="../../../../org/nnsoft/shs/http/Request.html">Request</a> request = requestParser.getParsedRequest();
+<a class="jxr_linenumber" name="335" href="#335">335</a>                 Request request = requestParser.getParsedRequest();
 <a class="jxr_linenumber" name="336" href="#336">336</a> 
 <a class="jxr_linenumber" name="337" href="#337">337</a>                 <strong class="jxr_keyword">if</strong> ( logger.isDebugEnabled() )
 <a class="jxr_linenumber" name="338" href="#338">338</a>                 {
@@ -373,7 +373,7 @@
 <a class="jxr_linenumber" name="363" href="#363">363</a>         }
 <a class="jxr_linenumber" name="364" href="#364">364</a>         <strong class="jxr_keyword">catch</strong> ( IOException e )
 <a class="jxr_linenumber" name="365" href="#365">365</a>         {
-<a class="jxr_linenumber" name="366" href="#366">366</a>             <a href="../../../../org/nnsoft/shs/http/Response.html">Response</a> response = newResponse();
+<a class="jxr_linenumber" name="366" href="#366">366</a>             Response response = newResponse();
 <a class="jxr_linenumber" name="367" href="#367">367</a>             response.setStatus( INTERNAL_SERVER_ERROR );
 <a class="jxr_linenumber" name="368" href="#368">368</a>             keys.remove();
 <a class="jxr_linenumber" name="369" href="#369">369</a>             key.attach( response );
@@ -391,7 +391,7 @@
 <a class="jxr_linenumber" name="381" href="#381">381</a> 
 <a class="jxr_linenumber" name="382" href="#382">382</a>         WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
 <a class="jxr_linenumber" name="383" href="#383">383</a> 
-<a class="jxr_linenumber" name="384" href="#384">384</a>         <a href="../../../../org/nnsoft/shs/http/Response.html">Response</a> response = (Response) key.attachment();
+<a class="jxr_linenumber" name="384" href="#384">384</a>         Response response = (Response) key.attachment();
 <a class="jxr_linenumber" name="385" href="#385">385</a> 
 <a class="jxr_linenumber" name="386" href="#386">386</a>         <strong class="jxr_keyword">if</strong> ( logger.isDebugEnabled() )
 <a class="jxr_linenumber" name="387" href="#387">387</a>         {
@@ -416,11 +416,11 @@
 <a class="jxr_linenumber" name="406" href="#406">406</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="407" href="#407">407</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="408" href="#408">408</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> stop()
-<a class="jxr_linenumber" name="409" href="#409">409</a>         <strong class="jxr_keyword">throws</strong> <a href="../../../../org/nnsoft/shs/ShutdownException.html">ShutdownException</a>
+<a class="jxr_linenumber" name="409" href="#409">409</a>         <strong class="jxr_keyword">throws</strong> ShutdownException
 <a class="jxr_linenumber" name="410" href="#410">410</a>     {
 <a class="jxr_linenumber" name="411" href="#411">411</a>         <strong class="jxr_keyword">if</strong> ( RUNNING != currentStatus.get() )
 <a class="jxr_linenumber" name="412" href="#412">412</a>         {
-<a class="jxr_linenumber" name="413" href="#413">413</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/ShutdownException.html">ShutdownException</a>( <span class="jxr_string">"Current server cannot be stopped while in %s status."</span>,
+<a class="jxr_linenumber" name="413" href="#413">413</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> ShutdownException( <span class="jxr_string">"Current server cannot be stopped while in %s status."</span>,
 <a class="jxr_linenumber" name="414" href="#414">414</a>                                          currentStatus );
 <a class="jxr_linenumber" name="415" href="#415">415</a>         }
 <a class="jxr_linenumber" name="416" href="#416">416</a> 
@@ -430,7 +430,7 @@
 <a class="jxr_linenumber" name="420" href="#420">420</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="421" href="#421">421</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="422" href="#422">422</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="423" href="#423">423</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/nnsoft/shs/HttpServer.html">Status</a> getStatus()
+<a class="jxr_linenumber" name="423" href="#423">423</a>     <strong class="jxr_keyword">public</strong> Status getStatus()
 <a class="jxr_linenumber" name="424" href="#424">424</a>     {
 <a class="jxr_linenumber" name="425" href="#425">425</a>         <strong class="jxr_keyword">return</strong> currentStatus.get();
 <a class="jxr_linenumber" name="426" href="#426">426</a>     }

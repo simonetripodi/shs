@@ -77,13 +77,13 @@
 <a class="jxr_linenumber" name="67" href="#67">67</a>  
 <a class="jxr_linenumber" name="68" href="#68">68</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../org/nnsoft/shs/core/RequestDispatcher.html">RequestDispatcher</a> requestDispatcher;
 <a class="jxr_linenumber" name="69" href="#69">69</a>  
-<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../org/nnsoft/shs/http/Request.html">Request</a> request;
+<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Request request;
 <a class="jxr_linenumber" name="71" href="#71">71</a>  
 <a class="jxr_linenumber" name="72" href="#72">72</a>      <strong class="jxr_keyword">private</strong> SelectionKey key;
 <a class="jxr_linenumber" name="73" href="#73">73</a>  
 <a class="jxr_linenumber" name="74" href="#74">74</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../org/nnsoft/shs/core/ProtocolProcessor.html">ProtocolProcessor</a>( SessionManager sessionManager,
 <a class="jxr_linenumber" name="75" href="#75">75</a>                                <a href="../../../../org/nnsoft/shs/core/RequestDispatcher.html">RequestDispatcher</a> requestDispatcher,
-<a class="jxr_linenumber" name="76" href="#76">76</a>                                <a href="../../../../org/nnsoft/shs/http/Request.html">Request</a> request,
+<a class="jxr_linenumber" name="76" href="#76">76</a>                                Request request,
 <a class="jxr_linenumber" name="77" href="#77">77</a>                                SelectionKey key )
 <a class="jxr_linenumber" name="78" href="#78">78</a>      {
 <a class="jxr_linenumber" name="79" href="#79">79</a>          <strong class="jxr_keyword">this</strong>.sessionManager = sessionManager;
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="84" href="#84">84</a>  
 <a class="jxr_linenumber" name="85" href="#85">85</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> run()
 <a class="jxr_linenumber" name="86" href="#86">86</a>      {
-<a class="jxr_linenumber" name="87" href="#87">87</a>          <a href="../../../../org/nnsoft/shs/http/Response.html">Response</a> response = newResponse();
+<a class="jxr_linenumber" name="87" href="#87">87</a>          Response response = newResponse();
 <a class="jxr_linenumber" name="88" href="#88">88</a>          response.addHeader( DATE, dateFormat.format( <strong class="jxr_keyword">new</strong> Date() ) );
 <a class="jxr_linenumber" name="89" href="#89">89</a>          response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 <a class="jxr_linenumber" name="90" href="#90">90</a>  
