@@ -342,9 +342,7 @@ public final class MutableRequest
 
         requestBody.rewind();
 
-        requestBodyReader.onBodyPartReceived( requestBody );
-
-        return requestBodyReader.onCompleted();
+        return requestBodyReader.onBodyPartReceived( requestBody );
     }
 
     /**

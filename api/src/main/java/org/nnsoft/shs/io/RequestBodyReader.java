@@ -43,17 +43,10 @@ public interface RequestBodyReader<T>
      *
      * @param contentLength the request body content length
      * @param requestInputStream the request content body input stream
-     * @return an arbitrary user defined object
+     * @return The object has to be mapped by reading the buffers
      * @throws IOException if any error occurs while reading the content body input stream
      */
-    void onBodyPartReceived( ByteBuffer buffer )
+    T onBodyPartReceived( ByteBuffer buffer )
         throws IOException;
-
-    /**
-     * Invoked once the HTTP request processing is finished.
-     *
-     * @return The object has to be mapped by reading the buffers
-     */
-    T onCompleted();
 
 }
