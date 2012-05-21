@@ -23,8 +23,8 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
+import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
@@ -35,11 +35,12 @@ import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.nio.channels.SelectionKey;
+import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.nnsoft.shs.core.http.SessionManager;
+import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
@@ -69,17 +70,17 @@ final class ProtocolProcessor
 
     private final Request request;
 
-    private final SelectionKey key;
+    private WritableByteChannel target;
 
     public ProtocolProcessor( SessionManager sessionManager,
                               RequestDispatcher requestDispatcher,
                               Request request,
-                              SelectionKey key )
+                              WritableByteChannel target )
     {
         this.sessionManager = sessionManager;
         this.requestDispatcher = requestDispatcher;
         this.request = request;
-        this.key = key;
+        this.target = target;
     }
 
     public void run()
@@ -130,8 +131,18 @@ final class ProtocolProcessor
         }
         finally
         {
-            key.attach( response );
-            key.interestOps( OP_WRITE );
+            try
+            {
+                new ResponseSerializer( target, false ).serialize( response );
+            }
+            catch ( IOException e )
+            {
+                logger.error( "Impossible to stream Response to the client", e );
+            }
+            finally
+            {
+                closeQuietly( target );
+            }
         }
     }
 

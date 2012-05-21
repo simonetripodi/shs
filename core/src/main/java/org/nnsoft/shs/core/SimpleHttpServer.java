@@ -35,7 +35,6 @@ import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
-import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -79,8 +78,6 @@ public final class SimpleHttpServer
 {
 
     private final Logger logger = getLogger( getClass() );
-
-    private static final String GZIP = "gzip";
 
     private ExecutorService requestsExecutor;
 
@@ -195,7 +192,6 @@ public final class SimpleHttpServer
             while ( keys.hasNext() )
             {
                 SelectionKey key = keys.next();
-                keys.remove();
 
                 if ( !key.isValid() )
                 {
@@ -206,14 +202,16 @@ public final class SimpleHttpServer
                 {
                     if ( key.isAcceptable() )
                     {
+                        keys.remove();
                         accept( key );
                     }
                     else if ( key.isReadable() )
                     {
-                        read( key );
+                        read( key, keys );
                     }
                     else if ( key.isWritable() )
                     {
+                        keys.remove();
                         write( key );
                     }
                 }
@@ -292,7 +290,7 @@ public final class SimpleHttpServer
                                                                                socket.getLocalPort() ) );
     }
 
-    private void read( SelectionKey key )
+    private void read( SelectionKey key, Iterator<SelectionKey> keys )
         throws IOException
     {
         if ( logger.isDebugEnabled() )
@@ -322,6 +320,7 @@ public final class SimpleHttpServer
                     {
                         Response response = newResponse();
                         response.setStatus( BAD_REQUEST );
+                        keys.remove();
                         key.attach( response );
                         key.interestOps( OP_WRITE );
                         break push;
@@ -356,14 +355,16 @@ public final class SimpleHttpServer
                     }
                 }
 
-                new ProtocolProcessor( sessionManager, dispatcher, request, key ).run();
-                // requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
+                keys.remove();
+                key.attach( request );
+                key.interestOps( OP_WRITE );
             }
         }
         catch ( IOException e )
         {
             Response response = newResponse();
             response.setStatus( INTERNAL_SERVER_ERROR );
+            keys.remove();
             key.attach( response );
             key.interestOps( OP_WRITE );
         }
@@ -379,9 +380,16 @@ public final class SimpleHttpServer
 
         WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
 
-        Response response = (Response) key.attachment();
+        if ( key.attachment() instanceof Request )
+        {
+            Request request = (Request) key.attachment();
+            // requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, serverChannel ) );
+            new ProtocolProcessor( sessionManager, dispatcher, request, serverChannel ).run();
+            return;
+        }
 
-        boolean gzipCompressionAccepted = GZIP.equals( response.getHeaders().getFirstValue( CONTENT_ENCODING ) );
+        // some error occurred during the read
+        Response response = (Response) key.attachment();
 
         if ( logger.isDebugEnabled() )
         {
@@ -390,7 +398,7 @@ public final class SimpleHttpServer
 
         try
         {
-            new ResponseSerializer( serverChannel, gzipCompressionAccepted ).serialize( response );
+            new ResponseSerializer( serverChannel, false ).serialize( response );
         }
         catch ( IOException e )
         {
