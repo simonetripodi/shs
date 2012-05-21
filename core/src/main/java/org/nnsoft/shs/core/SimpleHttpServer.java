@@ -356,6 +356,7 @@ public final class SimpleHttpServer
                 }
 
                 keys.remove();
+                key.interestOps( 0 );
 
                 requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
             }
