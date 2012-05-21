@@ -198,11 +198,15 @@ public final class SimpleHttpServer
                     continue;
                 }
 
+                if ( !key.isReadable() )
+                {
+                    keys.remove();
+                }
+
                 try
                 {
                     if ( key.isAcceptable() )
                     {
-                        keys.remove();
                         accept( key );
                     }
                     else if ( key.isReadable() )
@@ -211,7 +215,6 @@ public final class SimpleHttpServer
                     }
                     else if ( key.isWritable() )
                     {
-                        keys.remove();
                         write( key );
                     }
                 }
