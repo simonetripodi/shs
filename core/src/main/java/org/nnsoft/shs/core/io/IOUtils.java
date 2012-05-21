@@ -29,8 +29,6 @@ import static java.nio.charset.Charset.forName;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -93,17 +91,6 @@ public final class IOUtils
             // should not happen
             return "";
         }
-    }
-
-    /**
-     * Allows reading the input stream using the UTF-8 charset.
-     *
-     * @param input the input stream has to be read
-     * @return a UTF-8 reader of the input stream
-     */
-    public static InputStreamReader utf8Reader( InputStream input )
-    {
-        return new InputStreamReader( input, UTF_8 );
     }
 
     /**
