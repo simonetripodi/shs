@@ -27,7 +27,6 @@ import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
-import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
@@ -73,9 +72,9 @@ final class ProtocolProcessor
     private final SelectionKey key;
 
     public ProtocolProcessor( SessionManager sessionManager,
-                                  RequestDispatcher requestDispatcher,
-                                  Request request,
-                                  SelectionKey key )
+                              RequestDispatcher requestDispatcher,
+                              Request request,
+                              SelectionKey key )
     {
         this.sessionManager = sessionManager;
         this.requestDispatcher = requestDispatcher;
