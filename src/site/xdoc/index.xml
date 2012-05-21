@@ -38,11 +38,12 @@
         <li>100% based on NIO APIs;</li>
         <li>multi-threading requests processor;</li>
         <li>EDSL configuration APIs;</li>
-        <li>Request incremental pull parser.</li>
-        <li></li>
+        <li>Request incremental pull parser;</li>
+        <li>...</li>
       </ul>
       <p>See how <a href="api.html">APIs</a> and <a href="core.html">core</a> implementation work!</p>
       <p>There is also a <a href="demo.html">demo</a> that shows the server potentials.</p>
+      <p>Do you wants to rebuild all yourself? See the <a href="developers.html">developers</a> page!</p>
     </section>
 
     <section name="Acknowledgements">
