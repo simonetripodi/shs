@@ -23,7 +23,7 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.io.IOUtils.utf8Encode;
+import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -39,7 +39,7 @@ final class MessageResponseBodyWriter
 
     public MessageResponseBodyWriter( String messageTemplate, Object...args )
     {
-        message = utf8Encode( messageTemplate, args );
+        message = utf8ByteBuffer( messageTemplate, args );
     }
 
     /**
