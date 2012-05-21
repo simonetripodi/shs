@@ -132,15 +132,7 @@ public final class RequestStreamingParser
 
         if ( BODY_CONSUMING == status )
         {
-            while ( requestBody.hasRemaining() )
-            {
-                requestBody.put( messageBuffer.get() );
-            }
-
-            if ( request.getContentLength() == requestBody.capacity() )
-            {
-                requestMessageComplete = true;
-            }
+            consumeBody( messageBuffer );
         }
         else
         {
@@ -254,7 +246,7 @@ public final class RequestStreamingParser
                         {
                             if ( logger.isDebugEnabled() )
                             {
-                                logger.debug( "Coonsuming request body..." );
+                                logger.debug( "Consuming request body..." );
                             }
 
                             if ( request.getHeaders().contains( CONTENT_TYPE )
@@ -265,8 +257,12 @@ public final class RequestStreamingParser
                             else
                             {
                                 forceSwitch( current, BODY_CONSUMING );
-                                messageBuffer = allocateDirect( (int) request.getContentLength() );
+                                requestBody = allocateDirect( (int) request.getContentLength() );
+
                                 messageBuffer.position( charBuffer.position() );
+
+                                consumeBody( messageBuffer );
+                                break dance;
                             }
                         }
                         else
@@ -342,6 +338,26 @@ public final class RequestStreamingParser
 
         accumulator = new StringBuilder();
         status = newStatus;
+    }
+
+    private void consumeBody( ByteBuffer buffer )
+    {
+        while ( buffer.hasRemaining() && requestBody.hasRemaining() )
+        {
+            requestBody.put( buffer.get() );
+
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "{} Consuming request body {}/{}",
+                              new Object[] { status, requestBody.position(), requestBody.limit() } );
+            }
+        }
+
+        if ( request.getContentLength() == requestBody.capacity() )
+        {
+            requestMessageComplete = true;
+            request.setRequestBody( requestBody );
+        }
     }
 
     public boolean isRequestMessageComplete()

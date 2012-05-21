@@ -161,6 +161,22 @@ public final class RequestStreamingParserTestCase
         assertEquals( "value2", request.getParameters().getFirstValue( "param2" ) );
     }
 
+    @Test
+    public void textSentViaPostMethods()
+        throws Exception
+    {
+        String simpleRequest = "POST /demo.html HTTP/1.1\n"
+                                + "Content-Length: 33\n"
+                                + "Content-Type: text/plain\n\n"
+                                + "supercalifragilistichespiralidoso";
+        Request request = parse( simpleRequest );
+
+        String expected = "supercalifragilistichespiralidoso";
+        String actual = request.readRequestBody( new ToStringRequestBodyReader() );
+
+        assertEquals( expected, actual );
+    }
+
     private Request parse( String mockRequestString )
         throws Exception
     {
