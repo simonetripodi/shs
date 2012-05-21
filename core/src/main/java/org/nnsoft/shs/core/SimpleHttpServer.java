@@ -313,21 +313,18 @@ public final class SimpleHttpServer
             {
                 data.flip();
 
-                while ( data.hasRemaining() )
+                try
                 {
-                    try
-                    {
-                        requestParser.onRequestPartRead( data );
-                    }
-                    catch ( RequestParseException e )
-                    {
-                        Response response = newResponse();
-                        response.setStatus( BAD_REQUEST );
-                        keys.remove();
-                        key.attach( response );
-                        key.interestOps( OP_WRITE );
-                        break push;
-                    }
+                    requestParser.onRequestPartRead( data );
+                }
+                catch ( RequestParseException e )
+                {
+                    Response response = newResponse();
+                    response.setStatus( BAD_REQUEST );
+                    keys.remove();
+                    key.attach( response );
+                    key.interestOps( OP_WRITE );
+                    break push;
                 }
 
                 data.clear();

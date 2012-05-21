@@ -96,7 +96,7 @@ public final class RequestStreamingParser
 
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
-    private ByteBuffer messageBody;
+    private ByteBuffer requestBody;
 
     public RequestStreamingParser( String clientHost, String serverHost, int serverPort )
     {
@@ -125,170 +125,187 @@ public final class RequestStreamingParser
     public void onRequestPartRead( ByteBuffer messageBuffer )
         throws RequestParseException
     {
-        CharBuffer charBuffer = toUtf8CharBuffer( messageBuffer );
-        dance: while ( charBuffer.hasRemaining() )
+        if ( requestMessageComplete )
         {
-            char current = charBuffer.get();
+            return;
+        }
 
-            if ( logger.isDebugEnabled() )
+        if ( BODY_CONSUMING == status )
+        {
+            while ( requestBody.hasRemaining() )
             {
-                logger.debug( "{} consuming char: `{}'", status, current );
+                requestBody.put( messageBuffer.get() );
             }
 
-            if ( requestMessageComplete )
+            if ( request.getContentLength() == requestBody.capacity() )
             {
-                break dance;
+                requestMessageComplete = true;
             }
-
-            switch ( current )
+        }
+        else
+        {
+            CharBuffer charBuffer = toUtf8CharBuffer( messageBuffer );
+            dance: while ( charBuffer.hasRemaining() )
             {
-                case CARRIAGE_RETURN:
-                    break;
+                char current = charBuffer.get();
 
-                case TOKEN_SEPARATOR:
-                    if ( !isConsumingToken() ) // trim initial spaces
-                    {
+                if ( logger.isDebugEnabled() )
+                {
+                    logger.debug( "{} consuming char: `{}'", status, current );
+                }
+
+                if ( requestMessageComplete )
+                {
+                    break dance;
+                }
+
+                switch ( current )
+                {
+                    case CARRIAGE_RETURN:
                         break;
-                    }
 
-                    if ( HEADER_VALUE == status
-                         || HEADER_USER_AGENT_VALUE == status
-                         || COOKIE_VALUE == status )
-                    {
-                        append( current );
-                    }
-                    else
-                    {
-                        tokenFound();
-                        if ( QS_PARAM_NAME == status )
+                    case TOKEN_SEPARATOR:
+                        if ( !isConsumingToken() ) // trim initial spaces
                         {
-                            forceSwitch( current, PROTOCOL_NAME );
+                            break;
                         }
-                    }
-                    break;
 
-                case PROTOCOL_VERSION_SEPARATOR:
-                    if ( PROTOCOL_NAME == status )
-                    {
-                        tokenFound();
-                    }
-                    else
-                    {
-                        append( current );
-                    }
-                    break;
-
-                case KEY_VALUE_SEPARATOR:
-                    if ( HEADER_VALUE == status || COOKIE_VALUE == status )
-                    {
-                        append( current );
-                    }
-                    else
-                    {
-                        tokenFound();
-                    }
-                    break;
-
-                case HEADER_NAME_SEPARATOR:
-                    if ( HEADER_VALUE == status )
-                    {
-                        append( current );
-                    }
-                    else
-                    {
-                        tokenFound();
-                    }
-                    break;
-
-                case HEADER_VALUES_SEPARATOR:
-                    if ( HEADER_USER_AGENT_VALUE == status || COOKIE_VALUE == status )
-                    {
-                        append( current );
-                    }
-                    else
-                    {
-                        tokenFound();
-                    }
-                    break;
-
-                case PARAMETER_SEPARATOR:
-                    tokenFound();
-                    break;
-
-                case QUERY_STRING_SEPARATOR:
-                    tokenFound();
-                    forceSwitch( current, QS_PARAM_NAME );
-                    break;
-
-                case NEW_LINE:
-                    if ( isConsumingToken() )
-                    {
-                        tokenFound();
                         if ( HEADER_VALUE == status
                              || HEADER_USER_AGENT_VALUE == status
                              || COOKIE_VALUE == status )
                         {
-                            forceSwitch( current, HEADER_NAME );
-                        }
-                    }
-                    else if ( request.getContentLength() > 0 )
-                    {
-                        if ( logger.isDebugEnabled() )
-                        {
-                            logger.debug( "Coonsuming request body..." );
-                        }
-
-                        if ( request.getHeaders().contains( CONTENT_TYPE )
-                             && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( FORM_URLENCODED ) )
-                        {
-                            forceSwitch( current, PARAM_NAME );
+                            append( current );
                         }
                         else
                         {
-                            forceSwitch( current, BODY_CONSUMING );
-                            messageBuffer = allocateDirect( (int) request.getContentLength() );
+                            tokenFound();
+                            if ( QS_PARAM_NAME == status )
+                            {
+                                forceSwitch( current, PROTOCOL_NAME );
+                            }
                         }
-                    }
-                    else
-                    {
-                        requestMessageComplete = true;
-                    }
-                    break;
+                        break;
 
-                case HEADER_SEPARATOR:
-                    if ( HEADER_VALUE == status || HEADER_USER_AGENT_VALUE == status )
-                    {
+                    case PROTOCOL_VERSION_SEPARATOR:
+                        if ( PROTOCOL_NAME == status )
+                        {
+                            tokenFound();
+                        }
+                        else
+                        {
+                            append( current );
+                        }
+                        break;
+
+                    case KEY_VALUE_SEPARATOR:
+                        if ( HEADER_VALUE == status || COOKIE_VALUE == status )
+                        {
+                            append( current );
+                        }
+                        else
+                        {
+                            tokenFound();
+                        }
+                        break;
+
+                    case HEADER_NAME_SEPARATOR:
+                        if ( HEADER_VALUE == status )
+                        {
+                            append( current );
+                        }
+                        else
+                        {
+                            tokenFound();
+                        }
+                        break;
+
+                    case HEADER_VALUES_SEPARATOR:
+                        if ( HEADER_USER_AGENT_VALUE == status || COOKIE_VALUE == status )
+                        {
+                            append( current );
+                        }
+                        else
+                        {
+                            tokenFound();
+                        }
+                        break;
+
+                    case PARAMETER_SEPARATOR:
+                        tokenFound();
+                        break;
+
+                    case QUERY_STRING_SEPARATOR:
+                        tokenFound();
+                        forceSwitch( current, QS_PARAM_NAME );
+                        break;
+
+                    case NEW_LINE:
+                        if ( isConsumingToken() )
+                        {
+                            tokenFound();
+                            if ( HEADER_VALUE == status
+                                 || HEADER_USER_AGENT_VALUE == status
+                                 || COOKIE_VALUE == status )
+                            {
+                                forceSwitch( current, HEADER_NAME );
+                            }
+                        }
+                        else if ( request.getContentLength() > 0 )
+                        {
+                            if ( logger.isDebugEnabled() )
+                            {
+                                logger.debug( "Coonsuming request body..." );
+                            }
+
+                            if ( request.getHeaders().contains( CONTENT_TYPE )
+                                 && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( FORM_URLENCODED ) )
+                            {
+                                forceSwitch( current, PARAM_NAME );
+                            }
+                            else
+                            {
+                                forceSwitch( current, BODY_CONSUMING );
+                                messageBuffer = allocateDirect( (int) request.getContentLength() );
+                                messageBuffer.position( charBuffer.position() );
+                            }
+                        }
+                        else
+                        {
+                            requestMessageComplete = true;
+                        }
+                        break;
+
+                    case HEADER_SEPARATOR:
+                        if ( HEADER_VALUE == status || HEADER_USER_AGENT_VALUE == status )
+                        {
+                            append( current );
+                        }
+                        else
+                        {
+                            tokenFound();
+                        }
+                        break;
+
+                    default:
                         append( current );
-                    }
-                    else
+                        break;
+                }
+
+                if ( PARAM_NAME == status || PARAM_VALUE == status )
+                {
+                    bodyConsumingCounter++;
+
+                    if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
                     {
                         tokenFound();
-                    }
-                    break;
+                        requestMessageComplete = true;
 
-                default:
-                    append( current );
-                    break;
-            }
-
-            if ( PARAM_NAME == status || PARAM_VALUE == status )
-            {
-                bodyConsumingCounter++;
-
-                if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
-                {
-                    tokenFound();
-                    requestMessageComplete = true;
-
-                    if ( logger.isDebugEnabled() )
-                    {
-                        logger.debug( "Request body consumed" );
+                        if ( logger.isDebugEnabled() )
+                        {
+                            logger.debug( "Request body consumed" );
+                        }
                     }
                 }
-            }
-            else if ( BODY_CONSUMING == status )
-            {
-
             }
         }
     }
