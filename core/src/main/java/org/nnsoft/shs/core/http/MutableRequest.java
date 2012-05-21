@@ -24,13 +24,11 @@ package org.nnsoft.shs.core.http;
  */
 
 import static java.lang.String.format;
-import static java.nio.ByteBuffer.allocateDirect;
 import static java.util.Collections.unmodifiableList;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,9 +63,7 @@ public final class MutableRequest
 
     private long contentLength = -1;
 
-    private ReadableByteChannel contentBody;
-
-    private boolean bodyConsumed = false;
+    private ByteBuffer requestBody;
 
     private Session session;
 
@@ -323,12 +319,12 @@ public final class MutableRequest
     /**
      * Set the buffered request content body.
      *
-     * @param contentBody the request content body.
+     * @param requestBody the request content body.
      */
-    public void setContentBody( ReadableByteChannel contentBody )
+    public void setRequestBody( ByteBuffer requestBody )
     {
-        checkArgument( contentBody != null, "Null contentBody not allowed" );
-        this.contentBody = contentBody;
+        checkArgument( requestBody != null, "Null requestBody not allowed" );
+        this.requestBody = requestBody;
     }
 
     /**
@@ -339,26 +335,14 @@ public final class MutableRequest
     {
         checkArgument( requestBodyReader != null, "Null requestBodyReader not allowed" );
 
-        if ( contentBody == null || bodyConsumed )
+        if ( requestBody == null )
         {
             throw new StreamAlreadyConsumedException();
         }
 
-        ByteBuffer buffer = allocateDirect( 1024 );
+        requestBody.rewind();
 
-        while ( contentBody.read( buffer ) != -1 )
-        {
-            buffer.flip();
-
-            while ( buffer.hasRemaining() )
-            {
-                requestBodyReader.onBodyPartReceived( buffer );
-            }
-
-            buffer.clear();
-        }
-
-        bodyConsumed = true;
+        requestBodyReader.onBodyPartReceived( requestBody );
 
         return requestBodyReader.onCompleted();
     }
