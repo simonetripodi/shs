@@ -55,9 +55,9 @@
   </developers>
 
   <scm>
-    <url>http://github.com/99soft/simple-http-server</url>
-    <connection>scm:git:ssh://github.com/99soft/simple-http-server.git</connection>
-    <developerConnection>scm:git:git+ssh://git@github.com/99soft/simple-http-server.git</developerConnection>
+    <url>http://github.com/simonetripodi/shs</url>
+    <connection>scm:git:ssh://github.com/simonetripodi/shs.git</connection>
+    <developerConnection>scm:git:git+ssh://git@github.com/simonetripodi/shs.git</developerConnection>
   </scm>
   <issueManagement>
     <system>GitHub Issue Management</system>
