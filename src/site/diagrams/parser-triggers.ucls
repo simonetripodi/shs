@@ -1,0 +1,134 @@
+<class-diagram version="1.0.8" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <interface id="1" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ParserTrigger.java" binary="false">    
+    <position height="-1" width="-1" x="1866" y="157"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" 
+    name="org.nnsoft.shs.core.http.parse.AbstractParametersParserTrigger" project="shs-core" 
+    file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/AbstractParametersParserTrigger.java" binary="false">    
+    <position height="162" width="357" x="80" y="83"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ParametersParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ParametersParserTrigger.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="144" y="354"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" 
+    name="org.nnsoft.shs.core.http.parse.QueryStringParametersParserTrigger" project="shs-core" 
+    file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/QueryStringParametersParserTrigger.java" binary="false">    
+    <position height="-1" width="-1" x="481" y="352"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.CookieParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/CookieParserTrigger.java" 
+    binary="false">    
+    <position height="111" width="351" x="731" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.MethodParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/MethodParserTrigger.java" 
+    binary="false">    
+    <position height="94" width="351" x="1122" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ProtocolNameParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ProtocolNameParserTrigger.java" 
+    binary="false">    
+    <position height="94" width="351" x="1513" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="8" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.HeaderParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/HeaderParserTrigger.java" 
+    binary="false">    
+    <position height="111" width="351" x="1904" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="9" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ProtocolVersionParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ProtocolVersionParserTrigger.java" 
+    binary="false">    
+    <position height="94" width="351" x="2295" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="10" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.PathParserTrigger" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/PathParserTrigger.java" 
+    binary="false">    
+    <position height="94" width="351" x="2686" y="366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <realization id="11">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="12">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="13">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <generalization id="14">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <realization id="15">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="16">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <generalization id="17">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <realization id="18">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <realization id="19">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
