@@ -356,8 +356,8 @@ public final class SimpleHttpServer
                 }
 
                 keys.remove();
-                key.attach( request );
-                key.interestOps( OP_WRITE );
+
+                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
             }
         }
         catch ( IOException e )
@@ -380,15 +380,6 @@ public final class SimpleHttpServer
 
         WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
 
-        if ( key.attachment() instanceof Request )
-        {
-            Request request = (Request) key.attachment();
-            // requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, serverChannel ) );
-            new ProtocolProcessor( sessionManager, dispatcher, request, serverChannel ).run();
-            return;
-        }
-
-        // some error occurred during the read
         Response response = (Response) key.attachment();
 
         if ( logger.isDebugEnabled() )

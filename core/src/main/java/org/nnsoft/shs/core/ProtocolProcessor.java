@@ -23,8 +23,8 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
-import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
@@ -35,12 +35,11 @@ import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.SelectionKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.nnsoft.shs.core.http.SessionManager;
-import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
@@ -70,17 +69,17 @@ final class ProtocolProcessor
 
     private final Request request;
 
-    private WritableByteChannel target;
+    private SelectionKey key;
 
     public ProtocolProcessor( SessionManager sessionManager,
                               RequestDispatcher requestDispatcher,
                               Request request,
-                              WritableByteChannel target )
+                              SelectionKey key )
     {
         this.sessionManager = sessionManager;
         this.requestDispatcher = requestDispatcher;
         this.request = request;
-        this.target = target;
+        this.key = key;
     }
 
     public void run()
@@ -131,18 +130,8 @@ final class ProtocolProcessor
         }
         finally
         {
-            try
-            {
-                new ResponseSerializer( target, false ).serialize( response );
-            }
-            catch ( IOException e )
-            {
-                logger.error( "Impossible to stream Response to the client", e );
-            }
-            finally
-            {
-                closeQuietly( target );
-            }
+            key.attach( response );
+            key.interestOps( OP_WRITE );
         }
     }
 
