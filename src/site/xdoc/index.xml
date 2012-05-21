@@ -25,7 +25,7 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Commons Graph</title>
+    <title>Simple HttpServer</title>
     <author email="simonetripodi@apache.org">Simone Tripodi</author>
   </properties>
 
