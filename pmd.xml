@@ -1,52 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2012-05-22T00:42:10.214">
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/ProtocolProcessor.java">
-<violation beginline="1" endline="138" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
+<pmd version="4.2.5" timestamp="2012-05-22T00:43:11.369">
+<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/demo/src/main/java/org/nnsoft/shs/demo/SimpleHttpServerLauncher.java">
+<violation beginline="1" endline="245" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.demo" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
 Too many static imports may lead to messy code
-</violation>
-<violation beginline="99" endline="99" begincolumn="17" endcolumn="39" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="org.nnsoft.shs.core" class="ProtocolProcessor" method="run" variable="gzipCompressionAccepted" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
-Avoid unused local variables such as 'gzipCompressionAccepted'.
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/SimpleHttpServer.java">
-<violation beginline="2" endline="428" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/collections/SimpleMultiValued.java">
-<violation beginline="1" endline="244" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core.collections" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/http/CookieBuilder.java">
-<violation beginline="1" endline="302" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core.http" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/http/parse/HeaderParserTrigger.java">
-<violation beginline="1" endline="88" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core.http.parse" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/http/parse/RequestStreamingParser.java">
-<violation beginline="1" endline="373" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core.http.parse" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/http/serialize/ResponseSerializer.java">
-<violation beginline="1" endline="235" begincolumn="1" endcolumn="2" rule="TooManyStaticImports" ruleset="Import Statement Rules" package="org.nnsoft.shs.core.http.serialize" externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports" priority="3">
-Too many static imports may lead to messy code
-</violation>
-<violation beginline="62" endline="62" begincolumn="27" endcolumn="49" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="org.nnsoft.shs.core.http.serialize" class="ResponseSerializer" variable="gzipCompressionAccepted" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
-Avoid unused private fields such as 'gzipCompressionAccepted'.
-</violation>
-</file>
-<file name="/Users/simonetripodi/Documents/workspace/simple-http-server/core/src/main/java/org/nnsoft/shs/core/io/IOUtils.java">
-<violation beginline="101" endline="114" begincolumn="25" endcolumn="5" rule="UnnecessaryFinalModifier" ruleset="Basic Rules" package="org.nnsoft.shs.core.io" class="IOUtils" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier" priority="3">
-Unnecessary final modifier in final class
-</violation>
-<violation beginline="109" endline="112" begincolumn="13" endcolumn="13" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.nnsoft.shs.core.io" class="IOUtils" method="closeQuietly" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
-Avoid empty catch blocks
 </violation>
 </file>
 </pmd>

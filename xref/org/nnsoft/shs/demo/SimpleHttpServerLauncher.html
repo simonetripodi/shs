@@ -61,7 +61,7 @@
 <a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_javadoccomment"> * Simple HTTP Server based on Concurrent and NIO APIs.</em>
 <a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="53" href="#53">53</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/nnsoft/shs/demo/SimpleHttpServerLauncher.html">SimpleHttpServerLauncher</a>
-<a class="jxr_linenumber" name="54" href="#54">54</a>      <strong class="jxr_keyword">extends</strong> <a href="../../../../org/nnsoft/shs/AbstractHttpServerConfiguration.html">AbstractHttpServerConfiguration</a>
+<a class="jxr_linenumber" name="54" href="#54">54</a>      <strong class="jxr_keyword">extends</strong> AbstractHttpServerConfiguration
 <a class="jxr_linenumber" name="55" href="#55">55</a>  {
 <a class="jxr_linenumber" name="56" href="#56">56</a>  
 <a class="jxr_linenumber" name="57" href="#57">57</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Logger logger = getLogger( getClass() );
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="144" href="#144">144</a>         logger.info( <span class="jxr_string">"                       &#92;&#92;_)    ) /"</span> );
 <a class="jxr_linenumber" name="145" href="#145">145</a>         logger.info( <span class="jxr_string">"                             (_/"</span> );
 <a class="jxr_linenumber" name="146" href="#146">146</a> 
-<a class="jxr_linenumber" name="147" href="#147">147</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../org/nnsoft/shs/HttpServer.html">HttpServer</a> httpServer = <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/core/SimpleHttpServer.html">SimpleHttpServer</a>();
+<a class="jxr_linenumber" name="147" href="#147">147</a>         <strong class="jxr_keyword">final</strong> HttpServer httpServer = <strong class="jxr_keyword">new</strong> SimpleHttpServer();
 <a class="jxr_linenumber" name="148" href="#148">148</a> 
 <a class="jxr_linenumber" name="149" href="#149">149</a>         <strong class="jxr_keyword">try</strong>
 <a class="jxr_linenumber" name="150" href="#150">150</a>         {
