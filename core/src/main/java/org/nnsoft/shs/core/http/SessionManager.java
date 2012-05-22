@@ -58,13 +58,13 @@ public final class SessionManager
     /**
      * The sessions max age (in milliseconds).
      */
-    private final long sessionMaxAge;
+    private final int sessionMaxAge;
 
     /**
      *
      * @param sessionMaxAge the max
      */
-    public SessionManager( long sessionMaxAge )
+    public SessionManager( int sessionMaxAge )
     {
         this.sessionMaxAge = sessionMaxAge;
     }
@@ -109,6 +109,7 @@ public final class SessionManager
             response.addCookie( new CookieBuilder()
                                     .setDomain( request.getServerHost() )
                                     .addPort( request.getServerPort() )
+                                    .setMaxAge( sessionMaxAge )
                                     .setName( SESSION_NAME )
                                     .setValue( session.getId().toString() )
                                     .setPath( "/" )
