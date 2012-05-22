@@ -31,7 +31,7 @@ import java.nio.channels.WritableByteChannel;
 
 import org.nnsoft.shs.io.ResponseBodyWriter;
 
-final class MessageResponseBodyWriter
+public final class MessageResponseBodyWriter
     implements ResponseBodyWriter
 {
 
