@@ -269,11 +269,6 @@ public final class SimpleHttpServer
     private void accept( SelectionKey key )
         throws IOException
     {
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "Key {} is in OP_ACCEPT status", key );
-        }
-
         ServerSocketChannel serverChannel = (ServerSocketChannel) key.channel();
         SocketChannel socketChannel = serverChannel.accept();
 
@@ -293,11 +288,6 @@ public final class SimpleHttpServer
     private void read( SelectionKey key, Iterator<SelectionKey> keys )
         throws IOException
     {
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "Key {} is in OP_READ status", key );
-        }
-
         SocketChannel serverChannel = (SocketChannel) key.channel();
 
         RequestStreamingParser requestParser = (RequestStreamingParser) key.attachment();
