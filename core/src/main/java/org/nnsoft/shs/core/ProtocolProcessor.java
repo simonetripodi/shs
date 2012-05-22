@@ -227,7 +227,7 @@ final class ProtocolProcessor
 
                     logger.debug( "> Set-Cookie: {} HttpOnly", cookieFormatter.toString() );
 
-                    logger.debug( "Request served in {}ms", time );
+                    logger.debug( "Request processed in {}ms", time );
                 }
             }
 
