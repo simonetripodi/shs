@@ -30,7 +30,6 @@ import static java.nio.ByteBuffer.wrap;
 import static java.nio.channels.Channels.newChannel;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.util.Locale.US;
-import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.zip.GZIPOutputStream;
 
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Response;
@@ -69,28 +67,15 @@ public final class ResponseSerializer
 
     private final SelectionKey key;
 
-    private final boolean gzipCompressionEnabled;
-
     private Response response;
-
-    /**
-     *
-     *
-     * @param key
-     */
-    public ResponseSerializer( SelectionKey key )
-    {
-        this( key, false );
-    }
 
     /**
      * Creates a new serializer instance.
      */
-    public ResponseSerializer( SelectionKey key, boolean gzipCompressionEnabled )
+    public ResponseSerializer( SelectionKey key )
     {
         checkArgument( key != null, "Null SelectionKey not allowd." );
         this.key = key;
-        this.gzipCompressionEnabled = gzipCompressionEnabled;
     }
 
     /**
@@ -202,32 +187,11 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        WritableByteChannel responseChannel;
-
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        GZIPOutputStream gzipOut = null;
-        if ( gzipCompressionEnabled )
-        {
-            out = new ByteArrayOutputStream();
-            gzipOut = new GZIPOutputStream( out );
-            responseChannel = newChannel( gzipOut );
-        }
-        else
-        {
-            responseChannel = newChannel( out );
-        }
+        WritableByteChannel responseChannel = newChannel( out );
 
         response.getBodyWriter().write( responseChannel );
 
-        if ( gzipCompressionEnabled )
-        {
-            gzipOut.finish();
-            closeQuietly( gzipOut );
-        }
-
-        // according to Javadoc, closing a ByteArrayOutputStream has no effect
-        closeQuietly( out );
         responseBuffers.offer( wrap( out.toByteArray() ) );
     }
 
