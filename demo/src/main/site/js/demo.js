@@ -104,20 +104,20 @@ $( document ).ready( function()
                     {
                         printInfo( 'Request complete.' );
                     },
-                    success: function( data )
+                    success: function( data, textStatus, jqXHR )
                     {
                         printSuccess( 'Server replied <code>'
-                                      + data.status
+                                      + jqXHR.status
                                       + ': '
-                                      + data.responseText
+                                      + jqXHR.responseText
                                       + '</code>' );
                     },
-                    error: function( data )
+                    error: function( data, textStatus, jqXHR )
                     {
                         printError( 'Server replied <code>'
-                                    + data.status
+                                    + jqXHR.status
                                     + ': '
-                                    + data.responseText
+                                    + jqXHR.responseText
                                     + '</code>' );
                     }
                 } );
