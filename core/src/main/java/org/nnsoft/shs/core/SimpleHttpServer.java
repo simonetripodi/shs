@@ -369,6 +369,7 @@ public final class SimpleHttpServer
             if ( EOM == current )
             {
                 closeQuietly( serverChannel );
+                key.cancel();
             }
             else
             {
