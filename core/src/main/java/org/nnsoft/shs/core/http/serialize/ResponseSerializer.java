@@ -143,7 +143,7 @@ public final class ResponseSerializer
         for ( Cookie cookie : response.getCookies() )
         {
             Formatter formatter = new Formatter()
-                                     .format( "Set-Cookie: %s:%s; Path=%s; Domain=%s;",
+                                     .format( "Set-Cookie: %s=%s; Path=%s; Domain=%s;",
                                               cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getDomain() );
 
             if ( !cookie.getPorts().isEmpty() )
