@@ -34,6 +34,7 @@ import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
+import static org.nnsoft.shs.core.http.serialize.ResponseSerializer.EOM;
 import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
@@ -49,6 +50,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -60,7 +62,6 @@ import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.core.http.parse.RequestStreamingParser;
-import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
@@ -354,24 +355,21 @@ public final class SimpleHttpServer
 
         WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
 
-        Response response = (Response) key.attachment();
+        @SuppressWarnings( "unchecked" ) // type is driven by the ProtocolProcessor
+        Queue<ByteBuffer> responseBuffers = ( Queue<ByteBuffer> ) key.attachment();
 
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "Serving: {}", response );
-        }
+        ByteBuffer current = responseBuffers.poll();
 
-        try
+        if ( current != null )
         {
-            new ResponseSerializer( serverChannel ).serialize( response );
-        }
-        catch ( IOException e )
-        {
-            logger.error( "Impossible to stream Response to the client", e );
-        }
-        finally
-        {
-            closeQuietly( serverChannel );
+            if ( EOM == current )
+            {
+                closeQuietly( serverChannel );
+            }
+            else
+            {
+                serverChannel.write( current );
+            }
         }
     }
 

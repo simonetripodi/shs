@@ -37,14 +37,18 @@ import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.nnsoft.shs.core.http.SessionManager;
+import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
@@ -225,8 +229,21 @@ final class ProtocolProcessor
                 }
             }
 
-            key.attach( response );
+            final Queue<ByteBuffer> responseBuffers = new ConcurrentLinkedQueue<ByteBuffer>();
+
+            key.attach( responseBuffers );
             key.interestOps( OP_WRITE );
+
+            try
+            {
+                new ResponseSerializer( responseBuffers ).serialize( response );
+            }
+            catch ( IOException e )
+            {
+                key.cancel();
+
+                logger.error( "Impossible to stream Response to the client", e );
+            }
         }
     }
 

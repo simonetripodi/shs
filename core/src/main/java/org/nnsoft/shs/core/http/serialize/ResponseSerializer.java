@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http.serialize;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.nio.ByteBuffer.allocate;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.ByteBuffer.wrap;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Queue;
 import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
@@ -56,21 +58,23 @@ public final class ResponseSerializer
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
-    private static final ByteBuffer END_PADDING = utf8ByteBuffer( "\r\n" );
+    private static final String END_PADDING = "\r\n";
 
-    private final WritableByteChannel target;
+    public static final ByteBuffer EOM = allocate( 0 );
+
+    private final Queue<ByteBuffer> responseBuffers;
 
     private Response response;
 
     /**
      * Creates a new serializer instance given the non null output stream.
      *
-     * @param target the non null channel.
+     * @param responseBuffers the non null channel.
      */
-    public ResponseSerializer( WritableByteChannel target )
+    public ResponseSerializer( Queue<ByteBuffer> responseBuffers )
     {
-        checkArgument( target != null, "Null OutputStream target not allowd." );
-        this.target = target;
+        checkArgument( responseBuffers != null, "Null target buffer not allowd." );
+        this.responseBuffers = responseBuffers;
     }
 
     /**
@@ -88,8 +92,9 @@ public final class ResponseSerializer
         printProtocol();
         printHeaders();
         printCookies();
-        target.write( END_PADDING );
+        responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
         printBody();
+        responseBuffers.offer( EOM );
     }
 
     /**
@@ -176,15 +181,20 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        WritableByteChannel responseChannel = target;
+        WritableByteChannel responseChannel;
 
-        ByteArrayOutputStream out = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
         GZIPOutputStream gzipOut = null;
         if ( response.isGZipCompressionEnabled() )
         {
             out = new ByteArrayOutputStream();
             gzipOut = new GZIPOutputStream( out );
             responseChannel = newChannel( gzipOut );
+        }
+        else
+        {
+            responseChannel = newChannel( out );
         }
 
         response.getBodyWriter().write( responseChannel );
@@ -193,11 +203,11 @@ public final class ResponseSerializer
         {
             gzipOut.finish();
             closeQuietly( gzipOut );
-            // according to Javadoc, closing a ByteArrayOutputStream has no effect
-            closeQuietly( out );
-
-            target.write( wrap( out.toByteArray() ) );
         }
+
+        // according to Javadoc, closing a ByteArrayOutputStream has no effect
+        closeQuietly( out );
+        responseBuffers.offer( wrap( out.toByteArray() ) );
     }
 
     /**
@@ -210,9 +220,8 @@ public final class ResponseSerializer
     private void print( String messageTemplate, Object...args )
         throws IOException
     {
-        target.write( utf8ByteBuffer( format( messageTemplate, args ) ) );
-        target.write( END_PADDING );
-        END_PADDING.rewind();
+        responseBuffers.offer( utf8ByteBuffer( format( messageTemplate, args ) ) );
+        responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
     }
 
 }
