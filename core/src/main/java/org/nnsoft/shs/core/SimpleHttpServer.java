@@ -348,11 +348,6 @@ public final class SimpleHttpServer
     private void write( SelectionKey key )
         throws IOException
     {
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "Key {} is in OP_WRITE status, key attachment: {}", key, key.attachment() );
-        }
-
         WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
 
         @SuppressWarnings( "unchecked" ) // type is driven by the ProtocolProcessor
