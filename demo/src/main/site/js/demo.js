@@ -26,6 +26,7 @@
 /**
  * render the warning message
  */
+
 function printInfo( message )
 {
     printMessage( 'INFO   ', message );
