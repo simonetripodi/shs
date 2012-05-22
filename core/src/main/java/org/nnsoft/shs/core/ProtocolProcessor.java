@@ -38,8 +38,12 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.nnsoft.shs.core.http.SessionManager;
+import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
@@ -84,6 +88,38 @@ final class ProtocolProcessor
 
     public void run()
     {
+        if ( logger.isDebugEnabled() )
+        {
+            logger.debug( "< {} {} {}/{}", new Object[] {
+                                               request.getMethod(),
+                                               request.getPath(),
+                                               request.getProtocolName(),
+                                               request.getProtocolVersion() } );
+
+            for ( Entry<String, List<String>> header : request.getHeaders().getAllEntries() )
+            {
+                Formatter headerValues = new Formatter();
+                int i = 0;
+                for ( String value : header.getValue() )
+                {
+                    headerValues.format( "%s%s", ( i++ > 0 ? ", " : "" ), value );
+                }
+
+                logger.debug( "< {}: {}", header.getKey(), headerValues.toString() );
+            }
+
+            if ( !request.getCookies().isEmpty() )
+            {
+                Formatter cookies = new Formatter();
+                int counter = 0;
+                for ( Cookie cookie : request.getCookies() )
+                {
+                    cookies.format( "%s%s=%s", ( counter++ > 0 ? ", " : "" ), cookie.getName(), cookie.getValue() );
+                }
+                logger.debug( "< Cookie: {}", cookies.toString() );
+            }
+        }
+
         Response response = newResponse();
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );

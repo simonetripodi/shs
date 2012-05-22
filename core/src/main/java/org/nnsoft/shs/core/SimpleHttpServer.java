@@ -48,10 +48,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.Formatter;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -64,7 +61,6 @@ import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.core.http.parse.RequestStreamingParser;
 import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
-import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
@@ -332,33 +328,10 @@ public final class SimpleHttpServer
 
             if ( requestParser.isRequestMessageComplete() )
             {
-                Request request = requestParser.getParsedRequest();
-
-                if ( logger.isDebugEnabled() )
-                {
-                    logger.debug( "< {} {} {}/{}", new Object[] {
-                                                       request.getMethod(),
-                                                       request.getPath(),
-                                                       request.getProtocolName(),
-                                                       request.getProtocolVersion() } );
-
-                    for ( Entry<String, List<String>> header : request.getHeaders().getAllEntries() )
-                    {
-                        Formatter headerValues = new Formatter();
-                        int i = 0;
-                        for ( String value : header.getValue() )
-                        {
-                            headerValues.format( "%s%s", ( i++ > 0 ? ", " : "" ), value );
-                        }
-
-                        logger.debug( "< {}: {}", header.getKey(), headerValues.toString() );
-                    }
-                }
-
                 keys.remove();
                 key.interestOps( 0 );
 
-                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
+                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, requestParser.getParsedRequest(), key ) );
             }
         }
         catch ( IOException e )
