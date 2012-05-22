@@ -159,7 +159,6 @@ final class ProtocolProcessor
 
                 if ( gzipCompressionEnabled )
                 {
-                    response.enableGZipCompression( gzipCompressionEnabled );
                     response.addHeader( CONTENT_ENCODING, GZIP );
                 }
             }
@@ -233,7 +232,7 @@ final class ProtocolProcessor
 
             try
             {
-                new ResponseSerializer( key ).serialize( response );
+                new ResponseSerializer( key, gzipCompressionEnabled ).serialize( response );
             }
             catch ( IOException e )
             {

@@ -118,15 +118,6 @@ public interface Response
 
     MultiValued<String, String> getHeaders();
 
-    /**
-     * Checks if the GZip compression is supported.
-     *
-     * @return true, if the GZip compression is supported, false otherwise
-     */
-    boolean isGZipCompressionEnabled();
-
-    void enableGZipCompression( boolean gzipCompressionEnabled );
-
     void addCookie( Cookie cookie );
 
     Collection<Cookie> getCookies();

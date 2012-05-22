@@ -69,15 +69,28 @@ public final class ResponseSerializer
 
     private final SelectionKey key;
 
+    private final boolean gzipCompressionEnabled;
+
     private Response response;
+
+    /**
+     *
+     *
+     * @param key
+     */
+    public ResponseSerializer( SelectionKey key )
+    {
+        this( key, false );
+    }
 
     /**
      * Creates a new serializer instance.
      */
-    public ResponseSerializer( SelectionKey key )
+    public ResponseSerializer( SelectionKey key, boolean gzipCompressionEnabled )
     {
         checkArgument( key != null, "Null SelectionKey not allowd." );
         this.key = key;
+        this.gzipCompressionEnabled = gzipCompressionEnabled;
     }
 
     /**
@@ -194,7 +207,7 @@ public final class ResponseSerializer
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         GZIPOutputStream gzipOut = null;
-        if ( response.isGZipCompressionEnabled() )
+        if ( gzipCompressionEnabled )
         {
             out = new ByteArrayOutputStream();
             gzipOut = new GZIPOutputStream( out );
@@ -207,7 +220,7 @@ public final class ResponseSerializer
 
         response.getBodyWriter().write( responseChannel );
 
-        if ( response.isGZipCompressionEnabled() )
+        if ( gzipCompressionEnabled )
         {
             gzipOut.finish();
             closeQuietly( gzipOut );
