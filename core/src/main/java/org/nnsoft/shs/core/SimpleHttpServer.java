@@ -363,7 +363,7 @@ public final class SimpleHttpServer
 
         try
         {
-            new ResponseSerializer( serverChannel, false ).serialize( response );
+            new ResponseSerializer( serverChannel ).serialize( response );
         }
         catch ( IOException e )
         {

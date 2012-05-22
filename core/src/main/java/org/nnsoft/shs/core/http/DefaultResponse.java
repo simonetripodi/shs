@@ -55,6 +55,8 @@ final class DefaultResponse
 
     private String protocolVersion = DEFAULT_PROTOCOL_VERSION;
 
+    private boolean gzipCompressionEnabled;
+
     private final SimpleMultiValued<String, String> headers = new SimpleMultiValued<String, String>();
 
     private final Collection<Cookie> cookies = new LinkedList<Cookie>();
@@ -105,6 +107,18 @@ final class DefaultResponse
     public MultiValued<String, String> getHeaders()
     {
         return headers;
+    }
+
+    @Override
+    public boolean isGZipCompressionEnabled()
+    {
+        return gzipCompressionEnabled;
+    }
+
+    @Override
+    public void enableGZipCompression( boolean gzipCompressionEnabled )
+    {
+        this.gzipCompressionEnabled = gzipCompressionEnabled;
     }
 
     public void addCookie( Cookie cookie )

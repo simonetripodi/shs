@@ -28,6 +28,7 @@ import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
+import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
@@ -134,8 +135,8 @@ final class ProtocolProcessor
             response.addHeader( CONNECTION, KEEP_ALIVE );
             // response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
         }
-        boolean gzipCompressionAccepted =  request.getHeaders().contains( ACCEPT_ENCODING )
-                                           && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
+        boolean gzipCompressionEnabled =  request.getHeaders().contains( ACCEPT_ENCODING )
+                                          && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
         try
         {
@@ -154,10 +155,11 @@ final class ProtocolProcessor
                     response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
                 }
 
-                /* if ( gzipCompressionAccepted )
+                if ( gzipCompressionEnabled )
                 {
+                    response.enableGZipCompression( gzipCompressionEnabled );
                     response.addHeader( CONTENT_ENCODING, GZIP );
-                } */
+                }
             }
         }
         catch ( IOException e )
