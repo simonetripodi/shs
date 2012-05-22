@@ -24,7 +24,6 @@ package org.nnsoft.shs.core;
  */
 
 import static java.lang.System.currentTimeMillis;
-import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
@@ -37,15 +36,12 @@ import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
@@ -235,14 +231,9 @@ final class ProtocolProcessor
                 }
             }
 
-            final Queue<ByteBuffer> responseBuffers = new ConcurrentLinkedQueue<ByteBuffer>();
-
-            key.attach( responseBuffers );
-            key.interestOps( OP_WRITE );
-
             try
             {
-                new ResponseSerializer( responseBuffers ).serialize( response );
+                new ResponseSerializer( key ).serialize( response );
             }
             catch ( IOException e )
             {

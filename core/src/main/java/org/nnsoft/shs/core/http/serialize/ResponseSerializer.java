@@ -23,11 +23,12 @@ package org.nnsoft.shs.core.http.serialize;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.ByteBuffer.allocate;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.ByteBuffer.wrap;
 import static java.nio.channels.Channels.newChannel;
+import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
@@ -36,13 +37,15 @@ import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
-import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.GZIPOutputStream;
 
 import org.nnsoft.shs.http.Cookie;
@@ -62,19 +65,19 @@ public final class ResponseSerializer
 
     public static final ByteBuffer EOM = allocate( 0 );
 
-    private final Queue<ByteBuffer> responseBuffers;
+    private final Queue<ByteBuffer> responseBuffers = new ConcurrentLinkedQueue<ByteBuffer>();
+
+    private final SelectionKey key;
 
     private Response response;
 
     /**
-     * Creates a new serializer instance given the non null output stream.
-     *
-     * @param responseBuffers the non null channel.
+     * Creates a new serializer instance.
      */
-    public ResponseSerializer( Queue<ByteBuffer> responseBuffers )
+    public ResponseSerializer( SelectionKey key )
     {
-        checkArgument( responseBuffers != null, "Null target buffer not allowd." );
-        this.responseBuffers = responseBuffers;
+        checkArgument( key != null, "Null SelectionKey not allowd." );
+        this.key = key;
     }
 
     /**
@@ -88,6 +91,9 @@ public final class ResponseSerializer
     {
         checkArgument( response != null, "Null Response cannot be serialized." );
         this.response = response;
+
+        key.attach( responseBuffers );
+        key.interestOps( OP_WRITE );
 
         printProtocol();
         printHeaders();
@@ -105,7 +111,7 @@ public final class ResponseSerializer
     private void printProtocol()
         throws IOException
     {
-        print( "%s/%s %s %s",
+        print( "%s/%s %s %s %n",
                response.getProtocolName(),
                response.getProtocolVersion(),
                response.getStatus().getStatusCode(),
@@ -129,6 +135,8 @@ public final class ResponseSerializer
             {
                 formatter.format( "%s%s", (counter++ > 0 ? ", " : ""), headerValue );
             }
+
+            formatter.format( "%n" );
 
             print( formatter.toString() );
         }
@@ -169,7 +177,7 @@ public final class ResponseSerializer
 
             // secure field ignored since HTTPs is not supported in this version
 
-            print( formatter.format( " HttpOnly" ).toString() );
+            print( formatter.format( " HttpOnly%n" ).toString() );
         }
     }
 
@@ -221,7 +229,6 @@ public final class ResponseSerializer
         throws IOException
     {
         responseBuffers.offer( utf8ByteBuffer( format( messageTemplate, args ) ) );
-        responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
     }
 
 }

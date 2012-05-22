@@ -27,7 +27,6 @@ package org.nnsoft.shs.core;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.SelectionKey.OP_ACCEPT;
 import static java.nio.channels.SelectionKey.OP_READ;
-import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.nio.channels.ServerSocketChannel.open;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
@@ -62,6 +61,7 @@ import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.core.http.parse.RequestStreamingParser;
+import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
@@ -319,8 +319,18 @@ public final class SimpleHttpServer
                     Response response = newResponse();
                     response.setStatus( BAD_REQUEST );
                     keys.remove();
-                    key.attach( response );
-                    key.interestOps( OP_WRITE );
+
+                    try
+                    {
+                        new ResponseSerializer( key ).serialize( response );
+                    }
+                    catch ( IOException ioe )
+                    {
+                        key.cancel();
+
+                        logger.error( "Impossible to stream Response to the client", e );
+                    }
+
                     break push;
                 }
 
@@ -340,8 +350,17 @@ public final class SimpleHttpServer
             Response response = newResponse();
             response.setStatus( INTERNAL_SERVER_ERROR );
             keys.remove();
-            key.attach( response );
-            key.interestOps( OP_WRITE );
+
+            try
+            {
+                new ResponseSerializer( key ).serialize( response );
+            }
+            catch ( IOException ioe )
+            {
+                key.cancel();
+
+                logger.error( "Impossible to stream Response to the client", e );
+            }
         }
     }
 
