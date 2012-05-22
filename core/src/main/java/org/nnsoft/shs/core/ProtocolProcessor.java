@@ -94,6 +94,8 @@ final class ProtocolProcessor
 
     public void run()
     {
+        long start = currentTimeMillis();
+
         // debug the request
         if ( logger.isDebugEnabled() )
         {
@@ -174,6 +176,8 @@ final class ProtocolProcessor
         }
         finally
         {
+            long time = currentTimeMillis() - start;
+
             // debug the response
             if ( logger.isDebugEnabled() )
             {
@@ -226,6 +230,8 @@ final class ProtocolProcessor
                     // secure field ignored since HTTPs is not supported in this version
 
                     logger.debug( "> Set-Cookie: {} HttpOnly", cookieFormatter.toString() );
+
+                    logger.debug( "Request served in {}ms", time );
                 }
             }
 
