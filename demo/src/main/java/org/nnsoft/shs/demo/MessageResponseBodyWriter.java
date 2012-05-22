@@ -67,7 +67,7 @@ public final class MessageResponseBodyWriter
     @Override
     public String contentType()
     {
-        return "text/plain";
+        return "text/plain; charset=utf-8";
     }
 
 }
