@@ -220,14 +220,7 @@ public final class ResponseSerializer
     private void print( String messageTemplate, Object...args )
         throws IOException
     {
-        String message = format( messageTemplate, args );
-
-        if ( logger.isDebugEnabled() )
-        {
-            logger.debug( "> {}", message );
-        }
-
-        target.write( utf8ByteBuffer( message ) );
+        target.write( utf8ByteBuffer( format( messageTemplate, args ) ) );
         target.write( END_PADDING );
         END_PADDING.rewind();
     }

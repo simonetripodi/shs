@@ -23,6 +23,7 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.System.currentTimeMillis;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
@@ -166,6 +167,60 @@ final class ProtocolProcessor
         }
         finally
         {
+            if ( logger.isDebugEnabled() )
+            {
+                // protocol
+                logger.debug( "> {} {} {}/{}",
+                              new Object[] {
+                                  response.getProtocolName(),
+                                  response.getProtocolVersion(),
+                                  response.getStatus().getStatusCode(),
+                                  response.getStatus().getStatusText() } );
+                // headers
+                for ( Entry<String, List<String>> header : response.getHeaders().getAllEntries() )
+                {
+                    Formatter headerValues = new Formatter();
+
+                    int counter = 0;
+                    for ( String headerValue : header.getValue() )
+                    {
+                        headerValues.format( "%s%s", (counter++ > 0 ? ", " : ""), headerValue );
+                    }
+
+                    logger.debug( "> {}: {}", header.getKey(), headerValues.toString() );
+                }
+                // cookies
+                for ( Cookie cookie : response.getCookies() )
+                {
+                    Formatter cookieFormatter = new Formatter()
+                                             .format( "%s=%s; Path=%s; Domain=%s;",
+                                                      cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getDomain() );
+
+                    if ( !cookie.getPorts().isEmpty() )
+                    {
+                        cookieFormatter.format( " Port=\"" );
+                        int i = 0;
+                        for ( Integer port : cookie.getPorts() )
+                        {
+                            cookieFormatter.format( "%s%s", ( i++ > 0 ? "," : "" ), port );
+                        }
+                        cookieFormatter.format( "\";" );
+                    }
+
+                    if ( cookie.getMaxAge() != -1 )
+                    {
+                        Date expirationDate = new Date( cookie.getMaxAge() * 1000 + currentTimeMillis() );
+                        String expires = dateFormat.format( expirationDate );
+
+                        cookieFormatter.format( " Expires=%s;", expires );
+                    }
+
+                    // secure field ignored since HTTPs is not supported in this version
+
+                    logger.debug( "> Set-Cookie: {} HttpOnly", cookieFormatter.toString() );
+                }
+            }
+
             key.attach( response );
             key.interestOps( OP_WRITE );
         }
