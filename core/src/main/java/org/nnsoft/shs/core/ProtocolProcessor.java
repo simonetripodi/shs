@@ -89,6 +89,7 @@ final class ProtocolProcessor
 
     public void run()
     {
+        // debug the request
         if ( logger.isDebugEnabled() )
         {
             logger.debug( "< {} {} {}/{}", new Object[] {
@@ -167,6 +168,7 @@ final class ProtocolProcessor
         }
         finally
         {
+            // debug the response
             if ( logger.isDebugEnabled() )
             {
                 // protocol
