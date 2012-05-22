@@ -106,16 +106,20 @@ $( document ).ready( function()
                     },
                     success: function( data, textStatus, jqXHR )
                     {
-                        printSuccess( 'Server replied <code>'
+                        printSuccess( '<code>'
                                       + jqXHR.status
+                                      + ' - '
+                                      + jqXHR.statusText
                                       + ': '
                                       + jqXHR.responseText
                                       + '</code>' );
                     },
                     error: function( data, textStatus, jqXHR )
                     {
-                        printError( 'Server replied <code>'
+                        printError( '<code>'
                                     + jqXHR.status
+                                    + ' - '
+                                    + jqXHR.statusText
                                     + ': '
                                     + jqXHR.responseText
                                     + '</code>' );
