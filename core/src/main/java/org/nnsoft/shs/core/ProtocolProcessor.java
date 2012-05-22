@@ -51,7 +51,7 @@ import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
 /**
- * Asynchronous socket handler to serve current server request.
+ * Asynchronous HTTP protocol processor to serve current request.
  */
 final class ProtocolProcessor
     implements Runnable
