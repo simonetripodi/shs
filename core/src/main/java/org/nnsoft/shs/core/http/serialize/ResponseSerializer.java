@@ -26,15 +26,14 @@ package org.nnsoft.shs.core.http.serialize;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.ByteBuffer.allocate;
-import static java.nio.ByteBuffer.wrap;
 import static java.nio.channels.Channels.newChannel;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.WritableByteChannel;
@@ -98,7 +97,6 @@ public final class ResponseSerializer
         printCookies();
         responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
         printBody();
-        responseBuffers.offer( EOM );
     }
 
     /**
@@ -187,12 +185,10 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        WritableByteChannel responseChannel = newChannel( out );
+        OutputStream target = new ByteBufferOutputStream( responseBuffers, response.getBodyWriter().getContentLength() );
+        WritableByteChannel responseChannel = newChannel( target );
 
         response.getBodyWriter().write( responseChannel );
-
-        responseBuffers.offer( wrap( out.toByteArray() ) );
     }
 
     /**
@@ -206,6 +202,83 @@ public final class ResponseSerializer
         throws IOException
     {
         responseBuffers.offer( utf8ByteBuffer( format( messageTemplate, args ) ) );
+    }
+
+    /**
+     *
+     */
+    private static final class ByteBufferOutputStream
+        extends OutputStream
+    {
+
+        private static final int DEFAULT_BUFFER_CHUNK_SIZE = 1024;
+
+        private final Queue<ByteBuffer> buffers;
+
+        private final long size;
+
+        /** The count of bytes that have passed. */
+        private long count = 0;
+
+        private ByteBuffer currentPtr;
+
+        public ByteBufferOutputStream( Queue<ByteBuffer> buffers, long size )
+        {
+            checkArgument( buffers != null, "Impossible to send data to a null ByteBuffer queue" );
+            this.buffers = buffers;
+            this.size = size;
+
+            reinitCurrentPtr();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void write( int b )
+            throws IOException
+        {
+            if ( size == count )
+            {
+                return; // just ignore it
+            }
+
+            if ( !currentPtr.hasRemaining() )
+            {
+                flush();
+
+                reinitCurrentPtr();
+            }
+
+            currentPtr.put( (byte) ( b & 0xFF ) );
+
+            if ( ++count == size )
+            {
+                flush();
+                buffers.offer( EOM );
+            }
+        }
+
+        @Override
+        public void flush()
+            throws IOException
+        {
+            currentPtr.rewind();
+            buffers.offer( currentPtr );
+        }
+
+        private void reinitCurrentPtr()
+        {
+            int newBufferSize = DEFAULT_BUFFER_CHUNK_SIZE;
+
+            if ( DEFAULT_BUFFER_CHUNK_SIZE > size - count )
+            {
+                newBufferSize = (int) ( size - count ); // here the cast is safe
+            }
+
+            currentPtr = allocate( newBufferSize );
+        }
+
     }
 
 }
