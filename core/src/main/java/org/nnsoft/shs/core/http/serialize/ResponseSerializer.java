@@ -106,6 +106,7 @@ public final class ResponseSerializer
         printCookies();
         responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
         printBody();
+        responseBuffers.offer( EOM );
     }
 
     /**
@@ -194,7 +195,7 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        OutputStream target = new ByteBufferOutputStream( responseBuffers, response.getBodyWriter().getContentLength() );
+        OutputStream target = new ByteBufferOutputStream( responseBuffers );
 
         if ( gzipEnabled )
         {
@@ -210,7 +211,7 @@ public final class ResponseSerializer
             ( (GZIPOutputStream) target ).finish();
         }
 
-        target.close();
+        target.flush();
     }
 
     /**
@@ -237,20 +238,12 @@ public final class ResponseSerializer
 
         private final Queue<ByteBuffer> buffers;
 
-        private final long size;
+        private ByteBuffer currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
 
-        /** The count of bytes that have passed. */
-        private long count = 0;
-
-        private ByteBuffer currentPtr;
-
-        public ByteBufferOutputStream( Queue<ByteBuffer> buffers, long size )
+        public ByteBufferOutputStream( Queue<ByteBuffer> buffers )
         {
             checkArgument( buffers != null, "Impossible to send data to a null ByteBuffer queue" );
             this.buffers = buffers;
-            this.size = size;
-
-            reinitCurrentPtr();
         }
 
         /**
@@ -260,27 +253,23 @@ public final class ResponseSerializer
         public void write( int b )
             throws IOException
         {
-            if ( size == count )
-            {
-                return; // just ignore it
-            }
-
             if ( !currentPtr.hasRemaining() )
             {
                 flush();
-
-                reinitCurrentPtr();
             }
 
             currentPtr.put( (byte) ( b & 0xFF ) );
-
-            ++count;
         }
 
         @Override
         public void flush()
             throws IOException
         {
+            if ( currentPtr.position() == 0 )
+            {
+                return;
+            }
+
             // resize the Buffer to discard extra bytes
             if ( currentPtr.position() < currentPtr.limit() )
             {
@@ -288,26 +277,8 @@ public final class ResponseSerializer
             }
             currentPtr.rewind();
             buffers.offer( currentPtr );
-        }
 
-        @Override
-        public void close()
-            throws IOException
-        {
-            flush();
-            buffers.offer( EOM );
-        }
-
-        private void reinitCurrentPtr()
-        {
-            int newBufferSize = DEFAULT_BUFFER_CHUNK_SIZE;
-
-            if ( DEFAULT_BUFFER_CHUNK_SIZE > size - count )
-            {
-                newBufferSize = (int) ( size - count ); // here the cast is safe
-            }
-
-            currentPtr = allocate( newBufferSize );
+            currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
         }
 
     }
