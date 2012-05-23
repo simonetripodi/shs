@@ -39,6 +39,7 @@
         <li>multi-threading requests processor;</li>
         <li>EDSL configuration APIs;</li>
         <li>Request incremental pull parser;</li>
+        <li>GZip compression;</li>
         <li>...</li>
       </ul>
       <p>See how <a href="api.html">APIs</a> and <a href="core.html">core</a> implementation work!</p>

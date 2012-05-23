@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.zip.GZIPOutputStream;
 
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Response;
@@ -66,15 +67,23 @@ public final class ResponseSerializer
 
     private final SelectionKey key;
 
+    private final boolean gzipEnabled;
+
     private Response response;
+
+    public ResponseSerializer( SelectionKey key )
+    {
+        this( key, false );
+    }
 
     /**
      * Creates a new serializer instance.
      */
-    public ResponseSerializer( SelectionKey key )
+    public ResponseSerializer( SelectionKey key, boolean gzipEnabled )
     {
         checkArgument( key != null, "Null SelectionKey not allowd." );
         this.key = key;
+        this.gzipEnabled = gzipEnabled;
     }
 
     /**
@@ -186,9 +195,22 @@ public final class ResponseSerializer
         throws IOException
     {
         OutputStream target = new ByteBufferOutputStream( responseBuffers, response.getBodyWriter().getContentLength() );
+
+        if ( gzipEnabled )
+        {
+            target = new GZIPOutputStream( target );
+        }
+
         WritableByteChannel responseChannel = newChannel( target );
 
         response.getBodyWriter().write( responseChannel );
+
+        if ( gzipEnabled )
+        {
+            ( (GZIPOutputStream) target ).finish();
+        }
+
+        target.close();
     }
 
     /**
@@ -252,19 +274,28 @@ public final class ResponseSerializer
 
             currentPtr.put( (byte) ( b & 0xFF ) );
 
-            if ( ++count == size )
-            {
-                flush();
-                buffers.offer( EOM );
-            }
+            ++count;
         }
 
         @Override
         public void flush()
             throws IOException
         {
+            // resize the Buffer to discard extra bytes
+            if ( currentPtr.position() < currentPtr.limit() )
+            {
+                currentPtr.limit( currentPtr.position() );
+            }
             currentPtr.rewind();
             buffers.offer( currentPtr );
+        }
+
+        @Override
+        public void close()
+            throws IOException
+        {
+            flush();
+            buffers.offer( EOM );
         }
 
         private void reinitCurrentPtr()

@@ -25,7 +25,9 @@ package org.nnsoft.shs.core;
 
 import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
+import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
+import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
@@ -58,6 +60,8 @@ final class ProtocolProcessor
     private static final Logger logger = getLogger( ProtocolProcessor.class );
 
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
+
+    private static final String GZIP = "gzip";
 
     private static final String HTTP_11 = "1.1";
 
@@ -133,6 +137,8 @@ final class ProtocolProcessor
             response.addHeader( CONNECTION, KEEP_ALIVE );
             // response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
         }
+        boolean gzipEnabled = request.getHeaders().contains( ACCEPT_ENCODING )
+                              && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
         try
         {
@@ -149,6 +155,11 @@ final class ProtocolProcessor
                 if ( response.getBodyWriter().contentType() != null )
                 {
                     response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
+                }
+
+                if ( gzipEnabled )
+                {
+                    response.addHeader( CONTENT_ENCODING, GZIP );
                 }
             }
         }
@@ -221,7 +232,7 @@ final class ProtocolProcessor
 
             try
             {
-                new ResponseSerializer( key ).serialize( response );
+                new ResponseSerializer( key, gzipEnabled ).serialize( response );
             }
             catch ( IOException e )
             {
