@@ -280,7 +280,7 @@ public final class SimpleHttpServer
         socketChannel.configureBlocking( false );
 
         Socket socket = socketChannel.socket();
-        socketChannel.register( selector, OP_READ, new RequestStreamingParser( socket.getInetAddress().getHostName(),
+        socketChannel.register( selector, OP_READ, new RequestStreamingParser( socket.getInetAddress().getHostAddress(),
                                                                                socket.getLocalAddress().getHostName(),
                                                                                socket.getLocalPort() ) );
     }
