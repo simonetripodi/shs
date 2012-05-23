@@ -34,7 +34,6 @@ import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.core.http.serialize.ResponseSerializer.EOM;
-import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -47,7 +46,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.nio.channels.WritableByteChannel;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -62,6 +60,7 @@ import org.nnsoft.shs.core.http.RequestParseException;
 import org.nnsoft.shs.core.http.SessionManager;
 import org.nnsoft.shs.core.http.parse.RequestStreamingParser;
 import org.nnsoft.shs.core.http.serialize.ResponseSerializer;
+import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 import org.slf4j.Logger;
 
@@ -332,7 +331,11 @@ public final class SimpleHttpServer
                 keys.remove();
                 key.interestOps( 0 );
 
-                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, requestParser.getParsedRequest(), key ) );
+                Request request = requestParser.getParsedRequest();
+
+
+
+                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
             }
         }
         catch ( IOException e )
@@ -357,7 +360,7 @@ public final class SimpleHttpServer
     private void write( SelectionKey key )
         throws IOException
     {
-        WritableByteChannel serverChannel = (WritableByteChannel) key.channel();
+        SocketChannel serverChannel = (SocketChannel) key.channel();
 
         @SuppressWarnings( "unchecked" ) // type is driven by the ProtocolProcessor
         Queue<ByteBuffer> responseBuffers = ( Queue<ByteBuffer> ) key.attachment();
@@ -368,7 +371,7 @@ public final class SimpleHttpServer
         {
             if ( EOM == current )
             {
-                closeQuietly( serverChannel );
+                serverChannel.socket().close();
                 key.cancel();
             }
             else
