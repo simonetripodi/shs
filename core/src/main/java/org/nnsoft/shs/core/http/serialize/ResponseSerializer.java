@@ -117,7 +117,7 @@ public final class ResponseSerializer
     private void printProtocol()
         throws IOException
     {
-        print( "%s/%s %s %s %n",
+        print( "%s/%s %s %s%n",
                response.getProtocolName(),
                response.getProtocolVersion(),
                response.getStatus().getStatusCode(),

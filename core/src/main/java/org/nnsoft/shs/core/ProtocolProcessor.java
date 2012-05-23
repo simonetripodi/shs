@@ -177,7 +177,7 @@ final class ProtocolProcessor
             if ( logger.isDebugEnabled() )
             {
                 // protocol
-                logger.debug( "> {} {} {}/{}",
+                logger.debug( "> {}/{} {} {}",
                               new Object[] {
                                   response.getProtocolName(),
                                   response.getProtocolVersion(),
