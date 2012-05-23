@@ -111,8 +111,6 @@ $( document ).ready( function()
                                       + jqXHR.status
                                       + ' - '
                                       + jqXHR.statusText
-                                      + ': '
-                                      + jqXHR.responseText
                                       + '</code>' );
                     },
                     error: function( data, textStatus, jqXHR )
@@ -121,8 +119,6 @@ $( document ).ready( function()
                                     + jqXHR.status
                                     + ' - '
                                     + jqXHR.statusText
-                                    + ': '
-                                    + jqXHR.responseText
                                     + '</code>' );
                     }
                 } );

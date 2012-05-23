@@ -23,12 +23,17 @@ package org.nnsoft.shs.demo;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
+import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
 import static org.nnsoft.shs.http.Response.Status.CREATED;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
+import static org.nnsoft.shs.http.Response.Status.UNAUTHORIZED;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 import org.nnsoft.shs.core.io.FileResponseBodyWriter;
 import org.nnsoft.shs.http.BaseRequestHandler;
@@ -90,11 +95,40 @@ public final class FileRequestHandler
     protected void post( Request request, Response response )
         throws IOException
     {
-        response.setBody( new MessageResponseBodyWriter( "Request received on path '%s' with params: { time: %s; objId: %s }",
-                                                         request.getPath(),
-                                                         request.getParameters().getFirstValue( "time" ),
-                                                         request.getParameters().getFirstValue( "objId" ) ) );
-        response.setStatus( CREATED );
+        File target = new File( baseDir.getParentFile(), request.getPath() );
+
+        if ( !target.getParentFile().exists() )
+        {
+            if ( !target.getParentFile().mkdirs() )
+            {
+                response.setStatus( UNAUTHORIZED );
+                return;
+            }
+        }
+
+        if ( !target.exists() )
+        {
+            if ( !target.createNewFile() )
+            {
+                response.setStatus( UNAUTHORIZED );
+                return;
+            }
+        }
+
+        FileChannel channel = new FileOutputStream( target, true ).getChannel();
+
+        try
+        {
+            channel.write( utf8ByteBuffer( "client: %s - parameters: { time=%s; objId=%s }%n",
+                                           request.getClientHost(),
+                                           request.getParameters().getFirstValue( "time" ),
+                                           request.getParameters().getFirstValue( "objId" ) ) );
+            response.setStatus( CREATED );
+        }
+        finally
+        {
+            closeQuietly( channel );
+        }
     }
 
 }
