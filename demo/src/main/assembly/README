@@ -126,10 +126,12 @@ Usage: shs [options]
     -s, --sitedir           The directory containing the site has to be
                             provided.
                             Default: /usr/local/${project.build.finalName}/site
-    -t, --threads           The number of listening thread (# of available
-                            processors by default).
+    -t, --threads           The number of thread (# of available processors by
+                            default).
                             Default: 4
     -X, --verbose           Produce execution debug output.
+                            Default: false
+    -v, --version           Display version information.
                             Default: false
 +-------------------------------------------------------------------------------+
 
