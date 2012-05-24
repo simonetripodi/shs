@@ -67,7 +67,7 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-p", "--port" }, description = "The HTTP Server port." )
     private int port = 8080;
 
-    @Parameter( names = { "-t", "--threads" }, description = "The number of listening thread (# of available processors by default)." )
+    @Parameter( names = { "-t", "--threads" }, description = "The number of thread (# of available processors by default)." )
     private int threads = getRuntime().availableProcessors();
 
     @Parameter( names = { "-m", "--session-max-age" }, description = "The maximum number of seconds of life of HTTP Sessions." )
@@ -78,6 +78,9 @@ public final class SimpleHttpServerLauncher
 
     @Parameter( names = { "-X", "--verbose" }, description = "Produce execution debug output." )
     private boolean verbose;
+
+    @Parameter( names = { "-v", "--version" }, description = "Display version information." )
+    private boolean printVersion;
 
     @Parameter(
         names = { "-s", "--sitedir" },
@@ -113,6 +116,12 @@ public final class SimpleHttpServerLauncher
         final JCommander jCommander = new JCommander( this );
         jCommander.setProgramName( getProperty( "app.name" ) );
         jCommander.parse( args );
+
+        if ( printVersion )
+        {
+            printVersion();
+            exit( -1 );
+        }
 
         if ( printHelp )
         {
@@ -253,6 +262,76 @@ public final class SimpleHttpServerLauncher
             logger.error( "Server cannot be started", se );
             exit( 1 );
         }
+    }
+
+    private static final void printVersion()
+    {
+        System.out.printf( "%s v%s (built on %s)%n",
+                           getProperty( "project.artifactId" ),
+                           getProperty( "project.version" ),
+                           getProperty( "build.timestamp" ) );
+       System.out.printf( "Java version: %s, vendor: %s%n",
+                           getProperty( "java.version" ),
+                           getProperty( "java.vendor" ) );
+       System.out.printf( "Java home: %s%n", System.getProperty( "java.home" ) );
+       System.out.printf( "Default locale: %s_%s, platform encoding: %s%n",
+                          getProperty( "user.language" ),
+                          getProperty( "user.country" ),
+                          getProperty( "sun.jnu.encoding" ) );
+       System.out.printf( "OS name: \"%s\", version: \"%s\", arch: \"%s\", family: \"%s\"%n",
+                          getProperty( "os.name" ),
+                          getProperty( "os.version" ),
+                          getProperty( "os.arch" ),
+                          getOsFamily() );
+    }
+
+    private static final String getOsFamily()
+    {
+        String osName = getProperty( "os.name" ).toLowerCase();
+        String pathSep = getProperty( "path.separator" );
+
+        if ( osName.indexOf( "windows" ) != -1 )
+        {
+            return "windows";
+        }
+        else if ( osName.indexOf( "os/2" ) != -1 )
+        {
+            return "os/2";
+        }
+        else if ( osName.indexOf( "z/os" ) != -1 || osName.indexOf( "os/390" ) != -1 )
+        {
+            return "z/os";
+        }
+        else if ( osName.indexOf( "os/400" ) != -1 )
+        {
+            return "os/400";
+        }
+        else if ( pathSep.equals( ";" ) )
+        {
+            return "dos";
+        }
+        else if ( osName.indexOf( "mac" ) != -1 )
+        {
+            if ( osName.endsWith( "x" ) )
+            {
+                return "mac"; // MACOSX
+            }
+            return "unix";
+        }
+        else if ( osName.indexOf( "nonstop_kernel" ) != -1 )
+        {
+            return "tandem";
+        }
+        else if ( osName.indexOf( "openvms" ) != -1 )
+        {
+            return "openvms";
+        }
+        else if ( pathSep.equals( ":" ) )
+        {
+            return "unix";
+        }
+
+        return "undefined";
     }
 
     /**
