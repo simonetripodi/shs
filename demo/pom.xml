@@ -61,6 +61,15 @@
     </dependency>
 
     <!--
+     | Just a template engine
+    -->
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </dependency>
+
+    <!--
      | logging
     -->
     <dependency>
