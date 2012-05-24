@@ -28,9 +28,24 @@
     </encoder>
   </appender>
 
+  <appender name="R" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>${basedir}/logs/shs.log</File>
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] [%level] %message%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <maxIndex>5</maxIndex>
+      <FileNamePattern>logs/shs.log.%i</FileNamePattern>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>1000KB</MaxFileSize>
+    </triggeringPolicy>
+  </appender>
+
   <logger name="org.nnsoft.shs.core.http.parse" level="ERROR" />
 
   <root level="${logging.level}">
     <appender-ref ref="Console" />
+    <appender-ref ref="R" />
   </root>
 </configuration>
