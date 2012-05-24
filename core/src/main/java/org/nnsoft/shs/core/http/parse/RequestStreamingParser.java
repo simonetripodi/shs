@@ -23,7 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.ByteBuffer.allocate;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.BODY_CONSUMING;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COMPLETE;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
@@ -256,7 +256,7 @@ public final class RequestStreamingParser
                             else
                             {
                                 forceSwitch( current, BODY_CONSUMING );
-                                requestBody = allocateDirect( (int) request.getContentLength() );
+                                requestBody = allocate( (int) request.getContentLength() );
 
                                 messageBuffer.position( charBuffer.position() );
 
