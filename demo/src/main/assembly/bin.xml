@@ -80,9 +80,19 @@
     <fileSet>
       <directory>${project.build.directory}/appassembler/lib/</directory>
       <outputDirectory>/lib</outputDirectory>
+      <fileMode>666</fileMode>
       <excludes>
         <exclude>*.xml</exclude>
       </excludes>
+    </fileSet>
+
+    <!--
+     | classpath resources
+    -->
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/etc</outputDirectory>
+      <fileMode>666</fileMode>
     </fileSet>
 
     <!--
