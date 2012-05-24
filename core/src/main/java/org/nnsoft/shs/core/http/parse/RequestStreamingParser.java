@@ -25,6 +25,7 @@ package org.nnsoft.shs.core.http.parse;
 
 import static java.nio.ByteBuffer.allocateDirect;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.BODY_CONSUMING;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.COMPLETE;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_VALUE;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.HEADER_NAME;
@@ -92,8 +93,6 @@ public final class RequestStreamingParser
 
     private ParserStatus status = ParserStatus.METHOD;
 
-    private boolean requestMessageComplete = false;
-
     private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
     private ByteBuffer requestBody;
@@ -125,7 +124,7 @@ public final class RequestStreamingParser
     public void onRequestPartRead( ByteBuffer messageBuffer )
         throws RequestParseException
     {
-        if ( requestMessageComplete )
+        if ( isRequestMessageComplete() )
         {
             return;
         }
@@ -146,7 +145,7 @@ public final class RequestStreamingParser
                     logger.debug( "{} consuming char: `{}'", status, current );
                 }
 
-                if ( requestMessageComplete )
+                if ( isRequestMessageComplete() )
                 {
                     break dance;
                 }
@@ -267,7 +266,7 @@ public final class RequestStreamingParser
                         }
                         else
                         {
-                            requestMessageComplete = true;
+                            status = COMPLETE;
                         }
                         break;
 
@@ -294,7 +293,7 @@ public final class RequestStreamingParser
                     if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
                     {
                         tokenFound();
-                        requestMessageComplete = true;
+                        status = COMPLETE;
 
                         if ( logger.isDebugEnabled() )
                         {
@@ -355,14 +354,14 @@ public final class RequestStreamingParser
 
         if ( request.getContentLength() == requestBody.capacity() )
         {
-            requestMessageComplete = true;
+            status = COMPLETE;
             request.setRequestBody( requestBody );
         }
     }
 
     public boolean isRequestMessageComplete()
     {
-        return requestMessageComplete;
+        return COMPLETE == status;
     }
 
     public Request getParsedRequest()
