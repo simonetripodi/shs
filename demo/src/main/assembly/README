@@ -21,36 +21,96 @@
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                                               ${project.name}
+                                               ${project.parent.name}
                                                      ----
-                                                     2012
+                                               ${project.parent.inceptionYear}
 
-Introduction
+  What is it?
+  -----------
 
-  ${project.description}
+  ${project.parent.description}
 
-Install ${project.name}
+  Licensing
+  ---------
 
-  ${project.name} is a Java tool, so you must have Java installed in order to proceed. Users need at least the
-  Java Runtime Environment (JRE), the Java Development Kit (JDK) is a plus.
+  Please see the file called LICENSE
 
-  [[1]] Extract the distribution archive, i.e. ${project.build.finalName}.tar.gz to the directory you
-        wish to install ${project.artifactId}.
-        These instructions assume you chose `/usr/local/${project.build.finalName}`.
-        The subdirectory `${project.build.finalName}` will be created from the archive.
+  Documentation
+  -------------
 
-  [[2]] Add ${project.name} to your path, e.g.
+  The most up-to-date documentation can be found at ${project.parent.url}.
 
-            `export PATH=/usr/local/${project.build.finalName}/bin:$PATH`
+  Useful URLS
+  ----------
 
-  [[3]] Make sure that JAVA_HOME is set to the location of your JDK, e.g. `export JAVA_HOME=/usr/java/jdk1.6.0_29`
-        and that $JAVA_HOME/bin is in your PATH environment variable.
+  Home Page:          ${project.parent.url}/
+  Source Code:        ${project.parent.scm.url}
+  Issue Tracking:     ${project.parent.issueManagement.url}
 
-Run ${project.name}
+  System Requirements
+  -------------------
+
+  JDK:
+    ${javac.target.version} or above. (see http://www.oracle.com/technetwork/java/)
+  Memory:
+    No minimum requirement.
+  Disk:
+    No minimum requirement.
+  Operating System:
+    No minimum requirement. On Windows, Windows NT and above or Cygwin is required for
+    the startup scripts. Tested on Windows XP, Fedora Core and Mac OS X.
+
+  Installation
+  ----------------
+
+** Windows 2000/XP
+
+  1) Unzip the distribution archive, i.e. ${project.build.finalName}.zip to the directory you wish to
+        install ${project.parent.name} ${project.version}.
+        These instructions assume you chose C:\Program Files.
+        The subdirectory ${project.build.finalName} will be created from the archive.
+
+  2) Add the SHS_HOME environment variable by opening up the system properties (WinKey + Pause),
+        selecting the "Advanced" tab, and the "Environment Variables" button, then adding the SHS_HOME
+        variable in the user variables with the value
+        C:\Program Files\${project.build.finalName}.
+
+  3) In the same dialog, add the SHS environment variable in the user variables with the value %SHS_HOME%\bin.
+
+  4) In the same dialog, update/create the Path environment variable in the user variables and prepend the value
+        %SHS% to add ${project.parent.name} available in the command line.
+
+  5) In the same dialog, make sure that JAVA_HOME exists in your user variables or in the system variables and it is
+        set to the location of your JDK, e.g. C:\Program Files\Java\1.6.0_31 and that %JAVA_HOME%\bin is in your Path
+        environment variable.
+
+  6) Open a new command prompt (Winkey + R then type cmd) and run shs --version to verify that it is correctly installed.
+
+** Unix-based Operating Systems (Linux, Solaris and Mac OS X)
+
+  1) Extract the distribution archive, i.e. ${project.build.finalName}.tar.gz to the directory you wish to
+        install ${project.parent.name} ${project.version}.
+        These instructions assume you chose /usr/local.
+        The subdirectory ${project.build.finalName} will be created from the archive.
+
+  2) In a command terminal, add the SHS_HOME environment variable, e.g.
+        export SHS_HOME=/usr/local/${project.build.finalName}.
+
+  3) Add the SHS environment variable, e.g. export SHS=$SHS_HOME/bin.
+
+  4) Add SHS environment variable to your path, e.g. export PATH=$SHS:$PATH.
+
+  5) Make sure that JAVA_HOME is set to the location of your JDK, e.g.
+        export JAVA_HOME=/usr/java/1.6.0_31 and that $JAVA_HOME/bin is in your PATH environment variable.
+
+  6) Run shs --version to verify that it is correctly installed.
+
+  Execution
+  ----------------
 
   Open the shell and type `shs -h` to see the available options:
 
----------------------------------------------------------------------------------
++-------------------------------------------------------------------------------+
 Usage: shs [options]
   Options:
     -h, --help              Display help information.
@@ -71,7 +131,7 @@ Usage: shs [options]
                             Default: 4
     -X, --verbose           Produce execution debug output.
                             Default: false
----------------------------------------------------------------------------------
++-------------------------------------------------------------------------------+
 
   For the demo purpose, would be enough typing `shs -t 20 -X` then
   open the browser and go on `http://localhost:8080`
