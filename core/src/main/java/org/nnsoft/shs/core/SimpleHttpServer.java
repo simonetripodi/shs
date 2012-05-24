@@ -279,6 +279,12 @@ public final class SimpleHttpServer
         socketChannel.configureBlocking( false );
 
         Socket socket = socketChannel.socket();
+
+        if ( logger.isInfoEnabled() )
+        {
+            logger.info( "Accepting new connection from {}", socket.getInetAddress().getHostAddress() );
+        }
+
         socketChannel.register( selector, OP_READ, new RequestStreamingParser( socket.getInetAddress().getHostAddress(),
                                                                                socket.getLocalAddress().getHostName(),
                                                                                socket.getLocalPort() ) );
@@ -371,7 +377,14 @@ public final class SimpleHttpServer
         {
             if ( EOM == current )
             {
-                serverChannel.socket().close();
+                Socket socket = serverChannel.socket();
+
+                if ( logger.isInfoEnabled() )
+                {
+                    logger.info( "Connection with {} terminated.", socket.getInetAddress().getHostAddress() );
+                }
+
+                socket.close();
                 key.cancel();
             }
             else
