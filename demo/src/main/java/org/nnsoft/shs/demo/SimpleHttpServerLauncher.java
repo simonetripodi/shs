@@ -34,6 +34,7 @@ import static org.slf4j.LoggerFactory.getILoggerFactory;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.Formatter;
 
@@ -266,23 +267,25 @@ public final class SimpleHttpServerLauncher
 
     private static final void printVersion()
     {
-        System.out.printf( "%s v%s (built on %s)%n",
-                           getProperty( "project.artifactId" ),
-                           getProperty( "project.version" ),
-                           getProperty( "build.timestamp" ) );
-       System.out.printf( "Java version: %s, vendor: %s%n",
-                           getProperty( "java.version" ),
-                           getProperty( "java.vendor" ) );
-       System.out.printf( "Java home: %s%n", System.getProperty( "java.home" ) );
-       System.out.printf( "Default locale: %s_%s, platform encoding: %s%n",
-                          getProperty( "user.language" ),
-                          getProperty( "user.country" ),
-                          getProperty( "sun.jnu.encoding" ) );
-       System.out.printf( "OS name: \"%s\", version: \"%s\", arch: \"%s\", family: \"%s\"%n",
-                          getProperty( "os.name" ),
-                          getProperty( "os.version" ),
-                          getProperty( "os.arch" ),
-                          getOsFamily() );
+        PrintStream out = System.out;
+
+        out.printf( "%s v%s (built on %s)%n",
+                    getProperty( "project.artifactId" ),
+                    getProperty( "project.version" ),
+                    getProperty( "build.timestamp" ) );
+        out.printf( "Java version: %s, vendor: %s%n",
+                    getProperty( "java.version" ),
+                    getProperty( "java.vendor" ) );
+        out.printf( "Java home: %s%n", System.getProperty( "java.home" ) );
+        out.printf( "Default locale: %s_%s, platform encoding: %s%n",
+                    getProperty( "user.language" ),
+                    getProperty( "user.country" ),
+                    getProperty( "sun.jnu.encoding" ) );
+        out.printf( "OS name: \"%s\", version: \"%s\", arch: \"%s\", family: \"%s\"%n",
+                    getProperty( "os.name" ),
+                    getProperty( "os.version" ),
+                    getProperty( "os.arch" ),
+                    getOsFamily() );
     }
 
     private static final String getOsFamily()
