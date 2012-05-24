@@ -33,13 +33,6 @@ public interface ResponseBodyWriter
 {
 
     /**
-     * Returns the body content length if known, -1 otherwise.
-     *
-     * @return the body content length if known, -1 otherwise.
-     */
-    long getContentLength();
-
-    /**
      * Returns the mime type of the streamed response.
      *
      * @return the mime type of the streamed response.

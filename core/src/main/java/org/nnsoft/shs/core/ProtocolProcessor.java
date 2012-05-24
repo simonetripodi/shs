@@ -27,9 +27,6 @@ import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
-import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
-import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
-import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.http.Headers.DATE;
 import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
@@ -147,21 +144,6 @@ final class ProtocolProcessor
 
             response.setProtocolName( request.getProtocolName() );
             response.setProtocolVersion( request.getProtocolVersion() );
-
-            if ( response.getBodyWriter().getContentLength() > 0 )
-            {
-                response.addHeader( CONTENT_LENGTH, String.valueOf( response.getBodyWriter().getContentLength() ) );
-
-                if ( response.getBodyWriter().contentType() != null )
-                {
-                    response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
-                }
-
-                if ( gzipEnabled )
-                {
-                    response.addHeader( CONTENT_ENCODING, GZIP );
-                }
-            }
         }
         catch ( IOException e )
         {
@@ -172,6 +154,17 @@ final class ProtocolProcessor
         finally
         {
             long time = currentTimeMillis() - start;
+
+            try
+            {
+                new ResponseSerializer( key, gzipEnabled ).serialize( response );
+            }
+            catch ( IOException e )
+            {
+                key.cancel();
+
+                logger.error( "Impossible to stream Response to the client", e );
+            }
 
             // debug the response
             if ( logger.isDebugEnabled() )
@@ -228,17 +221,6 @@ final class ProtocolProcessor
 
                     logger.debug( "Request processed in {}ms", time );
                 }
-            }
-
-            try
-            {
-                new ResponseSerializer( key, gzipEnabled ).serialize( response );
-            }
-            catch ( IOException e )
-            {
-                key.cancel();
-
-                logger.error( "Impossible to stream Response to the client", e );
             }
         }
     }

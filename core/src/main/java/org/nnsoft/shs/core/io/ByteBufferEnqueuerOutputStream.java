@@ -43,6 +43,8 @@ public final class ByteBufferEnqueuerOutputStream
 
     private ByteBuffer currentPtr = allocateDirect( DEFAULT_BUFFER_CHUNK_SIZE );
 
+    private long writtenBytes = 0;
+
     /**
      *
      *
@@ -66,6 +68,7 @@ public final class ByteBufferEnqueuerOutputStream
             flush();
         }
 
+        writtenBytes++;
         currentPtr.put( (byte) ( b & 0xFF ) );
     }
 
@@ -94,6 +97,11 @@ public final class ByteBufferEnqueuerOutputStream
         throws IOException
     {
         buffers.offer( EOM );
+    }
+
+    public long getWrittenBytes()
+    {
+        return writtenBytes;
     }
 
 }

@@ -29,16 +29,18 @@ import static java.nio.channels.Channels.newChannel;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.util.Locale.US;
 import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
+import static org.nnsoft.shs.http.Headers.CONTENT_ENCODING;
+import static org.nnsoft.shs.http.Headers.CONTENT_LENGTH;
+import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.WritableByteChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -60,6 +62,8 @@ public final class ResponseSerializer
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
     private static final String END_PADDING = "\r\n";
+
+    private static final String GZIP = "gzip";
 
     private final Queue<ByteBuffer> responseBuffers = new ConcurrentLinkedQueue<ByteBuffer>();
 
@@ -96,14 +100,31 @@ public final class ResponseSerializer
         checkArgument( response != null, "Null Response cannot be serialized." );
         this.response = response;
 
+        // print the body, so it will calculate the response size and populate the right HTTP header
+        Queue<ByteBuffer> body = printBody();
+
+        // emit the protocol first
+        printProtocol();
+
+        // key can start writing the protocol first
         key.attach( responseBuffers );
         key.interestOps( OP_WRITE );
 
-        printProtocol();
+        // headers are now complete
         printHeaders();
+
+        // cookies can go safety out
         printCookies();
+
+        // separate the head from the body
         responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
-        printBody();
+
+        // re-enqeue the body one piece at time
+        // responseBuffers is under producer/consumer pattern
+        while ( !body.isEmpty() )
+        {
+            responseBuffers.offer( body.remove() );
+        }
     }
 
     /**
@@ -189,27 +210,43 @@ public final class ResponseSerializer
      *
      * @throws IOException if any error occurs while streaming
      */
-    private void printBody()
+    private Queue<ByteBuffer> printBody()
         throws IOException
     {
-        OutputStream target = new ByteBufferEnqueuerOutputStream( responseBuffers );
+        final Queue<ByteBuffer> bodyBuffers = new LinkedList<ByteBuffer>();
 
-        if ( gzipEnabled )
+        if ( response.getBodyWriter().contentType() != null )
         {
-            target = new GZIPOutputStream( target );
+            response.addHeader( CONTENT_TYPE, response.getBodyWriter().contentType() );
         }
 
-        WritableByteChannel responseChannel = newChannel( target );
-
-        response.getBodyWriter().write( responseChannel );
+        ByteBufferEnqueuerOutputStream target = new ByteBufferEnqueuerOutputStream( bodyBuffers );
 
         if ( gzipEnabled )
         {
-            ( (GZIPOutputStream) target ).finish();
+            response.addHeader( CONTENT_ENCODING, GZIP );
+            GZIPOutputStream gzipTarget = new GZIPOutputStream( target );
+
+            response.getBodyWriter().write( newChannel( gzipTarget ) );
+
+            gzipTarget.finish();
+        }
+        else
+        {
+            response.getBodyWriter().write( newChannel( target ) );
         }
 
         target.flush();
         target.close();
+
+        long writtenBytes = target.getWrittenBytes();
+
+        if ( writtenBytes > 0 )
+        {
+            response.addHeader( CONTENT_LENGTH, String.valueOf( writtenBytes ) );
+        }
+
+        return bodyBuffers;
     }
 
     /**

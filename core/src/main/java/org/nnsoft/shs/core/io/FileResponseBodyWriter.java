@@ -232,14 +232,6 @@ public final class FileResponseBodyWriter
     /**
      * {@inheritDoc}
      */
-    public long getContentLength()
-    {
-        return toBeTransfered.length();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String contentType()
     {
@@ -251,6 +243,7 @@ public final class FileResponseBodyWriter
     /**
      * {@inheritDoc}
      */
+    @Override
     public void write( WritableByteChannel target )
         throws IOException
     {
