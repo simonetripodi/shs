@@ -33,7 +33,7 @@ import static org.nnsoft.shs.HttpServer.Status.INITIALIZED;
 import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
-import static org.nnsoft.shs.core.http.serialize.ResponseSerializer.EOM;
+import static org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream.EOM;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;

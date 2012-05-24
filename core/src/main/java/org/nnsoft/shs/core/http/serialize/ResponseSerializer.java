@@ -25,7 +25,6 @@ package org.nnsoft.shs.core.http.serialize;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static java.util.Locale.US;
@@ -46,6 +45,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.zip.GZIPOutputStream;
 
+import org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream;
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Response;
 
@@ -60,8 +60,6 @@ public final class ResponseSerializer
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz", US ); // RFC1123
 
     private static final String END_PADDING = "\r\n";
-
-    public static final ByteBuffer EOM = allocate( 0 );
 
     private final Queue<ByteBuffer> responseBuffers = new ConcurrentLinkedQueue<ByteBuffer>();
 
@@ -106,7 +104,6 @@ public final class ResponseSerializer
         printCookies();
         responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
         printBody();
-        responseBuffers.offer( EOM );
     }
 
     /**
@@ -195,7 +192,7 @@ public final class ResponseSerializer
     private void printBody()
         throws IOException
     {
-        OutputStream target = new ByteBufferOutputStream( responseBuffers );
+        OutputStream target = new ByteBufferEnqueuerOutputStream( responseBuffers );
 
         if ( gzipEnabled )
         {
@@ -212,6 +209,7 @@ public final class ResponseSerializer
         }
 
         target.flush();
+        target.close();
     }
 
     /**
@@ -225,62 +223,6 @@ public final class ResponseSerializer
         throws IOException
     {
         responseBuffers.offer( utf8ByteBuffer( format( messageTemplate, args ) ) );
-    }
-
-    /**
-     *
-     */
-    private static final class ByteBufferOutputStream
-        extends OutputStream
-    {
-
-        private static final int DEFAULT_BUFFER_CHUNK_SIZE = 1024;
-
-        private final Queue<ByteBuffer> buffers;
-
-        private ByteBuffer currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
-
-        public ByteBufferOutputStream( Queue<ByteBuffer> buffers )
-        {
-            checkArgument( buffers != null, "Impossible to send data to a null ByteBuffer queue" );
-            this.buffers = buffers;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void write( int b )
-            throws IOException
-        {
-            if ( !currentPtr.hasRemaining() )
-            {
-                flush();
-            }
-
-            currentPtr.put( (byte) ( b & 0xFF ) );
-        }
-
-        @Override
-        public void flush()
-            throws IOException
-        {
-            if ( currentPtr.position() == 0 )
-            {
-                return;
-            }
-
-            // resize the Buffer to discard extra bytes
-            if ( currentPtr.position() < currentPtr.limit() )
-            {
-                currentPtr.limit( currentPtr.position() );
-            }
-            currentPtr.rewind();
-            buffers.offer( currentPtr );
-
-            currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
-        }
-
     }
 
 }
