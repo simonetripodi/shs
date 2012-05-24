@@ -23,7 +23,6 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.ByteBuffer.allocate;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.BODY_CONSUMING;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COMPLETE;
 import static org.nnsoft.shs.core.http.parse.ParserStatus.COOKIE_NAME;
@@ -43,13 +42,18 @@ import static org.nnsoft.shs.core.io.IOUtils.toUtf8CharBuffer;
 import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.EnumMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
+import org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream;
 import org.nnsoft.shs.http.Request;
 import org.slf4j.Logger;
 
@@ -93,9 +97,11 @@ public final class RequestStreamingParser
 
     private ParserStatus status = ParserStatus.METHOD;
 
-    private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
+    private long bodyConsumingCounter = 0;
 
-    private ByteBuffer requestBody;
+    private final Queue<ByteBuffer> requestBody = new LinkedList<ByteBuffer>();
+
+    private OutputStream bodyConsumerOutputStream;
 
     public RequestStreamingParser( String clientHost, String serverHost, int serverPort )
     {
@@ -245,18 +251,19 @@ public final class RequestStreamingParser
                         {
                             if ( logger.isDebugEnabled() )
                             {
-                                logger.debug( "Consuming request body..." );
+                                logger.debug( "Consuming request body of length {}", request.getContentLength() );
                             }
 
                             if ( request.getHeaders().contains( CONTENT_TYPE )
                                  && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( FORM_URLENCODED ) )
                             {
+                                bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
+
                                 forceSwitch( current, PARAM_NAME );
                             }
                             else
                             {
                                 forceSwitch( current, BODY_CONSUMING );
-                                requestBody = allocate( (int) request.getContentLength() );
 
                                 messageBuffer.position( charBuffer.position() );
 
@@ -290,7 +297,7 @@ public final class RequestStreamingParser
                 {
                     bodyConsumingCounter++;
 
-                    if ( PARAM_VALUE == status && bodyConsumingCounter == request.getContentLength() )
+                    if ( PARAM_VALUE == status && request.getContentLength() == bodyConsumingCounter )
                     {
                         tokenFound();
                         status = COMPLETE;
@@ -340,21 +347,45 @@ public final class RequestStreamingParser
     }
 
     private void consumeBody( ByteBuffer buffer )
+        throws RequestParseException
     {
-        while ( buffer.hasRemaining() && requestBody.hasRemaining() )
+        // lazy load the body bytes consumer
+        if ( bodyConsumerOutputStream == null )
         {
-            requestBody.put( buffer.get() );
+            bodyConsumerOutputStream = new ByteBufferEnqueuerOutputStream( requestBody );
+        }
 
-            if ( logger.isDebugEnabled() )
+        while ( buffer.hasRemaining() && ++bodyConsumingCounter <= request.getContentLength() )
+        {
+            try
             {
-                logger.debug( "{} Consuming request body {}/{}",
-                              new Object[] { status, requestBody.position(), requestBody.limit() } );
+                bodyConsumerOutputStream.write( buffer.get() );
+            }
+            catch ( IOException e )
+            {
+                throw new RequestParseException( "An error occurred while consuming request body", e );
             }
         }
 
-        if ( request.getContentLength() == requestBody.capacity() )
+        if ( request.getContentLength() == bodyConsumingCounter )
         {
+            if ( logger.isDebugEnabled() )
+            {
+                logger.debug( "Request body consumed" );
+            }
+
             status = COMPLETE;
+
+            try
+            {
+                bodyConsumerOutputStream.flush();
+                bodyConsumerOutputStream.close();
+            }
+            catch ( IOException ioe )
+            {
+                // nothing can happen here
+            }
+
             request.setRequestBody( requestBody );
         }
     }

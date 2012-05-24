@@ -23,6 +23,7 @@ package org.nnsoft.shs.core.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream.EOM;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import org.nnsoft.shs.collections.MultiValued;
 import org.nnsoft.shs.core.collections.SimpleMultiValued;
@@ -63,7 +65,7 @@ public final class MutableRequest
 
     private long contentLength = -1;
 
-    private ByteBuffer requestBody;
+    private Queue<ByteBuffer> requestBody;
 
     private Session session;
 
@@ -321,7 +323,7 @@ public final class MutableRequest
      *
      * @param requestBody the request content body.
      */
-    public void setRequestBody( ByteBuffer requestBody )
+    public void setRequestBody( Queue<ByteBuffer> requestBody )
     {
         checkArgument( requestBody != null, "Null requestBody not allowed" );
         this.requestBody = requestBody;
@@ -335,14 +337,25 @@ public final class MutableRequest
     {
         checkArgument( requestBodyReader != null, "Null requestBodyReader not allowed" );
 
-        if ( requestBody == null )
+        if ( requestBody == null || requestBody.isEmpty() )
         {
             throw new StreamAlreadyConsumedException();
         }
 
-        requestBody.rewind();
+        // read the request body in a circular queue,
+        // so users can read it as many times they like
+        ByteBuffer current;
 
-        return requestBodyReader.onBodyPartReceived( requestBody );
+        while ( EOM != ( current = requestBody.remove() ) )
+        {
+            requestBodyReader.onBodyPartReceived( current );
+            current.rewind();
+            requestBody.offer( current );
+        }
+
+        requestBody.offer( EOM );
+
+        return requestBodyReader.onComplete();
     }
 
     /**

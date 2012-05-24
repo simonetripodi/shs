@@ -34,14 +34,22 @@ final class ToStringRequestBodyReader
     implements RequestBodyReader<String>
 {
 
+    private final StringBuilder builder = new StringBuilder();
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String onBodyPartReceived( ByteBuffer buffer )
+    public void onBodyPartReceived( ByteBuffer buffer )
         throws IOException
     {
-        return toUtf8String( buffer );
+        builder.append( toUtf8String( buffer ) );
+    }
+
+    @Override
+    public String onComplete()
+    {
+        return builder.toString();
     }
 
 }
