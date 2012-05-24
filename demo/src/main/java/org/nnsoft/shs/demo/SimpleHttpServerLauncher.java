@@ -106,6 +106,7 @@ public final class SimpleHttpServerLauncher
         serveRequestsWithThreads( threads );
         sessionsHaveMagAge( sessionMaxAge );
 
+        serve( "*.xml" ).with( new JaxbHandler() );
         serve( "*.vm" ).with( new VelocityRequestHandler( siteDir ) );
         serve( "/*" ).with( new FileRequestHandler( siteDir ) );
         when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
