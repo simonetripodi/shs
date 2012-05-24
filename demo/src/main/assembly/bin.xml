@@ -27,6 +27,7 @@
   <id>bin</id>
   <formats>
     <format>tar.gz</format>
+    <format>zip</format>
   </formats>
   <includeBaseDirectory>true</includeBaseDirectory>
   <baseDirectory>${project.build.finalName}</baseDirectory>
