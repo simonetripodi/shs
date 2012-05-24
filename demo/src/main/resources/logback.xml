@@ -28,6 +28,8 @@
     </encoder>
   </appender>
 
+  <logger name="org.nnsoft.shs.core.http.parse" level="ERROR" />
+
   <root level="${logging.level}">
     <appender-ref ref="Console" />
   </root>
