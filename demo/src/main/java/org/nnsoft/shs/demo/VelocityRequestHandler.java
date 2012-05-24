@@ -51,6 +51,9 @@ public final class VelocityRequestHandler
         init( properties );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void get( Request request, Response response )
         throws IOException
