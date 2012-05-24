@@ -43,7 +43,7 @@
 
   <fileSets>
     <!--
-     |
+     | legals
     -->
     <fileSet>
       <directory>${basedir}/../</directory>
@@ -82,6 +82,18 @@
       <outputDirectory>/lib</outputDirectory>
       <excludes>
         <exclude>*.xml</exclude>
+      </excludes>
+    </fileSet>
+
+    <!--
+     | empty log dir
+    -->
+    <fileSet>
+      <directory>${basedir}/src/main/assembly</directory>
+      <outputDirectory>/logs</outputDirectory>
+      <fileMode>666</fileMode>
+      <excludes>
+        <exclude>*</exclude>
       </excludes>
     </fileSet>
   </fileSets>
