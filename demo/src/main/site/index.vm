@@ -44,10 +44,19 @@
         <a href="http://velocity.apache.org/">Apache Velocity</a> on ${project.parent.name}</p>
       </div>
 
+      <div class="row">
+        <h3>Something interesting to know about your request:</h3>
+        <p>HTTP Method: <code>$request.getMethod()</code></p>
+        #foreach( $header in $request.getHeaders().getAllKeys() )
+        <p>$header:#foreach( $headerValue in $request.getHeaders().getValues( $header ) ) <code>$headerValue</code>#end</p>
+        #end
+        <p>Session ID: <code>$request.getSession().getId()</code></p>
+      </div>
+
       <hr/>
 
       <footer>
-        <p>Session ID: $request.getSession().getId() - &copy; <a href="mailto:simonetripodi@apache.org">Simone Tripodi</a></p>
+        <p>${project.name} ${build.number} - &copy; <a href="mailto:simonetripodi@apache.org">Simone Tripodi</a></p>
         <p>licensed under the terms of <a href="http://www.opensource.org/licenses/mit-license.php">The MIT License</a></p>
       </footer>
     </div>
