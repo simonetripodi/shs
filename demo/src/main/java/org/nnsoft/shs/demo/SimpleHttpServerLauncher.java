@@ -30,6 +30,7 @@ import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
+import static org.slf4j.LoggerFactory.getILoggerFactory;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.File;
@@ -42,6 +43,10 @@ import org.nnsoft.shs.RunException;
 import org.nnsoft.shs.ShutdownException;
 import org.nnsoft.shs.core.SimpleHttpServer;
 import org.slf4j.Logger;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -124,6 +129,23 @@ public final class SimpleHttpServerLauncher
         else
         {
             setProperty( "logging.level", "INFO" );
+        }
+
+        // assume SLF4J is bound to logback in the current environment
+        final LoggerContext lc = (LoggerContext) getILoggerFactory();
+
+        try
+        {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext( lc );
+            // the context was probably already configured by default configuration
+            // rules
+            lc.reset();
+            configurator.doConfigure( getClass().getClassLoader().getResourceAsStream( "logback-config.xml" ) );
+        }
+        catch ( JoranException je )
+        {
+            // StatusPrinter should handle this
         }
 
         logger.info( "" );
