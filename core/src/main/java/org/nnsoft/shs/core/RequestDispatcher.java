@@ -115,9 +115,9 @@ final class RequestDispatcher
             logger.info( "Default response {} configured to reply to status {}", defaultResponse, response.getStatus() );
             response.setBody( new FileResponseBodyWriter( defaultResponse ) );
         }
-        else
+        else if ( logger.isDebugEnabled() )
         {
-            logger.info( "No default response configured to reply to status {}", response.getStatus() );
+            logger.debug( "No default response configured to reply to status {}", response.getStatus() );
         }
     }
 
