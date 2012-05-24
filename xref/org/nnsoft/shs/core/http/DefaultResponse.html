@@ -52,14 +52,14 @@
 <a class="jxr_linenumber" name="42" href="#42">42</a>  <em class="jxr_javadoccomment"> * Basic {@link Response} implementation.</em>
 <a class="jxr_linenumber" name="43" href="#43">43</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="44" href="#44">44</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/nnsoft/shs/core/http/DefaultResponse.html">DefaultResponse</a>
-<a class="jxr_linenumber" name="45" href="#45">45</a>      <strong class="jxr_keyword">implements</strong> Response
+<a class="jxr_linenumber" name="45" href="#45">45</a>      <strong class="jxr_keyword">implements</strong> <a href="../../../../../org/nnsoft/shs/http/Response.html">Response</a>
 <a class="jxr_linenumber" name="46" href="#46">46</a>  {
 <a class="jxr_linenumber" name="47" href="#47">47</a>  
 <a class="jxr_linenumber" name="48" href="#48">48</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String DEFAULT_PROTOCOL_NAME = <span class="jxr_string">"HTTP"</span>;
 <a class="jxr_linenumber" name="49" href="#49">49</a>  
 <a class="jxr_linenumber" name="50" href="#50">50</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String DEFAULT_PROTOCOL_VERSION = <span class="jxr_string">"1.1"</span>;
 <a class="jxr_linenumber" name="51" href="#51">51</a>  
-<a class="jxr_linenumber" name="52" href="#52">52</a>      <strong class="jxr_keyword">private</strong> Status status;
+<a class="jxr_linenumber" name="52" href="#52">52</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/nnsoft/shs/http/Response.html">Status</a> status;
 <a class="jxr_linenumber" name="53" href="#53">53</a>  
 <a class="jxr_linenumber" name="54" href="#54">54</a>      <strong class="jxr_keyword">private</strong> String protocolName = DEFAULT_PROTOCOL_NAME;
 <a class="jxr_linenumber" name="55" href="#55">55</a>  
@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="59" href="#59">59</a>  
 <a class="jxr_linenumber" name="60" href="#60">60</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Collection&lt;Cookie&gt; cookies = <strong class="jxr_keyword">new</strong> LinkedList&lt;Cookie&gt;();
 <a class="jxr_linenumber" name="61" href="#61">61</a>  
-<a class="jxr_linenumber" name="62" href="#62">62</a>      <strong class="jxr_keyword">private</strong> ResponseBodyWriter bodyWriter = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/nnsoft/shs/core/http/DefaultResponse.html">NoOpResponseBodyWriter</a>();
+<a class="jxr_linenumber" name="62" href="#62">62</a>      <strong class="jxr_keyword">private</strong> <a href="../../../../../org/nnsoft/shs/io/ResponseBodyWriter.html">ResponseBodyWriter</a> bodyWriter = <strong class="jxr_keyword">new</strong> <a href="../../../../../org/nnsoft/shs/core/http/DefaultResponse.html">NoOpResponseBodyWriter</a>();
 <a class="jxr_linenumber" name="63" href="#63">63</a>  
 <a class="jxr_linenumber" name="64" href="#64">64</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setStatus( Status status )
 <a class="jxr_linenumber" name="65" href="#65">65</a>      {
@@ -77,7 +77,7 @@
 <a class="jxr_linenumber" name="67" href="#67">67</a>          <strong class="jxr_keyword">this</strong>.status = status;
 <a class="jxr_linenumber" name="68" href="#68">68</a>      }
 <a class="jxr_linenumber" name="69" href="#69">69</a>  
-<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">public</strong> Status getStatus()
+<a class="jxr_linenumber" name="70" href="#70">70</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../../org/nnsoft/shs/http/Response.html">Status</a> getStatus()
 <a class="jxr_linenumber" name="71" href="#71">71</a>      {
 <a class="jxr_linenumber" name="72" href="#72">72</a>          <strong class="jxr_keyword">return</strong> status;
 <a class="jxr_linenumber" name="73" href="#73">73</a>      }
@@ -128,7 +128,7 @@
 <a class="jxr_linenumber" name="118" href="#118">118</a>         <strong class="jxr_keyword">return</strong> unmodifiableCollection( cookies );
 <a class="jxr_linenumber" name="119" href="#119">119</a>     }
 <a class="jxr_linenumber" name="120" href="#120">120</a> 
-<a class="jxr_linenumber" name="121" href="#121">121</a>     <strong class="jxr_keyword">public</strong> ResponseBodyWriter getBodyWriter()
+<a class="jxr_linenumber" name="121" href="#121">121</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../../org/nnsoft/shs/io/ResponseBodyWriter.html">ResponseBodyWriter</a> getBodyWriter()
 <a class="jxr_linenumber" name="122" href="#122">122</a>     {
 <a class="jxr_linenumber" name="123" href="#123">123</a>         <strong class="jxr_keyword">return</strong> bodyWriter;
 <a class="jxr_linenumber" name="124" href="#124">124</a>     }
@@ -150,7 +150,7 @@
 <a class="jxr_linenumber" name="140" href="#140">140</a> <em class="jxr_javadoccomment">     * NO-OP {@link ResponseBodyWriter} implementation.</em>
 <a class="jxr_linenumber" name="141" href="#141">141</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="142" href="#142">142</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../org/nnsoft/shs/core/http/DefaultResponse.html">NoOpResponseBodyWriter</a>
-<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">implements</strong> ResponseBodyWriter
+<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">implements</strong> <a href="../../../../../org/nnsoft/shs/io/ResponseBodyWriter.html">ResponseBodyWriter</a>
 <a class="jxr_linenumber" name="144" href="#144">144</a>     {
 <a class="jxr_linenumber" name="145" href="#145">145</a> 
 <a class="jxr_linenumber" name="146" href="#146">146</a>         <em class="jxr_javadoccomment">/**</em>

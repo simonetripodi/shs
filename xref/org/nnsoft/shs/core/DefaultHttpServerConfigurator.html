@@ -47,7 +47,7 @@
 <a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment"> * Default {@link HttpServerConfigurator} implementation</em>
 <a class="jxr_linenumber" name="38" href="#38">38</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="39" href="#39">39</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/nnsoft/shs/core/DefaultHttpServerConfigurator.html">DefaultHttpServerConfigurator</a>
-<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">implements</strong> HttpServerConfigurator
+<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">implements</strong> <a href="../../../../org/nnsoft/shs/HttpServerConfigurator.html">HttpServerConfigurator</a>
 <a class="jxr_linenumber" name="41" href="#41">41</a>  {
 <a class="jxr_linenumber" name="42" href="#42">42</a>  
 <a class="jxr_linenumber" name="43" href="#43">43</a>      <strong class="jxr_keyword">private</strong> String host;
@@ -145,12 +145,12 @@
 <a class="jxr_linenumber" name="135" href="#135">135</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="136" href="#136">136</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="137" href="#137">137</a>     @Override
-<a class="jxr_linenumber" name="138" href="#138">138</a>     <strong class="jxr_keyword">public</strong> RequestHandlerBuilder serve( <strong class="jxr_keyword">final</strong> String path )
+<a class="jxr_linenumber" name="138" href="#138">138</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/nnsoft/shs/RequestHandlerBuilder.html">RequestHandlerBuilder</a> serve( <strong class="jxr_keyword">final</strong> String path )
 <a class="jxr_linenumber" name="139" href="#139">139</a>     {
 <a class="jxr_linenumber" name="140" href="#140">140</a>         checkArgument( path != <strong class="jxr_keyword">null</strong>, <span class="jxr_string">"Null path cannot be served."</span> );
 <a class="jxr_linenumber" name="141" href="#141">141</a>         checkArgument( !path.isEmpty(), <span class="jxr_string">"Empty path not allowed."</span> );
 <a class="jxr_linenumber" name="142" href="#142">142</a> 
-<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> RequestHandlerBuilder()
+<a class="jxr_linenumber" name="143" href="#143">143</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/RequestHandlerBuilder.html">RequestHandlerBuilder</a>()
 <a class="jxr_linenumber" name="144" href="#144">144</a>         {
 <a class="jxr_linenumber" name="145" href="#145">145</a> 
 <a class="jxr_linenumber" name="146" href="#146">146</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> with( <strong class="jxr_keyword">final</strong> RequestHandler requestHandler )
@@ -167,12 +167,12 @@
 <a class="jxr_linenumber" name="157" href="#157">157</a> <em class="jxr_javadoccomment">     * {@inheritDoc}</em>
 <a class="jxr_linenumber" name="158" href="#158">158</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="159" href="#159">159</a>     @Override
-<a class="jxr_linenumber" name="160" href="#160">160</a>     <strong class="jxr_keyword">public</strong> DefaultResponseBuilder when( <strong class="jxr_keyword">final</strong> Status status )
+<a class="jxr_linenumber" name="160" href="#160">160</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../org/nnsoft/shs/DefaultResponseBuilder.html">DefaultResponseBuilder</a> when( <strong class="jxr_keyword">final</strong> Status status )
 <a class="jxr_linenumber" name="161" href="#161">161</a>     {
 <a class="jxr_linenumber" name="162" href="#162">162</a> 
 <a class="jxr_linenumber" name="163" href="#163">163</a>         checkArgument( status != <strong class="jxr_keyword">null</strong>, <span class="jxr_string">"Null status cannot be served."</span> );
 <a class="jxr_linenumber" name="164" href="#164">164</a> 
-<a class="jxr_linenumber" name="165" href="#165">165</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> DefaultResponseBuilder()
+<a class="jxr_linenumber" name="165" href="#165">165</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../org/nnsoft/shs/DefaultResponseBuilder.html">DefaultResponseBuilder</a>()
 <a class="jxr_linenumber" name="166" href="#166">166</a>         {
 <a class="jxr_linenumber" name="167" href="#167">167</a> 
 <a class="jxr_linenumber" name="168" href="#168">168</a>             @Override
