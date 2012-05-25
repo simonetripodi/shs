@@ -73,6 +73,11 @@ public final class ResponseSerializer
 
     private Response response;
 
+    /**
+     * Creates a new serializer instance.
+     *
+     * @param key the selection key that currently holds the client/server connection.
+     */
     public ResponseSerializer( SelectionKey key )
     {
         this( key, false );
@@ -80,6 +85,9 @@ public final class ResponseSerializer
 
     /**
      * Creates a new serializer instance.
+     *
+     * @param key the selection key that currently holds the client/server connection.
+     * @param gzipEnabled flag to mark the client supports gzip compression.
      */
     public ResponseSerializer( SelectionKey key, boolean gzipEnabled )
     {
