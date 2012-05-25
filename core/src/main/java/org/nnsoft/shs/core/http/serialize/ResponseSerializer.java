@@ -69,7 +69,7 @@ public final class ResponseSerializer
 
     private final SelectionKey key;
 
-    private final boolean gzipEnabled;
+    private final boolean gzipSupported;
 
     private Response response;
 
@@ -87,13 +87,13 @@ public final class ResponseSerializer
      * Creates a new serializer instance.
      *
      * @param key the selection key that currently holds the client/server connection.
-     * @param gzipEnabled flag to mark the client supports gzip compression.
+     * @param gzipSupported flag to mark the client supports gzip compression.
      */
-    public ResponseSerializer( SelectionKey key, boolean gzipEnabled )
+    public ResponseSerializer( SelectionKey key, boolean gzipSupported )
     {
         checkArgument( key != null, "Null SelectionKey not allowd." );
         this.key = key;
-        this.gzipEnabled = gzipEnabled;
+        this.gzipSupported = gzipSupported;
     }
 
     /**
@@ -230,7 +230,7 @@ public final class ResponseSerializer
 
         ByteBufferEnqueuerOutputStream target = new ByteBufferEnqueuerOutputStream( bodyBuffers );
 
-        if ( gzipEnabled )
+        if ( gzipSupported )
         {
             response.addHeader( CONTENT_ENCODING, GZIP );
             GZIPOutputStream gzipTarget = new GZIPOutputStream( target );
