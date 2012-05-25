@@ -121,7 +121,7 @@ public abstract class AbstractHttpServerConfiguration
      * to a {@link RequestHandler}.
      *
      * @param path the path for handling calls.
-     * @return the builder to associate a {@link RequestDispatcher}
+     * @return the builder to associate a request dispatcher
      * @see HttpServerConfigurator#serve(String)
      */
     protected final RequestHandlerBuilder serve( String path )
