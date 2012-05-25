@@ -192,7 +192,7 @@ final class ProtocolProcessor
                     int counter = 0;
                     for ( String headerValue : header.getValue() )
                     {
-                        headerValues.format( "%s%s", (counter++ > 0 ? ", " : ""), headerValue );
+                        headerValues.format( "%s%s", ( counter++ > 0 ? ", " : "" ), headerValue );
                     }
 
                     logger.debug( "> {}: {}", header.getKey(), headerValues.toString() );
