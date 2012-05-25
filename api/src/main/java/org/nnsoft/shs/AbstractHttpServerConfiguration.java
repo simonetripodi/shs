@@ -25,7 +25,6 @@ package org.nnsoft.shs;
 
 import static org.nnsoft.shs.lang.Preconditions.checkState;
 
-import org.nnsoft.shs.http.RequestHandler;
 import org.nnsoft.shs.http.Response.Status;
 
 /**
@@ -118,7 +117,7 @@ public abstract class AbstractHttpServerConfiguration
 
     /**
      *Starts binding a request path, can be expressed using the {@code web.xml} grammar,
-     * to a {@link RequestHandler}.
+     * to a {@link org.nnsoft.shs.http.RequestHandler}.
      *
      * @param path the path for handling calls.
      * @return the builder to associate a request dispatcher
