@@ -103,6 +103,14 @@ public final class RequestStreamingParser
 
     private OutputStream bodyConsumerOutputStream;
 
+    /**
+     * Creates a new parser instance, which will provide a {@link Request} objects
+     * from the textual representation, initialized with construcotr arguments.
+     *
+     * @param clientHost the client with sent the request.
+     * @param serverHost the running server host
+     * @param serverPort the running server port
+     */
     public RequestStreamingParser( String clientHost, String serverHost, int serverPort )
     {
         request.setClientHost( clientHost );
@@ -127,6 +135,12 @@ public final class RequestStreamingParser
         }
     }
 
+    /**
+     * Invoked as soon as the server receives a chunk of the request.
+     *
+     * @param messageBuffer the buffer containing the request chunk
+     * @throws RequestParseException if any parse error occurs
+     */
     public void onRequestPartRead( ByteBuffer messageBuffer )
         throws RequestParseException
     {
@@ -390,11 +404,21 @@ public final class RequestStreamingParser
         }
     }
 
+    /**
+     * Verifies the request has been entirely processed.
+     *
+     * @return true, if the request has been entirely processed, false otherwise.
+     */
     public boolean isRequestMessageComplete()
     {
         return COMPLETE == status;
     }
 
+    /**
+     * Returns the parsed {@link Request} object from the textual representation.
+     *
+     * @return the parsed {@link Request} object from the textual representation.
+     */
     public Request getParsedRequest()
     {
         return request;
