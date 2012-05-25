@@ -409,18 +409,18 @@ public final class SimpleHttpServer
 
                 if ( socket.getKeepAlive() )
                 {
-                    if ( logger.isDebugEnabled() )
+                    if ( logger.isInfoEnabled() )
                     {
-                        logger.debug( "Connection with {} will kept alive", socket.getInetAddress().getHostAddress() );
+                        logger.info( "Connection with {} will kept alive", socket.getInetAddress().getHostAddress() );
                     }
 
                     switchToRead( serverChannel, socket );
                 }
                 else
                 {
-                    if ( logger.isDebugEnabled() )
+                    if ( logger.isInfoEnabled() )
                     {
-                        logger.debug( "Terminating connection with {}", socket.getInetAddress().getHostAddress() );
+                        logger.info( "Terminating connection with {}", socket.getInetAddress().getHostAddress() );
                     }
 
                     socket.close();
