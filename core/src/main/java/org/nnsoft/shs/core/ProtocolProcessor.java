@@ -127,7 +127,7 @@ final class ProtocolProcessor
 
         boolean keepAlive = HTTP_11.equals( request.getProtocolVersion() )
                             || ( request.getHeaders().contains( CONNECTION )
-                                 && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( KEEP_ALIVE ) ) );
+                                 && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( CONNECTION ) ) );
         if ( keepAlive )
         {
             response.addHeader( CONNECTION, KEEP_ALIVE );
