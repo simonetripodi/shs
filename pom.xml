@@ -283,6 +283,10 @@
         <version>${javadoc.version}</version>
         <configuration>
           <aggregate>true</aggregate>
+          <linksource>true</linksource>
+          <links>
+            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+          </links>
         </configuration>
         <reportSets>
           <reportSet>
