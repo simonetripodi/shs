@@ -39,6 +39,12 @@ import java.util.Set;
 
 import org.nnsoft.shs.collections.MultiValued;
 
+/**
+ * An in-memory based {@link MultiValued} implementation.
+ *
+ * @param <K> the type of keys maintained by this data structure.
+ * @param <V> the type of mapped values.
+ */
 public final class SimpleMultiValued<K, V>
     implements MultiValued<K, V>
 {
@@ -82,6 +88,13 @@ public final class SimpleMultiValued<K, V>
         return null;
     }
 
+    /**
+     * Allows adding a value in the data structure.
+     *
+     * @param key the non null mapping key
+     * @param value the mapped value
+     * @return this data structure instance
+     */
     public SimpleMultiValued<K, V> addValue( K key, V value )
     {
         checkArgument( key != null, "null key not admitted" );
