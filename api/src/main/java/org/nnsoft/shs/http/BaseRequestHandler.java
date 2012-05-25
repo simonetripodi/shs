@@ -202,7 +202,7 @@ public abstract class BaseRequestHandler
      *
      * @param response the HTTP response
      */
-    private final void notAllowed( Response response )
+    private void notAllowed( Response response )
     {
         response.setStatus( METHOD_NOT_ALLOWED );
     }
