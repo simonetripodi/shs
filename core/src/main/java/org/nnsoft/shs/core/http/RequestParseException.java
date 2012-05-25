@@ -25,12 +25,22 @@ package org.nnsoft.shs.core.http;
 
 import org.nnsoft.shs.SHSException;
 
+/**
+ * Exception thrown when an error occurs when parsing the HTTP request sent by clients.
+ */
 public final class RequestParseException
     extends SHSException
 {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     *Constructs a new exception with the specified detail message
+     *
+     * @param messageTemplate a format string
+     * @param args Arguments referenced by the format specifiers in the format string
+     * @see String#format(String, Object...)
+     */
     public RequestParseException( String messageTemplate, Object...args )
     {
         super( messageTemplate, args );
