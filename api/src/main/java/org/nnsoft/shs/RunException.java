@@ -23,6 +23,9 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * Exception thrown when an {@link HttpServer} instance fails during the running phase.
+ */
 public final class RunException
     extends SHSException
 {
