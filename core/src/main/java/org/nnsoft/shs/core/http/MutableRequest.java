@@ -109,7 +109,7 @@ public final class MutableRequest
     /**
      * Sets this server host.
      *
-     * @param clientHost this server host.
+     * @param serverHost this server host.
      */
     public void setServerHost( String serverHost )
     {
@@ -129,7 +129,7 @@ public final class MutableRequest
     /**
      * Sets this server port.
      *
-     * @param clientHost this server port.
+     * @param serverPort this server port.
      */
     public void setServerPort( int serverPort )
     {
@@ -167,7 +167,7 @@ public final class MutableRequest
     /**
      * Set the HTTP Method
      *
-     * @param method
+     * @param method the HTTP Method
      */
     public void setMethod( Method method )
     {
