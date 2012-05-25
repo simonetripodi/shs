@@ -34,6 +34,8 @@ import static org.nnsoft.shs.HttpServer.Status.RUNNING;
 import static org.nnsoft.shs.HttpServer.Status.STOPPED;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream.EOM;
+import static org.nnsoft.shs.http.Headers.CONNECTION;
+import static org.nnsoft.shs.http.Headers.KEEP_ALIVE;
 import static org.nnsoft.shs.http.Response.Status.BAD_REQUEST;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -73,6 +75,8 @@ public final class SimpleHttpServer
     implements HttpServer
 {
 
+    private static final String HTTP_11 = "1.1";
+
     private final Logger logger = getLogger( getClass() );
 
     private ExecutorService requestsExecutor;
@@ -84,6 +88,8 @@ public final class SimpleHttpServer
     private RequestDispatcher dispatcher;
 
     private SessionManager sessionManager;
+
+    private int keepAliveTimeOut;
 
     private final AtomicReference<Status> currentStatus = new AtomicReference<Status>();
 
@@ -107,6 +113,9 @@ public final class SimpleHttpServer
         checkInitParameter( configurator.getPort() > 0, "Impossible to listening on port %s, it must be a positive number", configurator.getPort() );
         checkInitParameter( configurator.getThreads() > 0, "Impossible to serve requests with negative or none threads" );
         checkInitParameter( configurator.getSessionMaxAge() > 0, "Sessions without timelive won't exist" );
+        checkInitParameter( configurator.getKeepAliveTimeOut() >= 0, "Negative keep alive timeout not allowed" );
+
+        keepAliveTimeOut = configurator.getKeepAliveTimeOut() * 1000;
 
         logger.info( "Initializing server using {} threads...", configurator.getThreads() );
 
@@ -282,9 +291,15 @@ public final class SimpleHttpServer
 
         if ( logger.isInfoEnabled() )
         {
-            logger.info( "Accepting new connection from {}", socket.getInetAddress().getHostAddress() );
+            logger.info( "Accepting new request from {}", socket.getInetAddress().getHostAddress() );
         }
 
+        switchToRead( socketChannel, socket );
+    }
+
+    private void switchToRead( SocketChannel socketChannel, Socket socket )
+        throws IOException
+    {
         socketChannel.register( selector, OP_READ, new RequestStreamingParser( socket.getInetAddress().getHostAddress(),
                                                                                socket.getLocalAddress().getHostName(),
                                                                                socket.getLocalPort() ) );
@@ -339,7 +354,15 @@ public final class SimpleHttpServer
 
                 Request request = requestParser.getParsedRequest();
 
-
+                boolean keepAlive = HTTP_11.equals( request.getProtocolVersion() )
+                                || ( request.getHeaders().contains( CONNECTION )
+                                     && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( CONNECTION ) ) );
+                if ( keepAlive )
+                {
+                    Socket socket = serverChannel.socket();
+                    socket.setKeepAlive( true );
+                    socket.setSoTimeout( keepAliveTimeOut );
+                }
 
                 requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
             }
@@ -381,11 +404,28 @@ public final class SimpleHttpServer
 
                 if ( logger.isInfoEnabled() )
                 {
-                    logger.info( "Connection with {} terminated.", socket.getInetAddress().getHostAddress() );
+                    logger.info( "Request with {} satisfied.", socket.getInetAddress().getHostAddress() );
                 }
 
-                socket.close();
-                key.cancel();
+                if ( socket.getKeepAlive() )
+                {
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "Connection with {} will kept alive", socket.getInetAddress().getHostAddress() );
+                    }
+
+                    switchToRead( serverChannel, socket );
+                }
+                else
+                {
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "Terminating connection with {}", socket.getInetAddress().getHostAddress() );
+                    }
+
+                    socket.close();
+                    key.cancel();
+                }
             }
             else
             {

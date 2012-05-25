@@ -48,6 +48,8 @@ final class DefaultHttpServerConfigurator
 
     private int sessionMaxAge;
 
+    private int keepAliveTimeOut;
+
     private final RequestDispatcher requestDispatcher = new RequestDispatcher();
 
     /**
@@ -124,6 +126,21 @@ final class DefaultHttpServerConfigurator
     public void sessionsHaveMagAge( int sessionMaxAge )
     {
         this.sessionMaxAge = sessionMaxAge;
+    }
+
+    public int getKeepAliveTimeOut()
+    {
+        return keepAliveTimeOut;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keepAliveConnectionsHaveTimeout( int keepAliveTimeOut )
+    {
+        checkArgument( keepAliveTimeOut >= 0, "Negative connection keep alive timeout not allowed" );
+        this.keepAliveTimeOut = keepAliveTimeOut * 1000;
     }
 
     public RequestDispatcher getRequestDispatcher()

@@ -64,6 +64,13 @@ public interface HttpServerConfigurator
     void sessionsHaveMagAge( int sessionMaxAge );
 
     /**
+     * Configure the connections keep-alive timeout, in seconds.
+     *
+     * @param keepAliveTimeOut the connections keep-alive timeout, in seconds.
+     */
+    void keepAliveConnectionsHaveTimeout( int keepAliveTimeOut );
+
+    /**
      * Starts binding a request path, can be expressed using the {@code web.xml} grammar,
      * to a {@link RequestHandler}.
      *

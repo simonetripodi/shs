@@ -107,6 +107,16 @@ public abstract class AbstractHttpServerConfiguration
     }
 
     /**
+     * Configure the connections keep-alive timeout, in seconds.
+     *
+     * @param keepAliveTimeOut the connections keep-alive timeout, in seconds.
+     */
+    protected final void keepAliveConnectionsHaveTimeout( int keepAliveTimeOut )
+    {
+        configurator.keepAliveConnectionsHaveTimeout( keepAliveTimeOut );
+    }
+
+    /**
      *Starts binding a request path, can be expressed using the {@code web.xml} grammar,
      * to a {@link RequestHandler}.
      *

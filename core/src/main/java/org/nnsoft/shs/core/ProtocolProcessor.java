@@ -23,6 +23,7 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
@@ -34,7 +35,10 @@ import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
@@ -60,8 +64,6 @@ final class ProtocolProcessor
     private static final String DEFAULT_SERVER_NAME = "Simple HttpServer";
 
     private static final String GZIP = "gzip";
-
-    private static final String HTTP_11 = "1.1";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
@@ -125,16 +127,20 @@ final class ProtocolProcessor
         response.addHeader( DATE, dateFormat.format( new Date() ) );
         response.addHeader( SERVER, DEFAULT_SERVER_NAME );
 
-        boolean keepAlive = HTTP_11.equals( request.getProtocolVersion() )
-                            || ( request.getHeaders().contains( CONNECTION )
-                                 && KEEP_ALIVE.equals( request.getHeaders().getFirstValue( CONNECTION ) ) );
-        if ( keepAlive )
+        SocketChannel serverChannel = (SocketChannel) key.channel();
+        Socket socket = serverChannel.socket();
+        try
         {
-            response.addHeader( CONNECTION, KEEP_ALIVE );
-            // response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
+            if ( socket.getKeepAlive() )
+            {
+                response.addHeader( KEEP_ALIVE, format( "timeout=%s", socket.getSoTimeout() / 1000 ) );
+                response.addHeader( CONNECTION, KEEP_ALIVE );
+            }
         }
-        boolean gzipEnabled = request.getHeaders().contains( ACCEPT_ENCODING )
-                              && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
+        catch ( SocketException e )
+        {
+            // just ignore the Keep-Alive option
+        }
 
         try
         {
@@ -153,6 +159,9 @@ final class ProtocolProcessor
         finally
         {
             long time = currentTimeMillis() - start;
+
+            boolean gzipEnabled = request.getHeaders().contains( ACCEPT_ENCODING )
+                                  && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
             try
             {

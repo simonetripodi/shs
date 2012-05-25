@@ -74,6 +74,9 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-m", "--session-max-age" }, description = "The maximum number of seconds of life of HTTP Sessions." )
     private int sessionMaxAge = 60 * 60; // 1h
 
+    @Parameter( names = { "-k", "--keep-alive" }, description = "The keep alive connection timeout, in seconds." )
+    private int keepAliveTimeOut = 5; // the default connection timeout of Apache 2.2 is only 5 seconds
+
     @Parameter( names = { "-H", "--host" }, description = "The host name or the textual representation of its IP address." )
     private String host = "localhost";
 
@@ -105,6 +108,7 @@ public final class SimpleHttpServerLauncher
         bindServerToPort( port );
         serveRequestsWithThreads( threads );
         sessionsHaveMagAge( sessionMaxAge );
+        keepAliveConnectionsHaveTimeout( keepAliveTimeOut );
 
         serve( "*.xml" ).with( new JaxbHandler() );
         serve( "*.vm" ).with( new VelocityRequestHandler( siteDir ) );
