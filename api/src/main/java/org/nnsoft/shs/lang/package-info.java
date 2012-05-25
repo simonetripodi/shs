@@ -1,5 +1,5 @@
 /**
- * Various utility classes.
+ * Classes to reduce the boilerplate code on lang operations.
  */
 package org.nnsoft.shs.lang;
 
