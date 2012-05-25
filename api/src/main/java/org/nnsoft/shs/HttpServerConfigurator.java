@@ -75,7 +75,7 @@ public interface HttpServerConfigurator
      * to a {@link RequestHandler}.
      *
      * @param path the path for handling calls.
-     * @return the builder to associate a {@link RequestDispatcher}
+     * @return the builder to associate a request dispatcher.
      */
     RequestHandlerBuilder serve( String path );
 
