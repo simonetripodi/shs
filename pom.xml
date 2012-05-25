@@ -206,6 +206,7 @@
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
+          <verbose>true</verbose>
         </configuration>
       </plugin>
 
