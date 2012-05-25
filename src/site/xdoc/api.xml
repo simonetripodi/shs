@@ -68,7 +68,7 @@
         and user configuration uses the configurator to map path patterns to
         <a href="apidocs/org/nnsoft/shs/http/RequestHandler.html">RequestHandler</a>s.</p>
 
-        <code>public class MyServerConfiguration
+        <source>public class MyServerConfiguration
     implements HttpServerConfiguration
 {
 
@@ -86,7 +86,7 @@
         configurator.when( Response.Status.INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
     }
 
-}</code>
+}</source>
 
         <p>The configuration allows users specify:</p>
         <ul>
