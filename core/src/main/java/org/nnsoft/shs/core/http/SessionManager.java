@@ -117,7 +117,7 @@ public final class SessionManager
                                     .build() );
         }
 
-        ((MutableRequest) request).setSession( session );
+        ( (MutableRequest) request ).setSession( session );
     }
 
     /**
