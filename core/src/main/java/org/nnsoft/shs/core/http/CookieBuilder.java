@@ -71,7 +71,7 @@ public final class CookieBuilder
     /**
      * Set the cookie name - must be not null.
      *
-     * @param name
+     * @param name the cookie name
      * @return this builder instance
      */
     public CookieBuilder setName( String name )
