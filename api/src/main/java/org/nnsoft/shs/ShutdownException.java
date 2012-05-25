@@ -23,6 +23,9 @@ package org.nnsoft.shs;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * Exception thrown when an {@link HttpServer} instance fails when shutting-down.
+ */
 public final class ShutdownException
     extends SHSException
 {
