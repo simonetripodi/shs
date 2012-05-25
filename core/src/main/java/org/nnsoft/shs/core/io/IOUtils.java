@@ -64,14 +64,26 @@ public final class IOUtils
         return UTF_8.encode( format( messageTemplate, args ) );
     }
 
+    /**
+     * Converts the input {@link ByteBuffer} in an UTF-8 {@link CharBuffer}.
+     *
+     * @param buffer the buffer has to be converted.
+     * @return the UTF-8 converted buffer.
+     */
     public static CharBuffer toUtf8CharBuffer( ByteBuffer buffer )
     {
         return UTF_8.decode( buffer );
     }
 
+    /**
+     * Converts the input {@link ByteBuffer} in an UTF-8 String
+     *
+     * @param buffer the buffer has to be converted.
+     * @return the UTF-8 converted string.
+     */
     public static String toUtf8String( ByteBuffer buffer )
     {
-        return UTF_8.decode( buffer ).toString();
+        return toUtf8CharBuffer( buffer ).toString();
     }
 
     /**
