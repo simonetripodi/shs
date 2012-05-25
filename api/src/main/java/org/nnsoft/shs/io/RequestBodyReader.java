@@ -26,8 +26,6 @@ package org.nnsoft.shs.io;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.nnsoft.shs.http.Request;
-
 /**
  * {@link Request} body are read by RequestBodyReader implementations.
  *
@@ -39,7 +37,7 @@ public interface RequestBodyReader<T>
 {
 
     /**
-     * Invoked as soon as some {@link Request} body part are received.
+     * Invoked as soon as some {@link org.nnsoft.shs.http.Request} body part are received.
      *
      * @param buffer the request body part
      * @throws IOException if any error occurs while reading the content body input stream
