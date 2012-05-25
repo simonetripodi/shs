@@ -25,6 +25,7 @@ package org.nnsoft.shs.demo;
 
 import static org.nnsoft.shs.core.io.IOUtils.closeQuietly;
 import static org.nnsoft.shs.core.io.IOUtils.utf8ByteBuffer;
+import static org.nnsoft.shs.http.Headers.LOCATION;
 import static org.nnsoft.shs.http.Response.Status.CREATED;
 import static org.nnsoft.shs.http.Response.Status.NOT_FOUND;
 import static org.nnsoft.shs.http.Response.Status.UNAUTHORIZED;
@@ -124,6 +125,7 @@ public final class FileRequestHandler
                                            request.getParameters().getFirstValue( "time" ),
                                            request.getParameters().getFirstValue( "objId" ) ) );
             response.setStatus( CREATED );
+            response.addHeader( LOCATION, request.getPath() );
         }
         finally
         {
