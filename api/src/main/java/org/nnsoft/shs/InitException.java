@@ -24,7 +24,7 @@ package org.nnsoft.shs;
  */
 
 /**
- * Exception thrown when an {@link HttpServer} fails on configuring.
+ * Exception thrown when an {@link HttpServer} instance fails on configuring phase.
  */
 public final class InitException
     extends SHSException
