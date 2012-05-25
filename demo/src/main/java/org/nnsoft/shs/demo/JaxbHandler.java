@@ -70,6 +70,7 @@ final class JaxbHandler
         jaxbElement.setRequestPath( request.getPath() );
         jaxbElement.setDate( new Date() );
         jaxbElement.setSessionId( request.getSession().getId().toString() );
+        jaxbElement.setLegend( "This XML document has been generated with JAXB Marshaller" );
 
         try
         {

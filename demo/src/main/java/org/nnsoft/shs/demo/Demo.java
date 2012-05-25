@@ -27,11 +27,14 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * A simple POJO just to render some data via JAXB.
+ */
 @XmlRootElement( name = "demo" )
 public final class Demo
 {
 
-    private final String legend = "This XML document has been generated with JAXB Marshaller";
+    private String legend;
 
     private String requestPath;
 
@@ -72,6 +75,11 @@ public final class Demo
     public String getLegend()
     {
         return legend;
+    }
+
+    public void setLegend( String legend )
+    {
+        this.legend = legend;
     }
 
 }
