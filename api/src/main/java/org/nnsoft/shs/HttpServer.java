@@ -56,7 +56,7 @@ public interface HttpServer
     /**
      * Initializes the current server.
      *
-     * @param serverConfig the server configuration
+     * @param serverConfiguration the server configuration
      * @throws InitException if any error occurs while starting up.
      */
     void init( HttpServerConfiguration serverConfiguration )
