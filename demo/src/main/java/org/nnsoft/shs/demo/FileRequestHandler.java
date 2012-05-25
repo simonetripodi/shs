@@ -95,7 +95,7 @@ public final class FileRequestHandler
     protected void post( Request request, Response response )
         throws IOException
     {
-        File target = new File( baseDir.getParentFile(), request.getPath() );
+        File target = new File( baseDir, request.getPath() );
 
         if ( !target.getParentFile().exists() )
         {
