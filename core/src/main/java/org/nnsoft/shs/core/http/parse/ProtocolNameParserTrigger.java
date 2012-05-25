@@ -23,7 +23,7 @@ package org.nnsoft.shs.core.http.parse;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static org.nnsoft.shs.core.http.parse.ParserStatus.*;
+import static org.nnsoft.shs.core.http.parse.ParserStatus.PROTOCOL_VERSION;
 
 import org.nnsoft.shs.core.http.MutableRequest;
 import org.nnsoft.shs.core.http.RequestParseException;
