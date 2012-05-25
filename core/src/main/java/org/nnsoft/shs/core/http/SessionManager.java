@@ -35,10 +35,9 @@ import java.util.concurrent.ConcurrentMap;
 import org.nnsoft.shs.http.Cookie;
 import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
-import org.nnsoft.shs.http.Session;
 
 /**
- * The SessionRegistry is the HTTP {@link Session} manager.
+ * The SessionRegistry is the HTTP {@link org.nnsoft.shs.http.Session} manager.
  */
 public final class SessionManager
 {
