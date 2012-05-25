@@ -60,6 +60,7 @@ public final class Objects
     /**
      * Verifies input objects are equal.
      *
+     * @param <O> the object type under comparison
      * @param o1 the first argument to compare
      * @param o2 the second argument to compare
      * @return true, if the input arguments are equal, false otherwise.
