@@ -93,6 +93,9 @@ public final class SimpleHttpServer
 
     private final AtomicReference<Status> currentStatus = new AtomicReference<Status>();
 
+    /**
+     * Creates a new {@link HttpServer} instance.
+     */
     public SimpleHttpServer()
     {
         currentStatus.set( STOPPED );
