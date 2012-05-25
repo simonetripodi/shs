@@ -29,6 +29,9 @@ import java.util.Set;
 
 /**
  * A MultiValued is a read-only data structure where multiple values are associated to the same key.
+ *
+ * @param <K> the type of keys maintained by this data structure.
+ * @param <V> the type of mapped values.
  */
 public interface MultiValued<K, V>
 {
