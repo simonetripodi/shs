@@ -32,6 +32,11 @@ package org.nnsoft.shs;
 public interface HttpServerConfiguration
 {
 
+    /**
+     * Allows expressing the server configuration via the input configurator.
+     *
+     * @param configurator the element responsible for defining server configuration.
+     */
     void configure( HttpServerConfigurator configurator );
 
 }
