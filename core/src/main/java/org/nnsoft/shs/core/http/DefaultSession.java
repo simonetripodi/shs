@@ -25,7 +25,7 @@ package org.nnsoft.shs.core.http;
 
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
-import static org.nnsoft.shs.lang.Preconditions.checkNotNull;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.util.Date;
 import java.util.UUID;
@@ -91,7 +91,7 @@ final class DefaultSession
     @Override
     public <A> void setAttribute( String name, A value )
     {
-        checkNotNull( name, "Null attribute name not allowed" );
+        checkArgument( name != null, "Null attribute name not allowed" );
         attributes.put( name, value );
     }
 
