@@ -58,7 +58,7 @@ public abstract class AbstractHttpServerConfiguration
     }
 
     /**
-     * @see RequestDispatcherConfiguration#configure(HttpServerConfigurator)
+     * @see HttpServerConfiguration#configure(HttpServerConfigurator)
      */
     protected abstract void configure();
 
