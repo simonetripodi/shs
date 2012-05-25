@@ -133,9 +133,9 @@ public interface Request
     MultiValued<String, String> getHeaders();
 
     /**
-     * Returns the list of cookies.
+     * Returns the list of cookies sent by the client.
      *
-     * @return the list of cookies.
+     * @return the list of cookies sent by the client.
      */
     List<Cookie> getCookies();
 
