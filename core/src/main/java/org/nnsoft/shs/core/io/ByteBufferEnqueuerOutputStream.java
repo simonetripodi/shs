@@ -31,6 +31,11 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Queue;
 
+/**
+ * A special {@link OutputStream} instances that, while writing bytes,
+ * creates chunks of fixed size that will be enqueued in the given queue;
+ * moreover, it takes the count of written bytes.
+ */
 public final class ByteBufferEnqueuerOutputStream
     extends OutputStream
 {
@@ -46,9 +51,9 @@ public final class ByteBufferEnqueuerOutputStream
     private long writtenBytes = 0;
 
     /**
+     * Creates a new {@code ByteBufferEnqueuerOutputStream} instance.
      *
-     *
-     * @param buffers
+     * @param buffers the queue where storing the chunks.
      */
     public ByteBufferEnqueuerOutputStream( Queue<ByteBuffer> buffers )
     {
@@ -72,6 +77,9 @@ public final class ByteBufferEnqueuerOutputStream
         currentPtr.put( (byte) ( b & 0xFF ) );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void flush()
         throws IOException
@@ -92,6 +100,9 @@ public final class ByteBufferEnqueuerOutputStream
         currentPtr = allocateDirect( DEFAULT_BUFFER_CHUNK_SIZE );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close()
         throws IOException
@@ -99,6 +110,11 @@ public final class ByteBufferEnqueuerOutputStream
         buffers.offer( EOM );
     }
 
+    /**
+     * Returns the number of written bytes.
+     *
+     * @return the number of written bytes.
+     */
     public long getWrittenBytes()
     {
         return writtenBytes;
