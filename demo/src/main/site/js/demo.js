@@ -111,7 +111,9 @@ $( document ).ready( function()
                                       + jqXHR.status
                                       + ' - '
                                       + jqXHR.statusText
-                                      + '</code>' );
+                                      + '</code> <a href="'
+                                      + jqXHR.getResponseHeader( "Location" )
+                                      + '">view</a>' );
                     },
                     error: function( data, textStatus, jqXHR )
                     {
