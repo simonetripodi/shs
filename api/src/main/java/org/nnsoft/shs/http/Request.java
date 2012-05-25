@@ -171,7 +171,8 @@ public interface Request
     /**
      * Reads and converts the request body input stream.
      *
-     * @param the user defined
+     * @param <T> the type the request body has to be bound to.
+     * @param requestBodyReader the reader that transforms the request body in a custom type.
      * @return the request body input stream.
      * @throws IOException if any error occurs while opening the request body stream.
      */
