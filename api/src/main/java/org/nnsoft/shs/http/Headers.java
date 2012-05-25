@@ -23,6 +23,9 @@ package org.nnsoft.shs.http;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * List of default HTTP Headers.
+ */
 public interface Headers
 {
 
