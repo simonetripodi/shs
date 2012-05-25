@@ -192,6 +192,7 @@ public abstract class BaseRequestHandler
      * @throws IOException if any error occurs while HTTP negotiation
      */
     protected void connect( Request request, Response response )
+        throws IOException
     {
         notAllowed( response );
     }
