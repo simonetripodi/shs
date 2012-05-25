@@ -109,20 +109,20 @@ public final class ResponseSerializer
         this.response = response;
 
         // print the body, so it will calculate the response size and populate the right HTTP header
-        Queue<ByteBuffer> body = printBody();
+        Queue<ByteBuffer> body = createBodyBuffer();
 
         // emit the protocol first
-        printProtocol();
+        emitProtocol();
 
         // key can start writing the protocol first
         key.attach( responseBuffers );
         key.interestOps( OP_WRITE );
 
         // headers are now complete
-        printHeaders();
+        emitHeaders();
 
         // cookies can go safety out
-        printCookies();
+        emitCookies();
 
         // separate the head from the body
         responseBuffers.offer( utf8ByteBuffer( END_PADDING ) );
@@ -140,10 +140,10 @@ public final class ResponseSerializer
      *
      * @throws IOException if any error occurs while streaming
      */
-    private void printProtocol()
+    private void emitProtocol()
         throws IOException
     {
-        print( "%s/%s %s %s%n",
+        emit( "%s/%s %s %s%n",
                response.getProtocolName(),
                response.getProtocolVersion(),
                response.getStatus().getStatusCode(),
@@ -155,7 +155,7 @@ public final class ResponseSerializer
      *
      * @throws IOException if any error occurs while streaming
      */
-    private void printHeaders()
+    private void emitHeaders()
         throws IOException
     {
         for ( Entry<String, List<String>> header : response.getHeaders().getAllEntries() )
@@ -170,7 +170,7 @@ public final class ResponseSerializer
 
             formatter.format( "%n" );
 
-            print( formatter.toString() );
+            emit( formatter.toString() );
         }
     }
 
@@ -179,7 +179,7 @@ public final class ResponseSerializer
      *
      * @throws IOException if any error occurs while streaming
      */
-    private void printCookies()
+    private void emitCookies()
         throws IOException
     {
         for ( Cookie cookie : response.getCookies() )
@@ -209,16 +209,17 @@ public final class ResponseSerializer
 
             // secure field ignored since HTTPs is not supported in this version
 
-            print( formatter.format( " HttpOnly%n" ).toString() );
+            emit( formatter.format( " HttpOnly%n" ).toString() );
         }
     }
 
     /**
-     * Streams the HTTP Response Body.
+     * Creates the response body, splitted in chunks (body can be also very large)
+     * and counts the bytes size, then sets the right Content-Length HTTP header.
      *
      * @throws IOException if any error occurs while streaming
      */
-    private Queue<ByteBuffer> printBody()
+    private Queue<ByteBuffer> createBodyBuffer()
         throws IOException
     {
         final Queue<ByteBuffer> bodyBuffers = new LinkedList<ByteBuffer>();
@@ -258,13 +259,13 @@ public final class ResponseSerializer
     }
 
     /**
-     * Generic method to print UTF message to the target output stream.
+     * Generic method to emit UTF message and enqueues the resultant chunk in the response queue.
      *
      * @param messageTemplate the String message format
      * @param args the message template placeholders variables
      * @throws IOException if any error occurs while streaming
      */
-    private void print( String messageTemplate, Object...args )
+    private void emit( String messageTemplate, Object...args )
         throws IOException
     {
         responseBuffers.offer( utf8ByteBuffer( format( messageTemplate, args ) ) );
