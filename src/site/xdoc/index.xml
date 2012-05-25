@@ -39,6 +39,7 @@
         <li>multi-threading requests processor;</li>
         <li>EDSL configuration APIs;</li>
         <li>Request incremental pull parser;</li>
+        <li>HTTP 1.1 Connection keep-alive;</li>
         <li>GZip compression;</li>
         <li>...</li>
       </ul>
