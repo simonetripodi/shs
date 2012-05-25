@@ -69,10 +69,12 @@ public final class SessionManager
     }
 
     /**
+     * Manages the request session: if the client sends a request which contains
+     * the session id that is currently managed by the server (and didn't expire)
+     * then will be retrieved and restored, otherwise it will create a new one.
      *
-     *
-     * @param request
-     * @param response
+     * @param request the received HTTP request
+     * @param response the HTTP response will be pushed out.
      */
     public void manageSession( Request request, Response response )
     {
