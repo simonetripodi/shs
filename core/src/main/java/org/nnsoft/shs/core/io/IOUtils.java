@@ -110,7 +110,7 @@ public final class IOUtils
      *
      * @param closeable the closeable instance has to be closed.
      */
-    public static final void closeQuietly( Closeable closeable )
+    public static void closeQuietly( Closeable closeable )
     {
         if ( closeable != null )
         {
