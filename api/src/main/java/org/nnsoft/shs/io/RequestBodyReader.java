@@ -41,8 +41,7 @@ public interface RequestBodyReader<T>
     /**
      * Invoked as soon as some {@link Request} body part are received.
      *
-     * @param contentLength the request body content length
-     * @param requestInputStream the request content body input stream
+     * @param buffer the request body part
      * @throws IOException if any error occurs while reading the content body input stream
      */
     void onBodyPartReceived( ByteBuffer buffer )
