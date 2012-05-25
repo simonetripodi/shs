@@ -28,6 +28,7 @@ import static org.nnsoft.shs.core.http.ResponseFactory.newResponse;
 import static org.nnsoft.shs.http.Headers.ACCEPT_ENCODING;
 import static org.nnsoft.shs.http.Headers.CONNECTION;
 import static org.nnsoft.shs.http.Headers.DATE;
+import static org.nnsoft.shs.http.Headers.KEEP_ALIVE;
 import static org.nnsoft.shs.http.Headers.SERVER;
 import static org.nnsoft.shs.http.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -61,8 +62,6 @@ final class ProtocolProcessor
     private static final String GZIP = "gzip";
 
     private static final String HTTP_11 = "1.1";
-
-    private static final String KEEP_ALIVE = "Keep-Alive";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss zzz" );
 
