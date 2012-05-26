@@ -44,6 +44,12 @@ public final class VelocityRequestHandler
     extends BaseRequestHandler
 {
 
+    /**
+     * Creates a new handler, based on Velocity, that serves templates found
+     * in the input directory.
+     *
+     * @param baseDir the base directory containing the Velocity templates to be served.
+     */
     public VelocityRequestHandler( File baseDir )
     {
         Properties properties = new Properties();
