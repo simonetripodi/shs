@@ -344,10 +344,9 @@ public final class SimpleHttpServerLauncher
     }
 
     /**
-     * @param args
+     * Launches a new {@link HttpServer} instance.
      */
     public static void main( String[] args )
-        throws Exception
     {
         new SimpleHttpServerLauncher().execute( args );
     }
