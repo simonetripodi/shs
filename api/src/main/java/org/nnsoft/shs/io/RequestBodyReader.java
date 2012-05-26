@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * {@link Request} body are read by RequestBodyReader implementations.
+ * {@link org.nnsoft.shs.http.Request} body are read by RequestBodyReader implementations.
  *
  * This class takes inspiration from <a href="http://sonatype.github.com/async-http-client/request.html">async-http-client</a>
  *
