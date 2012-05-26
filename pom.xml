@@ -140,21 +140,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.0</version>
-          <configuration>
-            <reportPlugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.4</version>
-              </plugin>
-            </reportPlugins>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${javadoc.version}</version>
         </plugin>
@@ -236,7 +221,9 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <version>3.1</version>
         <executions>
           <execution>
             <id>attach-descriptor</id>
@@ -245,6 +232,15 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>2.4</version>
+            </plugin>
+          </reportPlugins>
+        </configuration>
       </plugin>
 
       <plugin>
