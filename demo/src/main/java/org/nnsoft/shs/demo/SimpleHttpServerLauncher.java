@@ -227,19 +227,19 @@ public final class SimpleHttpServerLauncher
                     uptime.format( " %s hour%s", hours, ( hours > 1 ? "s" : "" ) );
                 }
 
-                uptimeInSeconds = uptimeInSeconds - (hours * 3600);
+                uptimeInSeconds = uptimeInSeconds - ( hours * 3600 );
                 final long minutes = uptimeInSeconds / 60;
 
                 if ( minutes > 0 )
                 {
-                    uptime.format( " %s minute%s", minutes, (minutes > 1 ? "s" : "") );
+                    uptime.format( " %s minute%s", minutes, ( minutes > 1 ? "s" : "" ) );
                 }
 
-                uptimeInSeconds = uptimeInSeconds - (minutes * 60);
+                uptimeInSeconds = uptimeInSeconds - ( minutes * 60 );
 
                 if ( uptimeInSeconds > 0 )
                 {
-                    uptime.format( " %s second%s", uptimeInSeconds, (uptimeInSeconds > 1 ? "s" : "") );
+                    uptime.format( " %s second%s", uptimeInSeconds, ( uptimeInSeconds > 1 ? "s" : "" ) );
                 }
 
                 logger.info( uptime.toString() );
