@@ -26,6 +26,7 @@ package org.nnsoft.shs.demo;
 import static org.apache.velocity.app.Velocity.getTemplate;
 import static org.apache.velocity.app.Velocity.init;
 import static org.nnsoft.shs.http.Response.Status.OK;
+import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,10 @@ public final class VelocityRequestHandler
      */
     public VelocityRequestHandler( File baseDir )
     {
+        checkArgument( baseDir != null, "Basedir where getting files must be not null" );
+        checkArgument( baseDir.exists(), "Basedir where getting files must exist" );
+        checkArgument( baseDir.isDirectory(), "Basedir where getting files must be a directory" );
+
         Properties properties = new Properties();
         properties.setProperty( "file.resource.loader.path", baseDir.getAbsolutePath() );
         init( properties );
