@@ -52,7 +52,6 @@ public interface Session
     /**
      * Removes the object bound with the specified name from this session.
      *
-     * @param <A> the the attribute returned type
      * @param name the name of the object to remove from this session
      */
     void removeAttribute( String name );
@@ -60,6 +59,7 @@ public interface Session
     /**
      * Binds an object to this session, using the name specified.
      *
+     * @param <A> the the attribute returned type
      * @param name the non-null name to which the object is bound
      * @param value the object to be bound
      */
