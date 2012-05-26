@@ -224,7 +224,7 @@ public final class SimpleHttpServerLauncher
 
                 if ( hours > 0 )
                 {
-                    uptime.format( " %s hour%s", hours, (hours > 1 ? "s" : "") );
+                    uptime.format( " %s hour%s", hours, ( hours > 1 ? "s" : "" ) );
                 }
 
                 uptimeInSeconds = uptimeInSeconds - (hours * 3600);
