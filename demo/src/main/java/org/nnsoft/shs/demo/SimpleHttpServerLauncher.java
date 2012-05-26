@@ -271,7 +271,7 @@ public final class SimpleHttpServerLauncher
         }
     }
 
-    private static final void printVersion()
+    private static void printVersion()
     {
         PrintStream out = System.out;
 
