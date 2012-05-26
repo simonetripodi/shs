@@ -38,7 +38,7 @@ import org.nnsoft.shs.http.Request;
 import org.nnsoft.shs.http.Response;
 
 /**
- * A simple JRuby based handler.
+ * A simple Apache Velocity based handler.
  */
 public final class VelocityRequestHandler
     extends BaseRequestHandler
