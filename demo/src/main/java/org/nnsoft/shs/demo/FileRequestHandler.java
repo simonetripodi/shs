@@ -55,6 +55,11 @@ public final class FileRequestHandler
      */
     private final File baseDir;
 
+    /**
+     * Creates a new file hanlder that serves file in the inout directory.
+     *
+     * @param baseDir the base directory containing the files to be served.
+     */
     public FileRequestHandler( File baseDir )
     {
         checkArgument( baseDir != null, "Basedir where getting files must be not null" );
@@ -92,6 +97,9 @@ public final class FileRequestHandler
         }
     }
 
+    /**
+     * Creates a new file, if it doesn't exist, and append data sent by the client.
+     */
     @Override
     protected void post( Request request, Response response )
         throws IOException
