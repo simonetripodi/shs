@@ -43,7 +43,6 @@ import static org.nnsoft.shs.http.Headers.CONTENT_TYPE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.EnumMap;
@@ -97,11 +96,14 @@ public final class RequestStreamingParser
 
     private ParserStatus status = ParserStatus.METHOD;
 
-    private long bodyConsumingCounter = 0;
+    /**
+     * Used only when when method == POST and Content-Type == application/x-www-form-urlencoded
+     */
+    private long bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
 
     private final Queue<ByteBuffer> requestBody = new LinkedList<ByteBuffer>();
 
-    private OutputStream bodyConsumerOutputStream;
+    private ByteBufferEnqueuerOutputStream bodyConsumerOutputStream;
 
     /**
      * Creates a new parser instance, which will provide a {@link Request} objects
@@ -271,8 +273,6 @@ public final class RequestStreamingParser
                             if ( request.getHeaders().contains( CONTENT_TYPE )
                                  && request.getHeaders().getFirstValue( CONTENT_TYPE ).contains( FORM_URLENCODED ) )
                             {
-                                bodyConsumingCounter = -1; // -1 because the first will be triggered by \n
-
                                 forceSwitch( current, PARAM_NAME );
                             }
                             else
@@ -369,7 +369,7 @@ public final class RequestStreamingParser
             bodyConsumerOutputStream = new ByteBufferEnqueuerOutputStream( requestBody );
         }
 
-        while ( buffer.hasRemaining() && ++bodyConsumingCounter <= request.getContentLength() )
+        while ( buffer.hasRemaining() && bodyConsumerOutputStream.getWrittenBytes() <= request.getContentLength() )
         {
             try
             {
@@ -381,7 +381,7 @@ public final class RequestStreamingParser
             }
         }
 
-        if ( request.getContentLength() == bodyConsumingCounter )
+        if ( request.getContentLength() == bodyConsumerOutputStream.getWrittenBytes() )
         {
             if ( logger.isDebugEnabled() )
             {
