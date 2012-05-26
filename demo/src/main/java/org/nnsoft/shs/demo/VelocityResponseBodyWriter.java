@@ -40,10 +40,23 @@ final class VelocityResponseBodyWriter
     implements ResponseBodyWriter
 {
 
+    /**
+     * The Velocity context will be passed to the template.
+     */
     private final VelocityContext velocityContext;
 
+    /**
+     * The Velocity template has to be rendered.
+     */
     private final Template template;
 
+    /**
+     * Creates a new {@link ResponseBodyWriter} that renders the input context
+     * via the template.
+     *
+     * @param velocityContext the Velocity context will be passed to the template.
+     * @param template the Velocity template has to be rendered.
+     */
     public VelocityResponseBodyWriter( VelocityContext velocityContext, Template template )
     {
         this.velocityContext = velocityContext;
