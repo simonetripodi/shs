@@ -115,9 +115,6 @@
     <cobertura.version>2.5.1</cobertura.version>
   </properties>
 
-  <dependencies>
-  </dependencies>
-
   <build>
     <pluginManagement>
       <plugins>
