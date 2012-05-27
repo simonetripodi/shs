@@ -1,0 +1,66 @@
+            ------
+            SHS - Home
+            ------
+            Simone Tripodi
+            ------
+             2012
+
+~~
+~~ Copyright (c) 2012 Simone Tripodi (simonetripodi[at]apache[dot]org)
+~~
+~~ Permission is hereby granted, free of charge, to any person obtaining
+~~ a copy of this software and associated documentation files (the
+~~ "Software"), to deal in the Software without restriction, including
+~~ without limitation the rights to use, copy, modify, merge, publish,
+~~ distribute, sublicense, and/or sell copies of the Software, and to
+~~ permit persons to whom the Software is furnished to do so, subject to
+~~ the following conditions:
+~~
+~~ The above copyright notice and this permission notice shall be
+~~ included in all copies or substantial portions of the Software.
+~~
+~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+~~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+~~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+~~ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+~~ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+~~ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+~~ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+~~
+
+Welcome to Simple HttpServer!
+
+  Simple HttpServer is an implementation of a Web Server in Java that supports:.
+
+  * pure HTTP protocol;
+
+  * enhanced APIs inspired by servlet model;
+
+  * 100% based on NIO APIs;
+
+  * multi-threading requests processor;
+
+  * EDSL configuration APIs;
+
+  * Request incremental pull parser;
+
+  * HTTP 1.1 Connection keep-alive;
+
+  * GZip compression.
+
+  See how {{{./api.html}APIs}} and {{{./core.html}core}} implementation work!
+
+  There is also a {{{./demo.html}demo}} that shows the server potentials.
+
+  Do you wants to build you own web application? See the {{{./developers.html}developers}} page!
+
+Acknowledgements
+
+  This work is dedicated to my city, L'Aquila, destroyed by a terrible
+  earthquake the 6th April, 2009... That day more than 300 people were killed
+  because buildings collapsed after a magnitudo 6.3 earthquake at 3:32 am.
+
+  I'll never forget that episode.
+
+  A big thank you goes to: my lovely wife, mom, dad and bro for believing in me,
+  Tommaso, Marco, Ivan, Daniele, Emanuele and Christian for their priceless friendship.

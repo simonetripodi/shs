@@ -1,0 +1,163 @@
+    ------
+    SHS - APIs
+    ------
+    Simone Tripodi
+    ------
+     2012
+
+~~
+~~ Copyright (c) 2012 Simone Tripodi (simonetripodi[at]apache[dot]org)
+~~
+~~ Permission is hereby granted, free of charge, to any person obtaining
+~~ a copy of this software and associated documentation files (the
+~~ "Software"), to deal in the Software without restriction, including
+~~ without limitation the rights to use, copy, modify, merge, publish,
+~~ distribute, sublicense, and/or sell copies of the Software, and to
+~~ permit persons to whom the Software is furnished to do so, subject to
+~~ the following conditions:
+~~
+~~ The above copyright notice and this permission notice shall be
+~~ included in all copies or substantial portions of the Software.
+~~
+~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+~~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+~~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+~~ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+~~ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+~~ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+~~ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+~~
+
+Simple HttpServer APIs
+
+  The Simple HttpServer aims to provide web developers not just a server able to serve files over the HTTP
+  protocol, but rather an API set to develop complete Web applications.
+
+* The Http model
+
+  The HTTP model APIs takes inspiration from the Servlet model, simplifying it keeping off all the container
+  related features, just pure HTTP protocol:
+
+** UML class diagram
+
+  A detailed {{{./images/http-apis.png}UML class diagram}} will help to understand the model design.
+
+** About classes organization
+
+  Main entities are the {{{./apidocs/org/nnsoft/shs/http/Request.html}Request}} and
+  {{{./apidocs/org/nnsoft/shs/http/Response.html}Response}}: they both are arguments of the
+  {{{./apidocs/org/nnsoft/shs/http/RequestHandler.html}RequestHandler}} which is the entity responsible
+  for the HTTP negotiation. A commodity
+  {{{./apidocs/org/nnsoft/shs/http/BaseRequestHandler.html}BaseRequestHandler}} is provided in order to
+  simplify the HTTP method handling, such as <<<GET>>> or <<<POST>>>, where users can implement
+  the interested method handling.
+
+  Both <<<Request>>> and <<<Response>>> manipulate HTTP Headers as a
+  {{{./apidocs/org/nnsoft/shs/collections/MultiValued.html}MultiValued}} collection, a read-only
+  key-value data structure where for each key can be associated more than one value. <<<Request>>>
+  query string parameters and form-urlencoded parameters are implemented as <<<MultiValued>>> as well.
+
+* The Server interfaces
+
+  One of the Simple HttpServer ambitions is eliminating the boilerplate code to configure server instances,
+  keeping off from the core implementation plain old textual configuration files, such as Properties or XML,
+  and letting the server be configured with a pure Java mini EDSL (that of course can be proxed by textual
+  representations, such as Properties, XML, JSON, YAML, ...).
+
+** UML class diagram
+
+  A detailed {{{./images/configuration.png}UML class diagram}} will help to understand the model design.
+
+** About classes organization
+
+  Users implement {{{./apidocs/org/nnsoft/shs/HttpServerConfiguration.html}HttpServerConfiguration}},
+  the {{{./apidocs/org/nnsoft/shs/HttpServer.html}HttpServer}} passes a
+  {{{./apidocs/org/nnsoft/shs/HttpServerConfigurator.html}HttpServerConfigurator}} to user configuration,
+  and user configuration uses the configurator to map path patterns to
+  {{{./apidocs/org/nnsoft/shs/http/RequestHandler.html}RequestHandler}}s.
+
++--------------------------+
+public class MyServerConfiguration
+    implements HttpServerConfiguration
+{
+
+    private final File siteDir = new File( System.getProperty( "user.dir" ), "site" );
+
+    public void configure( HttpServerConfigurator configurator )
+    {
+        configurator.bindServerToHost( "localhost" );
+        configurator.bindServerToPort( 8080 );
+        configurator.serveRequestsWithThreads( 10 );
+        configurator.sessionsHaveMagAge( 60 * 60 );
+        configurator.keepAliveConnectionsHaveTimeout( 5 );
+
+        configurator.serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+        configurator.when( Response.Status.NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+        configurator.when( Response.Status.INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
+    }
+
+}
++--------------------------+
+
+  The configuration allows users specify:
+
+  * Server related data, such as the binding host and port, number of threads to serve requests,
+    HTTP session max age and the Keep Alive timeout;
+
+  * The handlers that have to be invoked when requesting paths - <<<web.xml>>> syntax supported!
+
+  * The default response has to be provided when response provides a specific response status.
+
+  DRY (Don't Repeat Yourself): Repeating <<<configurator>>> over and over for each configure step can
+  get a little tedious. The Simple HttpServer package provides a support class named
+  {{{./apidocs/org/nnsoft/shs/AbstractHttpServerConfiguration.html}AbstractHttpServerConfiguration}} which
+  implicitly gives you access to <<<HttpServerConfigurator>>>'s methods.
+
+  For example, extending <<<AbstractHttpServerConfiguration>>> and rewrite the above binding as:
+
++--------------------------+
+public class MyServerConfiguration
+    extends AbstractHttpServerConfiguration
+{
+
+    private final File siteDir = new File( System.getProperty( "user.dir" ), "site" );
+
+    @Override
+    protected void configure()
+    {
+        bindServerToHost( "localhost" );
+        bindServerToPort( 8080 );
+        serveRequestsWithThreads( 10 );
+        sessionsHaveMagAge( 60 * 60 );
+        keepAliveConnectionsHaveTimeout( 5 );
+
+        serve( "/*" ).with( new FileRequestHandler( siteDir ) );
+        when( Response.Status.NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+        when( Response.Status.INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
+    }
+
+}
++--------------------------+
+
+  I'll use this syntax throughout the rest of the guide.
+
+  We can break <<<HttpServer>>>'s 3 architecture down into three distinct stages: startup, runtime and stop.
+
+Maven Users
+
+  Apache Maven users can include APIs artifact by including the following dependency:
+
++--------------------------+
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shs-api</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    ...
+  </dependencies>
++--------------------------+
+
+  APIs can be included in <provided> scope since the SHS runtime already brings them. 
