@@ -1,0 +1,74 @@
+            ------
+            SHS - Benhmarks
+            ------
+            Simone Tripodi
+            ------
+             2012
+
+~~
+~~ Copyright (c) 2012 Simone Tripodi (simonetripodi[at]apache[dot]org)
+~~
+~~ Permission is hereby granted, free of charge, to any person obtaining
+~~ a copy of this software and associated documentation files (the
+~~ "Software"), to deal in the Software without restriction, including
+~~ without limitation the rights to use, copy, modify, merge, publish,
+~~ distribute, sublicense, and/or sell copies of the Software, and to
+~~ permit persons to whom the Software is furnished to do so, subject to
+~~ the following conditions:
+~~
+~~ The above copyright notice and this permission notice shall be
+~~ included in all copies or substantial portions of the Software.
+~~
+~~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+~~ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+~~ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+~~ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+~~ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+~~ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+~~ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+~~
+
+Benchmarks
+
+  I used {{{http://www.xenoclast.org/autobench/}autobench}} to perform the tests. Basically this is a perl script that
+  sits on top of {{{}httperf}} and will run multiple tests in succession outputing the results to CSV.
+
+  First, I lunched SHS with 20 threads on server on <<<localhost>> on port <<<8080>>>
+
++---------------------------------------------+
+$ ./bin/shs -t 20
+22:55:18.623 [main] [INFO] 
+22:55:18.626 [main] [INFO]                          ''~``
+22:55:18.626 [main] [INFO]                         ( o o )
+22:55:18.626 [main] [INFO] -------------------.oooO--(_)--Oooo.------------------
+22:55:18.626 [main] [INFO] 
+22:55:18.627 [main] [INFO] shs-demo v0.1 (built on 2012-05-27T22:34:19+0200)
+22:55:18.627 [main] [INFO] 
+22:55:18.627 [main] [INFO]                      .oooO                            
+22:55:18.627 [main] [INFO]                      (   )   Oooo.                    
+22:55:18.627 [main] [INFO] ----------------------\ (----(   )--------------------
+22:55:18.627 [main] [INFO]                        \_)    ) /
+22:55:18.627 [main] [INFO]                              (_/
+22:55:18.815 [main] [INFO] Initializing server using 20 threads...
+22:55:18.815 [main] [INFO] Done! Initializing the SessionManager ...
+22:55:18.817 [main] [INFO] Done! Binding host localhost listening on port 8080 ...
+22:55:18.832 [main] [INFO] Done! Server has been successfully initialized, it can be now started
+22:55:18.832 [main] [INFO] Server successfully started! Waiting for new requests...
++---------------------------------------------+
+
+  All the tests were run against the same <<<robots.txt>>> file. Autobench ran the following command 20 times
+  incrementing the request rate by 10 each time. I started at 10 requests per second and went up to 200.
+
++---------------------------------------------+
+autobench --single_host --host1 localhost \
+                        --port1 8080 \
+                        --uri1 /robots.txt \
+                        --quiet \
+                        --low_rate 20 \
+                        --high_rate 200 \
+                        --rate_step 20 \
+                        --num_call 10 \
+                        --num_conn 5000 \
+                        --timeout 5 \
+                        --file benchmarks.tsv
++---------------------------------------------+
