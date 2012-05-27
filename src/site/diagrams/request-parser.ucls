@@ -3,7 +3,7 @@
   <class id="1" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.RequestStreamingParser" 
     project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/RequestStreamingParser.java" 
     binary="false">    
-    <position height="-1" width="-1" x="180" y="304"/>    
+    <position height="-1" width="-1" x="198" y="306"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -11,7 +11,7 @@
   </class>  
   <enumeration id="2" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ParserStatus" 
     project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ParserStatus.java" binary="false">    
-    <position height="-1" width="-1" x="185" y="791"/>    
+    <position height="-1" width="-1" x="193" y="813"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -19,32 +19,32 @@
   </enumeration>  
   <interface id="3" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.parse.ParserTrigger" 
     project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/parse/ParserTrigger.java" binary="false">    
-    <position height="-1" width="-1" x="689" y="573"/>    
+    <position height="-1" width="-1" x="691" y="599"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </interface>  
-  <association id="4">    
+  <dependency id="4">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <association id="5">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="5" name="status"/>      
-      <multiplicity id="6" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="7">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="8" name="parserTriggers"/>      
-      <multiplicity id="9" minimum="0" maximum="2147483647"/>    
+      <attribute id="6" name="parserTriggers"/>      
+      <multiplicity id="7" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="10">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
+  <association id="8">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="9" name="status"/>      
+      <multiplicity id="10" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     visibility="true">    
     <attributes public="true" package="true" protected="true" private="true"/>    

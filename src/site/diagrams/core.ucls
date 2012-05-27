@@ -11,7 +11,7 @@
   <enumeration id="2" corner="BOTTOM_RIGHT" language="java" 
     name="org.nnsoft.shs.core.RequestDispatcher.MatchingRequestHandler.Kind" project="shs-core" 
     file="/shs-core/src/main/java/org/nnsoft/shs/core/RequestDispatcher.java" binary="false">    
-    <position height="-1" width="-1" x="1047" y="896"/>    
+    <position height="-1" width="-1" x="1125" y="904"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -20,7 +20,7 @@
   <class id="3" corner="BOTTOM_RIGHT" language="java" 
     name="org.nnsoft.shs.core.RequestDispatcher.MatchingRequestHandler" project="shs-core" 
     file="/shs-core/src/main/java/org/nnsoft/shs/core/RequestDispatcher.java" binary="false">    
-    <position height="-1" width="-1" x="1048" y="711"/>    
+    <position height="-1" width="-1" x="1120" y="713"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -28,7 +28,7 @@
   </class>  
   <class id="4" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.RequestDispatcher" project="shs-core" 
     file="/shs-core/src/main/java/org/nnsoft/shs/core/RequestDispatcher.java" binary="false">    
-    <position height="-1" width="-1" x="1047" y="509"/>    
+    <position height="-1" width="-1" x="1127" y="507"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -45,7 +45,7 @@
   </class>  
   <class id="6" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.ProtocolProcessor" project="shs-core" 
     file="/shs-core/src/main/java/org/nnsoft/shs/core/ProtocolProcessor.java" binary="false">    
-    <position height="-1" width="-1" x="642" y="116"/>    
+    <position height="-1" width="-1" x="652" y="114"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -54,7 +54,7 @@
   <class id="7" corner="BOTTOM_RIGHT" language="java" 
     name="org.nnsoft.shs.core.http.SessionManager.SessionRemoverTimerTask" project="shs-core" 
     file="/shs-core/src/main/java/org/nnsoft/shs/core/http/SessionManager.java" binary="false">    
-    <position height="-1" width="-1" x="244" y="748"/>    
+    <position height="-1" width="-1" x="244" y="728"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -71,7 +71,7 @@
   <class id="9" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.http.serialize.ResponseSerializer" 
     project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/http/serialize/ResponseSerializer.java" 
     binary="false">    
-    <position height="-1" width="-1" x="802" y="964"/>    
+    <position height="-1" width="-1" x="835" y="998"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -86,94 +86,115 @@
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </class>  
-  <dependency id="11">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <association id="12">    
+  <class id="11" corner="BOTTOM_RIGHT" language="java" name="org.nnsoft.shs.core.io.ByteBufferEnqueuerOutputStream" 
+    project="shs-core" file="/shs-core/src/main/java/org/nnsoft/shs/core/io/ByteBufferEnqueuerOutputStream.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="730" y="1560"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <nesting id="12">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </nesting>  
+  <association id="13">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="13" name="dispatcher"/>      
-      <multiplicity id="14" minimum="0" maximum="1"/>    
+      <attribute id="14" name="dispatcher"/>      
+      <multiplicity id="15" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <nesting id="15">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="3"/>  
-  </nesting>  
-  <dependency id="16">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="6"/>  
-  </dependency>  
-  <dependency id="17">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="10"/>  
-  </dependency>  
-  <dependency id="18">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
-  <association id="19">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="20" name="sessionManager"/>      
-      <multiplicity id="21" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="22">    
-    <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="23" name="sessionManager"/>      
-      <multiplicity id="24" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="25">    
+  <association id="16">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="26" name="handlers"/>      
-      <multiplicity id="27" minimum="0" maximum="2147483647"/>    
+      <attribute id="17" name="handlers"/>      
+      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <nesting id="28">    
+  <nesting id="19">    
     <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="7"/>  
   </nesting>  
-  <dependency id="29">    
+  <dependency id="20">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <association id="21">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="22" name="sessionManager"/>      
+      <multiplicity id="23" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="24">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="25" name="requestDispatcher"/>      
+      <multiplicity id="26" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="27">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="28" name="sessionManager"/>      
+      <multiplicity id="29" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="30">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="31" name="bodyConsumerOutputStream"/>      
+      <multiplicity id="32" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="33">    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="9"/>  
   </dependency>  
-  <association id="30">    
+  <dependency id="34">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <association id="35">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="31" name="patternKind"/>      
-      <multiplicity id="32" minimum="0" maximum="1"/>    
+      <attribute id="36" name="patternKind"/>      
+      <multiplicity id="37" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="33">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="34" name="requestDispatcher"/>      
-      <multiplicity id="35" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="36">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="37" name="requestDispatcher"/>      
-      <multiplicity id="38" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <nesting id="39">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
+  <dependency id="38">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="39">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <nesting id="40">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
   </nesting>  
+  <association id="41">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="42" name="requestDispatcher"/>      
+      <multiplicity id="43" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="44">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     visibility="true">    
     <attributes public="true" package="true" protected="true" private="true"/>    
