@@ -31,35 +31,12 @@
 Benchmarks
 
   I used {{{http://www.xenoclast.org/autobench/}autobench}} to perform the tests. Basically this is a perl script that
-  sits on top of {{{}httperf}} and will run multiple tests in succession outputing the results to CSV.
+  sits on top of {{{http://code.google.com/p/httperf/}httperf}} and will run multiple tests in succession outputting the
+  results to TSV.
 
-  First, I lunched SHS with 20 threads on server on <<<localhost>> on port <<<8080>>>
+  All the tests were run against the same <<<robots.txt>>> file:
 
-+---------------------------------------------+
-$ ./bin/shs -t 20
-22:55:18.623 [main] [INFO] 
-22:55:18.626 [main] [INFO]                          ''~``
-22:55:18.626 [main] [INFO]                         ( o o )
-22:55:18.626 [main] [INFO] -------------------.oooO--(_)--Oooo.------------------
-22:55:18.626 [main] [INFO] 
-22:55:18.627 [main] [INFO] shs-demo v0.1 (built on 2012-05-27T22:34:19+0200)
-22:55:18.627 [main] [INFO] 
-22:55:18.627 [main] [INFO]                      .oooO                            
-22:55:18.627 [main] [INFO]                      (   )   Oooo.                    
-22:55:18.627 [main] [INFO] ----------------------\ (----(   )--------------------
-22:55:18.627 [main] [INFO]                        \_)    ) /
-22:55:18.627 [main] [INFO]                              (_/
-22:55:18.815 [main] [INFO] Initializing server using 20 threads...
-22:55:18.815 [main] [INFO] Done! Initializing the SessionManager ...
-22:55:18.817 [main] [INFO] Done! Binding host localhost listening on port 8080 ...
-22:55:18.832 [main] [INFO] Done! Server has been successfully initialized, it can be now started
-22:55:18.832 [main] [INFO] Server successfully started! Waiting for new requests...
-+---------------------------------------------+
-
-  All the tests were run against the same <<<robots.txt>>> file. Autobench ran the following command 20 times
-  incrementing the request rate by 10 each time. I started at 10 requests per second and went up to 200.
-
-+---------------------------------------------+
+---------------------------------------------
 autobench --single_host --host1 localhost \
                         --port1 8080 \
                         --uri1 /robots.txt \
@@ -70,5 +47,10 @@ autobench --single_host --host1 localhost \
                         --num_call 10 \
                         --num_conn 5000 \
                         --timeout 5 \
-                        --file benchmarks.tsv
-+---------------------------------------------+
+                        --file shs-benchmarks.tsv
+---------------------------------------------
+
+  with a series of tests starting at 20 connections per second (with 10 requests per connection), and increasing by 20
+  connections per second until 200 connections a second are being requested. Each test will comprise a total of 5000
+  connections, and any responses which take longer than 5 seconds to arrive will be counted as errors. The results will
+  be saved in the file 'shs-benchmarks.tsv'.
