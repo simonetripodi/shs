@@ -38,6 +38,21 @@
 
 Simple HttpServer Demo application
 
+  The Simple HttpServer Demo application is a small sample that shows how to build a complete web application with an
+  the embedded web server in few steps.
+
+* Introducing the Demo
+
+  The demo application contains four use cases:
+
+  * a simple static files provider, found on the FileSystem;
+
+  * an Apache Velocity templates based engine;
+
+  * a JAXB Marshaller that streams XML;
+
+  * a simple AJAX game that allows drag and drop elements in/outside an iFrame.
+
 * Download the demo
 
   Demo application binary packages can be downloaded from Maven Central Repo:
@@ -52,3 +67,102 @@ Simple HttpServer Demo application
   #end
 
 #end
+
+  Once downloaded, extract the compressed archive and follow optional installation extra steps described in the
+  <<<README>>> file; then, open the shell and run <<<shs -v>>> to verify the correct installation:
+
+-----------------------------
+$ ./bin/shs -v
+shs-demo v0.1-SNAPSHOT (built on 2012-05-28T16:26:44+0200)
+Java version: 1.6.0_31, vendor: Apple Inc.
+Java home: /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+Default locale: en_US, platform encoding: MacRoman
+OS name: "Mac OS X", version: "10.7.4", arch: "x86_64", family: "mac"
+-----------------------------
+
+  Then type <<<shs -h>>> to see all available options the demo offers:
+
+-----------------------------
+$ ./bin/shs -h
+Usage: shs [options]
+  Options:
+    -h, --help              Display help information.
+                            Default: false
+    -H, --host              The host name or the textual representation of its
+                            IP address.
+                            Default: localhost
+    -k, --keep-alive        The keep alive connection timeout, in seconds.
+                            Default: 5
+    -p, --port              The HTTP Server port.
+                            Default: 8080
+    -q, --quiet             Long errors only.
+                            Default: false
+    -m, --session-max-age   The maximum number of seconds of life of HTTP
+                            Sessions.
+                            Default: 3600
+    -s, --sitedir           The directory containing the site has to be
+                            provided.
+                            Default: /usr/local/shs-demo-0.1-SNAPSHOT/site
+    -t, --threads           The number of thread (# of available processors by
+                            default).
+                            Default: 4
+    -X, --verbose           Produce execution debug output.
+                            Default: false
+    -v, --version           Display version information.
+                            Default: false
+-----------------------------
+
+  We are now ready to launch the server:
+
+-----------------------------
+$ ./bin/shs -t 20 -X
+21:31:34.630 [main] [INFO] 
+21:31:34.637 [main] [INFO]                          ''~``
+21:31:34.637 [main] [INFO]                         ( o o )
+21:31:34.637 [main] [INFO] +------------------.oooO--(_)--Oooo.------------------+
+21:31:34.637 [main] [INFO]
+21:31:34.637 [main] [INFO] shs-demo v0.1-SNAPSHOT (built on 2012-05-28T16:26:44+0200)
+21:31:34.638 [main] [INFO]
+21:31:34.638 [main] [INFO]                      .oooO
+21:31:34.638 [main] [INFO]                      (   )   Oooo.
+21:31:34.638 [main] [INFO] +---------------------\ (----(   )--------------------+
+21:31:34.638 [main] [INFO]                        \_)    ) /
+21:31:34.638 [main] [INFO]                              (_/
+21:31:34.869 [main] [INFO] Initializing server using 20 threads...
+21:31:34.869 [main] [INFO] Done! Initializing the SessionManager ...
+21:31:34.871 [main] [INFO] Done! Binding host localhost listening on port 8080 ...
+21:31:34.886 [main] [INFO] Done! Server has been successfully initialized, it can be now started
+21:31:34.886 [main] [INFO] Server successfully started! Waiting for new requests...
+-----------------------------
+
+  Open the browser and go visiting <<<http://localhost:8080>>>; HTTP traffic can be monitored on the shell:
+
+-----------------------------
+21:33:06.927 [pool-2-thread-1] [DEBUG] < GET / HTTP/1.1
+21:33:06.930 [pool-2-thread-1] [DEBUG] < Accept-Language: en-US, en;q=0.8
+21:33:06.930 [pool-2-thread-1] [DEBUG] < Host: localhost:8080
+21:33:06.930 [pool-2-thread-1] [DEBUG] < Accept-Charset: ISO-8859-1, utf-8;q=0.7, *;q=0.3
+21:33:06.931 [pool-2-thread-1] [DEBUG] < Accept-Encoding: gzip, deflate, sdch
+21:33:06.931 [pool-2-thread-1] [DEBUG] < User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_4) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.52 Safari/536.5
+21:33:06.931 [pool-2-thread-1] [DEBUG] < Accept: text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8
+21:33:06.931 [pool-2-thread-1] [DEBUG] < Connection: keep-alive
+...
+21:33:07.161 [pool-2-thread-1] [DEBUG] > HTTP/1.1 200 OK
+21:33:07.161 [pool-2-thread-1] [DEBUG] > Date: Mon, 28 May 2012 21:33:06 CEST
+21:33:07.161 [pool-2-thread-1] [DEBUG] > Content-Length: 1279
+21:33:07.162 [pool-2-thread-1] [DEBUG] > Content-Encoding: gzip
+21:33:07.162 [pool-2-thread-1] [DEBUG] > Keep-Alive: timeout=5000
+21:33:07.162 [pool-2-thread-1] [DEBUG] > Content-Type: text/html
+21:33:07.162 [pool-2-thread-1] [DEBUG] > Connection: Keep-Alive
+21:33:07.163 [pool-2-thread-1] [DEBUG] > Server: Simple HttpServer
+-----------------------------
+
+  The main page will offer you links to access to demo pages:
+
+  * a simple AJAX game that allows drag and drop elements in/outside an iFrame;
+
+  * an Apache Velocity templates based engine;
+
+  * a JAXB Marshaller that streams XML;
+
+  * a link to read this online documentation.
