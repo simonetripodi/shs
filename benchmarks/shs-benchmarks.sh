@@ -32,3 +32,5 @@ autobench --single_host --host1 127.0.0.1 \
                         --num_conn 5000 \
                         --timeout 5 \
                         --file shs-benchmarks.tsv
+
+bench2graph shs-benchmarks.tsv shs-benchmarks.ps

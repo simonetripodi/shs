@@ -34,11 +34,11 @@ Benchmarks
   sits on top of {{{http://code.google.com/p/httperf/}httperf}} and will run multiple tests in succession outputting the
   results to TSV.
 
-  First, I launched the SHS demo application listening on host <<<127.0.0.1>>> and port <<<8080>>>, with only 20 serving
+  First, I launched the SHS demo application listening on host <<<127.0.0.1>>> and port <<<8080>>>, with only 200 serving
   threads, in <quiet> mode to reduce log activity to <<<ERROR>>> only:
 
 ---------------------------------------------
-$ ./bin/shs -H 127.0.0.1 -t 20 -q
+$ ./bin/shs -H 127.0.0.1 -t 200 -q
 ---------------------------------------------
 
   Then, on a Linux VM, I ran all the tests against the same <<<robots.txt>>> file:
@@ -51,13 +51,21 @@ autobench --single_host --host1 127.0.0.1 \
                         --low_rate 20 \
                         --high_rate 200 \
                         --rate_step 20 \
-                        --num_call 10 \
-                        --num_conn 5000 \
+                        --num_call 5 \
+                        --num_conn 600 \
                         --timeout 5 \
                         --file shs-benchmarks.tsv
 ---------------------------------------------
 
-  with a series of tests starting at 20 connections per second (with 10 requests per connection), and increasing by 20
-  connections per second until 200 connections a second are being requested. Each test will comprise a total of 5000
+  with a series of tests starting at 20 connections per second (with 5 requests per connection), and increasing by 20
+  connections per second until 200 connections a second are being requested. Each test will comprise a total of 500
   connections, and any responses which take longer than 5 seconds to arrive will be counted as errors. The results were
   saved in the file 'shs-benchmarks.tsv'.
+
+  Then, invoking the <<<bench2graph>>> application:
+  
+---------------------------------------------
+bench2graph shs-benchmarks.tsv shs-benchmarks.ps
+---------------------------------------------
+
+  I obtained the following {{{./images/shs-benchmarks.png}graph}}.
