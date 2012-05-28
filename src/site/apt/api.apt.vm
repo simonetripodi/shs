@@ -57,6 +57,52 @@ Simple HttpServer APIs
   key-value data structure where for each key can be associated more than one value. <<<Request>>>
   query string parameters and form-urlencoded parameters are implemented as <<<MultiValued>>> as well.
 
+  So, in order to implement their own web applications, users can start extending a <<<BaseRequestHandler>>>; the code
+  snippet below shows how to implement a simple handler that provides static files found in a region in the File System,
+  that can be requested via the HTTP <<<GET>>> method.
+
++--------------------------+
+public final class FileRequestHandler
+    extends BaseRequestHandler
+{
+
+    private final File baseDir;
+
+    public FileRequestHandler( File baseDir )
+    {
+        this.baseDir = baseDir;
+    }
+
+    @Override
+    protected void get( final Request request, final Response response )
+        throws IOException
+    {
+        File requested = new File( baseDir, request.getPath() );
+        if ( !requested.exists() )
+        {
+            response.setStatus( Response.Status.NOT_FOUND );
+            return;
+        }
+
+        if ( requested.isDirectory() )
+        {
+            requested = new File( requested, "index.html" );
+        }
+
+        if ( requested.exists() )
+        {
+            response.setStatus( Response.Status.OK );
+            response.setBody( new FileResponseBodyWriter( requested ) ); // a special writer that streams the file
+        }
+        else
+        {
+            response.setStatus( Response.Status.NOT_FOUND );
+        }
+    }
+
+}
++--------------------------+
+
 * The Server interfaces
 
   One of the Simple HttpServer ambitions is eliminating the boilerplate code to configure server instances,
@@ -141,7 +187,86 @@ public class MyServerConfiguration
 
   I'll use this syntax throughout the rest of the guide.
 
-  We can break <<<HttpServer>>>'s 3 architecture down into three distinct stages: startup, runtime and stop.
+  We can break <<<HttpServer>>>'s lifecycle down into three distinct stages: <init>, <runtime> and <stop>:
+
+  * during the <init> phase, the Server warms up his engine according to the passed configuration; a typical pattern
+    would be:
+
++--------------------------+
+final HttpServerConfiguration configuration = new MyServerConfiguration();
+
+final HttpServer httpServer = ... //let's see how to obtain an HttpServer instance in the core module
+
+try
+{
+    httpServer.init( configuration );
+}
+catch ( InitException ie )
+{
+    logger.error( "Server cannot be initialized", ie );
+}
++--------------------------+
+
+  * the server switches to the <runtime> phase when the <<<start()>>> method is invoked; please note that
+    <<<start()>>> is a blocking method, so all the checks/interruption have to be performed by a monitoring separated thread:
+
++--------------------------+
+try
+{
+    httpServer.start();
+}
+catch ( RunException re )
+{
+    logger.error( "Server cannot be started", re );
+}
++--------------------------+
+
+  * server status can be monitored by invoking the <<<getStatus()>>> method: maybe the server accidentally crashed, so a
+    monitor could re-init it or send alarms:
+
++--------------------------+
+final HttpServer httpServer = ... 
+httpServer.init( configuration );
+httpServer.start();
+
+new Thread()
+{
+
+    public void run()
+    {
+        if ( HttpServer.Status.STOPPED == httpServer.getStatus() )
+        {
+            sendAlertMail();
+        }
+        else
+        {
+            noOp();
+        }
+    }
+
+}.start();
++--------------------------+
+
+  * server can be stopped inside the JVM ShutdownHook thread, i.e.: 
+
++--------------------------+
+Runtime.getRuntime().addShutdownHook( new Thread()
+{
+
+    public void run()
+    {
+        try
+        {
+            httpServer.stop();
+        }
+        catch ( ShutdownException e )
+        {
+            logger.error( "Execution terminated with errors", se );
+        }
+    }
+
+}
++--------------------------+
 
 Maven Users
 
