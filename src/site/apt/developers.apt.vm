@@ -30,4 +30,235 @@
 
 Simple HttpServer Demo application
 
+  Developing web applications is quick and easy at the same moment, users just have to follow the steps below:
 
+* Setup the dependencies
+
+  Let's add first the dependencies in the <<<pom.xml>>> file:
+
++--------------------------+
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shs-api</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>shs-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    ...
+  </dependencies>
++--------------------------+
+
+* Implement an Apache Velocity RequestHandler
+
+  We first need a <<<ResponseBodyWriter>>> implementation based on <Velocity>:
+
++--------------------------+
+class VelocityResponseBodyWriter
+    implements ResponseBodyWriter
+{
+
+    private final VelocityContext velocityContext;
+
+    private final Template template;
+
+    public VelocityResponseBodyWriter( VelocityContext velocityContext, Template template )
+    {
+        this.velocityContext = velocityContext;
+        this.template = template;
+    }
+
+    @Override
+    public String contentType()
+    {
+        return "text/html;charset=UTF-8";
+    }
+
+    @Override
+    public void write( WritableByteChannel output )
+        throws IOException
+    {
+        StringWriter stringWriter = new StringWriter();
+
+        template.merge( velocityContext, stringWriter );
+
+        output.write( utf8ByteBuffer( stringWriter.toString() ) );
+    }
+
+}
++--------------------------+
+
+  The we are ready to implement the <<<RequestHandler>>>:
+
++--------------------------+
+class VelocityRequestHandler
+    extends BaseRequestHandler
+{
+
+    public VelocityRequestHandler( File baseDir )
+    {
+        Properties properties = new Properties();
+        properties.setProperty( "file.resource.loader.path", baseDir.getAbsolutePath() );
+        Velocity.init( properties );
+    }
+
+    @Override
+    protected void get( Request request, Response response )
+        throws IOException
+    {
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put( "request", request );
+
+        Template template = Velocity.getTemplate( request.getPath() );
+
+        response.setStatus( OK );
+        response.setBody( new VelocityResponseBodyWriter( velocityContext, template ) );
+    }
+
+}
++--------------------------+
+
+* Implement the Velocity template
+
+  As you can read in the code below, the <<<RequestHandler>>> puts the <<<Request>>> instance in the <<<VelocityContext>>>,
+  so we can play a little with data inside it to create a page:
+
++--------------------------+
+<html>
+  <head><title>Request from $request.getClientHost()</title></head>
+  <body>
+    <div>
+      <p>HTTP Method: <code>$request.getMethod()</code></p>
+      #foreach( $header in $request.getHeaders().getAllKeys() )
+      <p>$header:#foreach( $headerValue in $request.getHeaders().getValues( $header ) ) <code>$headerValue</code>#end</p>
+      #end
+      <p>Session ID: <code>$request.getSession().getId()</code></p>
+    </div>
+  </body>
+</html>
++--------------------------+
+
+* Implement the main launcher
+
+  Now that all pieces have been set-up, all that is missing is a main entry point to launch the server
+
++--------------------------+
+class Main
+{
+
+    private static Logger logger = LoggerFactory.getLogger( Main.class );
+
+    /**
+     * let's simplify and assume the *FromArgs( args ) method implemented somewhere else
+     */
+    public static void main( String[] args )
+    {
+        final File siteDir = siteDirFromArgs( args );
+
+        final HttpServer httpServer = new SimpleHttpServer();
+        try
+        {
+            httpServer.init( new AbstractHttpServerConfiguration()
+            {
+
+                @Override
+                protected void configure()
+                {
+                    bindServerToHost( hostFromArgs( args ) );
+                    bindServerToPort( portFromArgs( args ) );
+                    serveRequestsWithThreads( threadsFromArgs( args ) );
+                    sessionsHaveMagAge( sessionMaxAgeFromArgs( args ) );
+                    keepAliveConnectionsHaveTimeout( keepAliveTimeOutFromArgs( args ) );
+
+                    serve( "*.vm" ).with( new VelocityRequestHandler( siteDir ) );
+                    when( NOT_FOUND ).serve( new File( siteDir, "404.html" ) );
+                    when( INTERNAL_SERVER_ERROR ).serve( new File( siteDir, "500.html" ) );
+                }
+
+            } );
+        }
+        catch ( Throwable cause )
+        {
+            logger.error( "Server cannot be initialized", cause );
+            System.exit( 1 );
+        }
+
+        Runtime.getRuntime().addShutdownHook( new Thread()
+        {
+
+            public void run()
+            {
+                try
+                {
+                    httpServer.stop();
+                }
+                catch ( ShutdownException e )
+                {
+                    logger.error( "Execution terminated with errors", e );
+                }
+            }
+        }
+
+        try
+        {
+            httpServer.start();
+        }
+        catch ( RunException se )
+        {
+            logger.error( "Server cannot be started", se );
+            System.exit( 1 );
+        }
+    }
+
+}
++--------------------------+
+
+  That's all! You can now run your Apache Velocity based dynamic site! :)
+
+Rebuild Simple HttpServer from scratch
+
+  Users that want to hack the original source code, need:
+
+  * A {{{http://git-scm.com/}Git}} client;
+
+  * {{{http://maven.apache.org/}Apache Maven}} v3.0.X;
+
+  * Their preferred IDE - I developed SHS using Eclipse, but it's not a constraint.
+
+  Once cloned the project:
+
+-----------------------------
+git clone git@github.com:simonetripodi/shs.git
+-----------------------------
+
+  go to the clone location
+
+-----------------------------
+cd shs
+-----------------------------
+
+  and launch the Maven packaging:
+
+-----------------------------
+mvn package
+-----------------------------
+
+  Maven will build the three main modules: the APIs, the Core implementation and the Simple Demo
+
+-----------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Simple HttpServer
+[INFO] Simple HttpServer :: APIs
+[INFO] Simple HttpServer :: Core implementation
+[INFO] Simple HttpServer :: Simple Demo
+[INFO]
+-----------------------------
+
+  The APIs and the Core implementation will be packaged in <<<jar>>> artifacts, the Simple Demo targets instead are
+  <<<tar.gz>>> and <<<zip>>> assemblies that contain a self-contained application with the embedded Web server.
