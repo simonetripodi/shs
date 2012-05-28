@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple HttpServer - Issue Tracking</title>
+    <title>Simple HttpServer - SHS - Benhmarks</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -16,6 +16,7 @@
     <script type="text/javascript" src="./js/apache-maven-fluido.min.js"></script>
 
     
+      <meta name="author" content="Simone Tripodi" />
     <meta name="Date-Revision-yyyymmdd" content="20120528" />
     <meta http-equiv="Content-Language" content="en" />
     
@@ -80,61 +81,17 @@
                           <a href="demo.html" title="Demo">Demo</a>
             </li>
                   <li class="none">
-                          <a href="benchmarks.html" title="Benchmarks">Benchmarks</a>
-            </li>
+            <strong>Benchmarks</strong>
+          </li>
                   <li class="none">
                           <a href="developers.html" title="For Developers">For Developers</a>
             </li>
           </ul>
                         <h3>Project Documentation</h3>
                   <ul>
-                                                                                                                                                                                                                                                                                                                        <li class="expanded">
+                                                                                                                                                                                                                                                                                                              <li class="collapsed">
                           <a href="project-info.html" title="Project Information">Project Information</a>
-                    <ul>
-                      <li class="none">
-                          <a href="distribution-management.html" title="Distribution Management">Distribution Management</a>
-            </li>
-                      <li class="none">
-                          <a href="index.html" title="About">About</a>
-            </li>
-                      <li class="none">
-                          <a href="dependencies.html" title="Dependencies">Dependencies</a>
-            </li>
-                      <li class="none">
-            <strong>Issue Tracking</strong>
-          </li>
-                      <li class="none">
-                          <a href="plugins.html" title="Project Plugins">Project Plugins</a>
-            </li>
-                      <li class="none">
-                          <a href="integration.html" title="Continuous Integration">Continuous Integration</a>
-            </li>
-                      <li class="none">
-                          <a href="license.html" title="Project License">Project License</a>
-            </li>
-                      <li class="none">
-                          <a href="mail-lists.html" title="Mailing Lists">Mailing Lists</a>
-            </li>
-                      <li class="none">
-                          <a href="team-list.html" title="Project Team">Project Team</a>
-            </li>
-                      <li class="none">
-                          <a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
-            </li>
-                      <li class="none">
-                          <a href="source-repository.html" title="Source Repository">Source Repository</a>
-            </li>
-                      <li class="none">
-                          <a href="plugin-management.html" title="Plugin Management">Plugin Management</a>
-            </li>
-                      <li class="none">
-                          <a href="modules.html" title="Project Modules">Project Modules</a>
-            </li>
-                      <li class="none">
-                          <a href="project-summary.html" title="Project Summary">Project Summary</a>
-            </li>
-              </ul>
-        </li>
+                  </li>
           </ul>
                       
                     
@@ -154,7 +111,17 @@
         
         <div id="bodyColumn"  class="span9" >
                                   
-            <div class="section"><h2>Overview<a name="Overview"></a></h2><a name="Overview"></a><p>This project uses GitHub Issue Management to manage its issues.</p></div><div class="section"><h2>Issue Tracking<a name="Issue_Tracking"></a></h2><a name="Issue_Tracking"></a><p>Issues, bugs, and feature requests should be submitted to the following issue tracking system for this project.</p><div class="source"><pre class="prettyprint"><a class="externalLink" href="https://github.com/simonetripodi/shs/issues">https://github.com/simonetripodi/shs/issues</a></pre></div></div>
+            <!--  --><!-- Copyright (c) 2012 Simone Tripodi (simonetripodi[at]apache[dot]org) --><!--  --><!-- Permission is hereby granted, free of charge, to any person obtaining --><!-- a copy of this software and associated documentation files (the --><!-- "Software"), to deal in the Software without restriction, including --><!-- without limitation the rights to use, copy, modify, merge, publish, --><!-- distribute, sublicense, and/or sell copies of the Software, and to --><!-- permit persons to whom the Software is furnished to do so, subject to --><!-- the following conditions: --><!--  --><!-- The above copyright notice and this permission notice shall be --><!-- included in all copies or substantial portions of the Software. --><!--  --><!-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, --><!-- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF --><!-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND --><!-- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE --><!-- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION --><!-- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION --><!-- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. --><!--  --><div class="section"><h2>Benchmarks<a name="Benchmarks"></a></h2><p>I used <a class="externalLink" href="http://www.xenoclast.org/autobench/">autobench</a> to perform the tests. Basically this is a perl script that sits on top of <a class="externalLink" href="http://code.google.com/p/httperf/">httperf</a> and will run multiple tests in succession outputting the results to TSV.</p><p>First, I launched the SHS demo application listening on host <tt>127.0.0.1</tt> and port <tt>8080</tt>, with a pool of 400 serving threads, in <i>quiet</i> mode to reduce log activity to <tt>ERROR</tt> only:</p><div><pre>$ ./bin/shs -H 127.0.0.1 -t 400 -q</pre></div><p>Then, on a Linux VM, I ran all the tests against the same <tt>robots.txt</tt> file:</p><div><pre>autobench --single_host --host1 127.0.0.1 \
+                        --port1 8080 \
+                        --uri1 /robots.txt \
+                        --quiet \
+                        --low_rate 20 \
+                        --high_rate 200 \
+                        --rate_step 20 \
+                        --num_call 5 \
+                        --num_conn 600 \
+                        --timeout 5 \
+                        --file shs-benchmarks.tsv</pre></div><p>with a series of tests starting at 20 connections per second (with 5 requests per connection), and increasing by 20 connections per second until 200 connections a second are being requested. Each test will comprise a total of 600 connections, and any responses which take longer than 5 seconds to arrive will be counted as errors. The results were saved in the file 'shs-benchmarks.tsv'.</p><p>Then, invoking the <tt>bench2graph</tt> application:</p><div><pre>bench2graph shs-benchmarks.tsv shs-benchmarks.ps</pre></div><p>I obtained the following <a href="./images/shs-benchmarks.png">graph</a>.</p></div>
                   </div>
             </div>
       
