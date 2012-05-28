@@ -28,6 +28,27 @@
 ~~ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ~~
 
+#set ( $downloadsUrl = 'http://search.maven.org/remotecontent?filepath=' )
+#set( $allTypes = [ 'tar.gz', 'zip' ] )
+#set( $allAux = [ '', '.md5', '.asc' ] )
+
+#macro( printLink $type $aux )
+{{{$downloadsUrl/$project.groupId.replace( '.', '/' )/shs-demo/$project.version/shs-demo-$project.version.$type$aux}shs-demo-$project.version.$type$aux}}
+#end
+
 Simple HttpServer Demo application
 
+* Download the demo
 
+  Demo application binary packages can be downloaded from Maven Central Repo:
+
+#foreach( $type in $allTypes )
+
+** Binary $type
+
+  #foreach( $aux in $allAux )
+  * #printLink( $type $aux )
+
+  #end
+
+#end
