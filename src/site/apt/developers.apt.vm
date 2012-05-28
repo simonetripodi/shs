@@ -230,6 +230,8 @@ Rebuild Simple HttpServer from scratch
 
   * Their preferred IDE - I developed SHS using Eclipse, but it's not a constraint.
 
+  []
+
   Once cloned the project:
 
 -----------------------------

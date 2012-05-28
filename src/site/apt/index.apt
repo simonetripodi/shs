@@ -48,6 +48,7 @@ Welcome to Simple HttpServer!
 
   * GZip compression.
 
+  []
 
   See how {{{./api.html}APIs}} and {{{./core.html}core}} implementation work!
 
