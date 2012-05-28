@@ -53,7 +53,7 @@ Simple HttpServer Demo application
 
   * a simple AJAX game that allows drag and drop elements in/outside an iFrame.
 
-* Download the demo
+* Download the packages
 
   Demo application binary packages can be downloaded from Maven Central Repo:
 
@@ -67,6 +67,8 @@ Simple HttpServer Demo application
   #end
 
 #end
+
+* Run the demo application!
 
   Once downloaded, extract the compressed archive and follow optional installation extra steps described in the
   <<<README>>> file; then, open the shell and run <<<shs -v>>> to verify the correct installation:
