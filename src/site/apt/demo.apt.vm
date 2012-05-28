@@ -166,3 +166,21 @@ $ ./bin/shs -t 20 -X
   * a JAXB Marshaller that streams XML;
 
   * a link to read this online documentation.
+
+  []
+
+  To shutdown the application, just hit <<<CTRL>>>+<<<C>>> and the server will be shut down:
+
+-----------------------------
+21:37:30.149 [Thread-3] [INFO]                          ''~``
+21:37:30.149 [Thread-3] [INFO]                         ( o o )
+21:37:30.149 [Thread-3] [INFO] +------------------.oooO--(_)--Oooo.------------------+
+21:37:30.150 [Thread-3] [INFO] Total uptime: 5 minutes 55 seconds
+21:37:30.150 [Thread-3] [INFO] Finished at: Mon May 28 21:37:30 CEST 2012
+21:37:30.150 [Thread-3] [INFO] Final Memory: 41M/493M
+21:37:30.151 [Thread-3] [INFO]                      .oooO
+21:37:30.151 [Thread-3] [INFO]                      (   )   Oooo.
+21:37:30.151 [Thread-3] [INFO] +---------------------\ (----(   )--------------------+
+21:37:30.151 [Thread-3] [INFO]                        \_)    ) /
+21:37:30.151 [Thread-3] [INFO]                              (_/
+-----------------------------
