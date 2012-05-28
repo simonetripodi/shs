@@ -134,9 +134,9 @@ class VelocityRequestHandler
   <body>
     <div>
       <p>HTTP Method: <code>$request.getMethod()</code></p>
-      #foreach( $header in $request.getHeaders().getAllKeys() )
-      <p>$header:#foreach( $headerValue in $request.getHeaders().getValues( $header ) ) <code>$headerValue</code>#end</p>
-      #end
+      \#foreach( $header in $request.getHeaders().getAllKeys() )
+      <p>$header:\#foreach( $headerValue in $request.getHeaders().getValues( $header ) ) <code>$headerValue</code>\#end</p>
+      \#end
       <p>Session ID: <code>$request.getSession().getId()</code></p>
     </div>
   </body>
