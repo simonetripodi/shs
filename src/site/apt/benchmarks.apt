@@ -34,11 +34,11 @@ Benchmarks
   sits on top of {{{http://code.google.com/p/httperf/}httperf}} and will run multiple tests in succession outputting the
   results to TSV.
 
-  First, I launched the SHS demo application listening on host <<<127.0.0.1>>> and port <<<8080>>>, with only 200 serving
-  threads, in <quiet> mode to reduce log activity to <<<ERROR>>> only:
+  First, I launched the SHS demo application listening on host <<<127.0.0.1>>> and port <<<8080>>>, with a pool of 400
+  serving threads, in <quiet> mode to reduce log activity to <<<ERROR>>> only:
 
 ---------------------------------------------
-$ ./bin/shs -H 127.0.0.1 -t 200 -q
+$ ./bin/shs -H 127.0.0.1 -t 400 -q
 ---------------------------------------------
 
   Then, on a Linux VM, I ran all the tests against the same <<<robots.txt>>> file:
@@ -63,7 +63,7 @@ autobench --single_host --host1 127.0.0.1 \
   saved in the file 'shs-benchmarks.tsv'.
 
   Then, invoking the <<<bench2graph>>> application:
-  
+
 ---------------------------------------------
 bench2graph shs-benchmarks.tsv shs-benchmarks.ps
 ---------------------------------------------
