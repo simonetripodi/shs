@@ -80,6 +80,9 @@ public final class SimpleHttpServerLauncher
     @Parameter( names = { "-H", "--host" }, description = "The host name or the textual representation of its IP address." )
     private String host = "localhost";
 
+    @Parameter( names = { "-q", "--quiet" }, description = "Long errors only." )
+    private boolean quiet;
+
     @Parameter( names = { "-X", "--verbose" }, description = "Produce execution debug output." )
     private boolean verbose;
 
@@ -138,7 +141,11 @@ public final class SimpleHttpServerLauncher
 
         // setup the logging stuff
 
-        if ( verbose )
+        if ( quiet )
+        {
+            setProperty( "logging.level", "ERROR" );
+        }
+        else if ( verbose )
         {
             setProperty( "logging.level", "DEBUG" );
         }
