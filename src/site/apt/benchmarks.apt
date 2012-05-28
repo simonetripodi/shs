@@ -58,7 +58,7 @@ autobench --single_host --host1 127.0.0.1 \
 ---------------------------------------------
 
   with a series of tests starting at 20 connections per second (with 5 requests per connection), and increasing by 20
-  connections per second until 200 connections a second are being requested. Each test will comprise a total of 500
+  connections per second until 200 connections a second are being requested. Each test will comprise a total of 600
   connections, and any responses which take longer than 5 seconds to arrive will be counted as errors. The results were
   saved in the file 'shs-benchmarks.tsv'.
 
