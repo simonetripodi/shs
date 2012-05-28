@@ -30,7 +30,53 @@
 
 Simple HttpServer Core implementation
 
+  The core module contains the main classes that allows the HTTP server implementation to run.
 
+* The core model
+
+  The HTTP server implementation is based on pure NIO APIs based on
+  {{{http://rox-xmlrpc.sourceforge.net/niotut/}The Rox Java NIO Tutorial}}; while read/write operations are managed via
+  built-in <<<Selector>>>, a multi-thread executor handles the HTTP protocol for each client-server messages exchange.
+
+** UML class diagram
+
+  A detailed {{{./images/core.png}UML class diagram}} will help to understand the model design.
+
+** About classes organization
+
+  The {{{./apidocs/org/nnsoft/shs/core/SimpleHttpServer.html}SimpleHttpServer}} handles client requests incrementally via
+  the pull parser {{{./apidocs/org/nnsoft/shs/core/http/parse/RequestStreamingParser.html}RequestStreamingParser}}; once
+  the <<<Request>>> has been completely interpreted, the <<<SimpleHttpServer>>> delegates the
+  {{{./apidocs/org/nnsoft/shs/core/ProtocolProcessor.html}ProtocolProcessor}}, executed in a separated thread, the HTTP
+  protocol management, that via the {{{./apidocs/org/nnsoft/shs/core/RequestDispatcher.html}RequestDispatcher}} addresses
+  the <<<Request>>> to the right <<<RequestHandler>>>;
+  the {{{./apidocs/org/nnsoft/shs/core/http/SessionManager.html}SessionManager}} is the entity responsible to manage the
+  request <<<Session>>> lifecycle.
+
+  Once the <<<Reponse>>> is complete and ready to be streamed to the client, the
+  {{{./apidocs/org/nnsoft/shs/core/http/serialize/ResponseSerializer.html}ResponseSerializer}} will take care of build
+  the reponse message in the channel.
+
+* About the RequestStreamingParser
+
+  The <<<RequestStreamingParser>>> is a <<<Request>>> pull parser that builds incoming clients requests messages
+  incrementally; it doesn't rely on inefficient regexp - and could not, due to the nature of pull parser - but it
+  instead a state machine that implements (a simplified version, of course) of an <<<LL(0)>>> interpreter.
+
+** UML class diagram
+
+  A detailed {{{./images/request-parser.png}UML class diagram}} will help to understand the model design.
+
+  Model is very simple: the <<<RequestStreamingParser>>>, depending on the current analyzing character, due to its
+  nature of state-machine, assumes different {{{./apidocs/org/nnsoft/shs/core/http/parse/ParserStatus.html}ParserStatus}}
+  value; each time a token is recognized, a {{{./apidocs/org/nnsoft/shs/core/http/parse/ParserTrigger.html}ParserTrigger}}
+  is invoked and, once updated the <<<Request>>>, updates the <<<RequestStreamingParser>>> status.
+
+  The Parser Triggers {{{./images/parser-triggers.png}UML class diagram}} shows how any <<<ParserTrigger>>> reflects
+  part of the incoming <<<Request>>> that is built incrementally.
+
+  A special case is for non <<<application/x-www-form-urlencoded>>> request bodies, that are not managed by any handler,
+  but rather just collects sent bytes by clients in a sequence of <<<ByteBuffer>>>.
 
 Maven Users
 
