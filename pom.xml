@@ -26,7 +26,7 @@
 
   <groupId>org.99soft.shs</groupId>
   <artifactId>shs-parent</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>pom</packaging>
 
   <name>Simple HttpServer</name>
