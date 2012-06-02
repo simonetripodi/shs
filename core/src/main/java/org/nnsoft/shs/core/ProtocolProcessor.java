@@ -93,11 +93,13 @@ final class ProtocolProcessor
         // debug the request
         if ( logger.isDebugEnabled() )
         {
-            logger.debug( "< {} {} {}/{}", new Object[] {
-                                               request.getMethod(),
-                                               request.getPath(),
-                                               request.getProtocolName(),
-                                               request.getProtocolVersion() } );
+            logger.debug( "{} < {} {} {}/{}", new Object[] {
+                                                  request.getClientHost(),
+                                                  request.getMethod(),
+                                                  request.getPath(),
+                                                  request.getProtocolName(),
+                                                  request.getProtocolVersion()
+                                              } );
 
             for ( Entry<String, List<String>> header : request.getHeaders().getAllEntries() )
             {
@@ -108,7 +110,11 @@ final class ProtocolProcessor
                     headerValues.format( "%s%s", ( i++ > 0 ? ", " : "" ), value );
                 }
 
-                logger.debug( "< {}: {}", header.getKey(), headerValues.toString() );
+                logger.debug( "{} < {}: {}", new Object[] {
+                                                 request.getClientHost(),
+                                                 header.getKey(),
+                                                 headerValues.toString()
+                                             } );
             }
 
             if ( !request.getCookies().isEmpty() )
@@ -119,7 +125,7 @@ final class ProtocolProcessor
                 {
                     cookies.format( "%s%s=%s", ( counter++ > 0 ? ", " : "" ), cookie.getName(), cookie.getValue() );
                 }
-                logger.debug( "< Cookie: {}", cookies.toString() );
+                logger.debug( "{} < Cookie: {}", request.getClientHost(), cookies.toString() );
             }
         }
 
@@ -158,8 +164,6 @@ final class ProtocolProcessor
         }
         finally
         {
-            long time = currentTimeMillis() - start;
-
             boolean gzipEnabled = request.getHeaders().contains( ACCEPT_ENCODING )
                                   && request.getHeaders().getValues( ACCEPT_ENCODING ).contains( GZIP );
 
@@ -178,12 +182,14 @@ final class ProtocolProcessor
             if ( logger.isDebugEnabled() )
             {
                 // protocol
-                logger.debug( "> {}/{} {} {}",
+                logger.debug( "{} > {}/{} {} {}",
                               new Object[] {
+                                  request.getClientHost(),
                                   response.getProtocolName(),
                                   response.getProtocolVersion(),
                                   response.getStatus().getStatusCode(),
-                                  response.getStatus().getStatusText() } );
+                                  response.getStatus().getStatusText()
+                              } );
                 // headers
                 for ( Entry<String, List<String>> header : response.getHeaders().getAllEntries() )
                 {
@@ -195,7 +201,11 @@ final class ProtocolProcessor
                         headerValues.format( "%s%s", ( counter++ > 0 ? ", " : "" ), headerValue );
                     }
 
-                    logger.debug( "> {}: {}", header.getKey(), headerValues.toString() );
+                    logger.debug( "{} > {}: {}", new Object[] {
+                        request.getClientHost(),
+                        header.getKey(),
+                        headerValues.toString()
+                    } );
                 }
                 // cookies
                 for ( Cookie cookie : response.getCookies() )
@@ -225,9 +235,12 @@ final class ProtocolProcessor
 
                     // secure field ignored since HTTPs is not supported in this version
 
-                    logger.debug( "> Set-Cookie: {} HttpOnly", cookieFormatter.toString() );
+                    logger.debug( "{} > Set-Cookie: {} HttpOnly", request.getClientHost(), cookieFormatter.toString() );
+                }
 
-                    logger.debug( "Request processed in {}ms", time );
+                if ( logger.isInfoEnabled() )
+                {
+                    logger.info( "Request process completed in {}ms", ( currentTimeMillis() - start ) );
                 }
             }
         }
