@@ -23,7 +23,7 @@ package org.nnsoft.shs.core.io;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.ByteBuffer.allocate;
 import static org.nnsoft.shs.lang.Preconditions.checkArgument;
 
 import java.io.IOException;
@@ -40,13 +40,13 @@ public final class ByteBufferEnqueuerOutputStream
     extends OutputStream
 {
 
-    public static final ByteBuffer EOM = allocateDirect( 0 );
+    public static final ByteBuffer EOM = allocate( 0 );
 
     private static final int DEFAULT_BUFFER_CHUNK_SIZE = 1024;
 
     private final Queue<ByteBuffer> buffers;
 
-    private ByteBuffer currentPtr = allocateDirect( DEFAULT_BUFFER_CHUNK_SIZE );
+    private ByteBuffer currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
 
     private long writtenBytes = 0;
 
@@ -97,7 +97,7 @@ public final class ByteBufferEnqueuerOutputStream
         currentPtr.rewind();
         buffers.offer( currentPtr );
 
-        currentPtr = allocateDirect( DEFAULT_BUFFER_CHUNK_SIZE );
+        currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
     }
 
     /**
