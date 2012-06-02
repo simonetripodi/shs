@@ -24,6 +24,7 @@ package org.nnsoft.shs.core;
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import static java.lang.Thread.currentThread;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.SelectionKey.OP_ACCEPT;
 import static java.nio.channels.SelectionKey.OP_READ;
@@ -122,6 +123,7 @@ public final class SimpleHttpServer
 
         logger.info( "Initializing server using {} threads...", configurator.getThreads() );
 
+        currentThread().setName( "socket-listener" );
         requestsExecutor = newFixedThreadPool( configurator.getThreads(), new ProtocolProcessorThreadFactory() );
 
         logger.info( "Done! Initializing the SessionManager ..." );
