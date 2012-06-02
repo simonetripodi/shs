@@ -122,7 +122,7 @@ public final class SimpleHttpServer
 
         logger.info( "Initializing server using {} threads...", configurator.getThreads() );
 
-        requestsExecutor = newFixedThreadPool( configurator.getThreads() );
+        requestsExecutor = newFixedThreadPool( configurator.getThreads(), new ProtocolProcessorThreadFactory() );
 
         logger.info( "Done! Initializing the SessionManager ..." );
 
