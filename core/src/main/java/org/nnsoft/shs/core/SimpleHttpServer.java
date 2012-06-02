@@ -434,6 +434,8 @@ public final class SimpleHttpServer
             else
             {
                 serverChannel.write( current );
+                // free the memory
+                current.clear();
             }
         }
     }
