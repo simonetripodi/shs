@@ -46,7 +46,9 @@ public final class ByteBufferEnqueuerOutputStream
 
     private final Queue<ByteBuffer> buffers;
 
-    private ByteBuffer currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
+    private ByteBuffer currentPtr;
+
+    private final int chunkSize;
 
     private long writtenBytes = 0;
 
@@ -57,8 +59,17 @@ public final class ByteBufferEnqueuerOutputStream
      */
     public ByteBufferEnqueuerOutputStream( Queue<ByteBuffer> buffers )
     {
+        this( buffers, DEFAULT_BUFFER_CHUNK_SIZE );
+    }
+
+    public ByteBufferEnqueuerOutputStream( Queue<ByteBuffer> buffers, int chunkSize )
+    {
         checkArgument( buffers != null, "Impossible to send data to a null ByteBuffer queue" );
+        checkArgument( chunkSize > 0, "chunk size must be a positive integer" );
         this.buffers = buffers;
+        this.chunkSize = chunkSize;
+
+        currentPtr = allocate( chunkSize );
     }
 
     /**
@@ -97,7 +108,7 @@ public final class ByteBufferEnqueuerOutputStream
         currentPtr.rewind();
         buffers.offer( currentPtr );
 
-        currentPtr = allocate( DEFAULT_BUFFER_CHUNK_SIZE );
+        currentPtr = allocate( chunkSize );
     }
 
     /**
