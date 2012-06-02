@@ -69,7 +69,7 @@ public final class ByteBufferEnqueuerOutputStream
         this.buffers = buffers;
         this.chunkSize = chunkSize;
 
-        currentPtr = allocate( chunkSize );
+        newChunk();
     }
 
     /**
@@ -108,6 +108,14 @@ public final class ByteBufferEnqueuerOutputStream
         currentPtr.rewind();
         buffers.offer( currentPtr );
 
+        newChunk();
+    }
+
+    /**
+     * Allocates a new ByteBuffer pointer.
+     */
+    private void newChunk()
+    {
         currentPtr = allocate( chunkSize );
     }
 
