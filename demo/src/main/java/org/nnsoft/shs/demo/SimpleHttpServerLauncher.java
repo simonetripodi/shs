@@ -203,7 +203,7 @@ public final class SimpleHttpServerLauncher
 
         final long start = currentTimeMillis();
 
-        getRuntime().addShutdownHook( new Thread()
+        getRuntime().addShutdownHook( new Thread( "shutdown-hook" )
         {
 
             public void run()
