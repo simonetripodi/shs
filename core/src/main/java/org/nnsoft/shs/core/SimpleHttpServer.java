@@ -368,7 +368,7 @@ public final class SimpleHttpServer
                     socket.setSoTimeout( keepAliveTimeOut );
                 }
 
-                requestsExecutor.submit( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
+                requestsExecutor.execute( new ProtocolProcessor( sessionManager, dispatcher, request, key ) );
             }
         }
         catch ( IOException e )
