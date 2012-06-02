@@ -37,7 +37,7 @@ final class ProtocolProcessorThreadFactory
 
     private static final String THREAD_NAME_FORMAT = "protocol-processor-%s";
 
-    final AtomicLong count = new AtomicLong(0);
+    final AtomicLong count = new AtomicLong( 0 );
 
     /**
      * {@inheritDoc}
