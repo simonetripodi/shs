@@ -1,4 +1,3 @@
-
 package org.nnsoft.shs.core;
 
 /*
